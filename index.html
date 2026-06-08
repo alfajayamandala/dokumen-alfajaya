@@ -4,1713 +4,811 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistem Dokumen – PT Alfa Jaya Mandala</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0d1b2a;
-    --navy2: #162033;
-    --blue: #1a4a7a;
-    --accent: #c8922a;
-    --accent2: #e8b84b;
-    --light: #f5f0e8;
-    --white: #ffffff;
-    --gray: #8a95a3;
-    --border: #2a3a4a;
-    --success: #2d7a4a;
+    --navy:   #001529;
+    --navy2:  #002140;
+    --blue:   #003a6b;
+    --accent: #0070c0;
+    --accent2:#1a9cff;
+    --light:  #e8f4ff;
+    --white:  #ffffff;
+    --gray:   #7fa8cc;
+    --border: #0a3a5c;
+    --success:#1a7a4a;
+    --gold:   #f5a623;
+    --gold2:  #ffc542;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--navy);
-    color: var(--white);
-    min-height: 100vh;
-  }
+  .app { display:flex; min-height:100vh; }
 
-  /* ── APP SHELL ── */
-  .app { display: flex; min-height: 100vh; }
-
+  /* ── SIDEBAR ── */
   .sidebar {
-    width: 260px;
-    background: var(--navy2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    height: 100vh;
-    overflow-y: auto;
+    width:260px; background:var(--navy2);
+    border-right:1px solid var(--border);
+    display:flex; flex-direction:column;
+    position:fixed; height:100vh; overflow-y:auto;
   }
+  .sidebar-brand { padding:20px 18px 16px; border-bottom:1px solid var(--border); }
+  .brand-logo { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .brand-img { width:46px; height:46px; border-radius:8px; object-fit:cover; background:#000; }
+  .brand-name { font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:var(--gold2); line-height:1.2; }
+  .brand-sub  { font-size:10px; color:var(--gray); letter-spacing:1px; text-transform:uppercase; }
 
-  .sidebar-brand {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .brand-logo {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
-  }
-
-  .brand-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-
-  .brand-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--accent2);
-    line-height: 1.2;
-  }
-
-  .brand-sub { font-size: 10px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
-
-  .sidebar-menu { padding: 16px 12px; flex: 1; }
-
-  .menu-label {
-    font-size: 9px; letter-spacing: 2px; color: var(--gray);
-    text-transform: uppercase; padding: 8px 8px 6px;
-  }
-
+  .sidebar-menu { padding:14px 10px; flex:1; }
+  .menu-label { font-size:9px; letter-spacing:2px; color:var(--gray); text-transform:uppercase; padding:8px 8px 5px; }
   .menu-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; border-radius: 8px;
-    cursor: pointer; font-size: 13px; font-weight: 500;
-    color: var(--gray); transition: all .2s;
-    margin-bottom: 2px;
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; border-radius:8px; cursor:pointer;
+    font-size:13px; font-weight:500; color:var(--gray);
+    transition:all .2s; margin-bottom:2px;
   }
-
-  .menu-item:hover { background: rgba(200,146,42,.1); color: var(--accent2); }
-  .menu-item.active { background: rgba(200,146,42,.15); color: var(--accent2); }
-  .menu-item .icon { font-size: 15px; width: 20px; text-align: center; }
-
-  .sidebar-info {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-    font-size: 10px; color: var(--gray);
-    line-height: 1.6;
-  }
+  .menu-item:hover { background:rgba(0,112,192,.15); color:var(--accent2); }
+  .menu-item.active { background:rgba(0,112,192,.2); color:var(--accent2); border-left:3px solid var(--accent2); }
+  .menu-item .icon { font-size:15px; width:20px; text-align:center; }
+  .sidebar-info { padding:14px 18px; border-top:1px solid var(--border); font-size:10px; color:var(--gray); line-height:1.6; }
 
   /* ── MAIN ── */
-  .main { margin-left: 260px; flex: 1; }
-
+  .main { margin-left:260px; flex:1; }
   .topbar {
-    background: var(--navy2);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
+    background:var(--navy2); border-bottom:1px solid var(--border);
+    padding:14px 28px; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
   }
+  .topbar-title { font-family:'Playfair Display',serif; font-size:19px; color:var(--gold2); }
+  .topbar-sub { font-size:11px; color:var(--gray); margin-top:2px; }
 
-  .topbar-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--accent2); }
-  .topbar-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
-
+  /* ── BUTTONS ── */
   .btn {
-    padding: 8px 18px; border-radius: 7px; border: none;
-    cursor: pointer; font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 600; transition: all .2s;
-    display: inline-flex; align-items: center; gap: 6px;
+    padding:8px 16px; border-radius:7px; border:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600;
+    transition:all .2s; display:inline-flex; align-items:center; gap:6px;
   }
-
-  .btn-gold {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: var(--navy);
-  }
-  .btn-gold:hover { opacity: .9; transform: translateY(-1px); }
-
-  .btn-outline {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--gray);
-  }
-  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-
-  .btn-danger { background: #7a1a1a; color: #ffaaaa; }
-  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .btn-blue { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; }
+  .btn-blue:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,112,192,.4); }
+  .btn-gold { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#001529; }
+  .btn-gold:hover { opacity:.9; transform:translateY(-1px); }
+  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .btn-outline:hover { border-color:var(--accent2); color:var(--accent2); }
+  .btn-danger { background:#5a1010; color:#ffaaaa; }
+  .btn-sm { padding:5px 12px; font-size:12px; }
 
   /* ── CONTENT ── */
-  .content { padding: 32px; }
-
-  /* ── TABS / SECTIONS ── */
-  .section { display: none; }
-  .section.active { display: block; }
+  .content { padding:28px; }
+  .section { display:none; }
+  .section.active { display:block; }
 
   /* ── CARDS ── */
-  .card {
-    background: var(--navy2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-
+  .card { background:var(--navy2); border:1px solid var(--border); border-radius:12px; padding:22px; margin-bottom:18px; }
   .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px; color: var(--accent2);
-    margin-bottom: 16px; padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
+    font-family:'Playfair Display',serif; font-size:15px; color:var(--gold2);
+    margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:8px;
   }
 
   /* ── FORM ── */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-  .form-grid.full { grid-template-columns: 1fr; }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group.span2 { grid-column: span 2; }
-  .form-group.span3 { grid-column: span 3; }
-
-  label { font-size: 11px; color: var(--gray); letter-spacing: .5px; text-transform: uppercase; font-weight: 500; }
-
-  input, select, textarea {
-    background: rgba(255,255,255,.04);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 9px 12px;
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    transition: border-color .2s;
-    width: 100%;
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+  .form-grid.three { grid-template-columns:1fr 1fr 1fr; }
+  .form-grid.full  { grid-template-columns:1fr; }
+  .form-group { display:flex; flex-direction:column; gap:5px; }
+  .form-group.span2 { grid-column:span 2; }
+  .form-group.span3 { grid-column:span 3; }
+  label { font-size:10px; color:var(--gray); letter-spacing:.5px; text-transform:uppercase; font-weight:500; }
+  input,select,textarea {
+    background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:7px;
+    padding:9px 12px; color:var(--white);
+    font-family:'DM Sans',sans-serif; font-size:13px; transition:border-color .2s; width:100%;
   }
-
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-    background: rgba(200,146,42,.05);
-  }
-
-  select option { background: var(--navy2); }
-  textarea { resize: vertical; min-height: 70px; }
+  input:focus,select:focus,textarea:focus { outline:none; border-color:var(--accent2); background:rgba(0,112,192,.06); }
+  select option { background:var(--navy2); }
+  textarea { resize:vertical; min-height:68px; }
 
   /* ── TABLE ── */
-  .table-wrap { overflow-x: auto; margin-top: 12px; }
-
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-
-  th {
-    background: rgba(255,255,255,.04);
-    padding: 10px 12px; text-align: left;
-    font-size: 10px; letter-spacing: 1px;
-    color: var(--gray); text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-  }
-
-  td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(255,255,255,.04);
-    vertical-align: middle;
-  }
-
-  tr:hover td { background: rgba(255,255,255,.02); }
-
-  td input, td select {
-    background: transparent;
-    border: none;
-    padding: 4px 0;
-    color: var(--white);
-    font-size: 13px;
-  }
-
-  td input:focus, td select:focus {
-    border-bottom: 1px solid var(--accent);
-    outline: none;
-    background: transparent;
-  }
-
-  .total-row td { font-weight: 600; color: var(--accent2); border-top: 1px solid var(--border); }
+  .table-wrap { overflow-x:auto; margin-top:10px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { background:rgba(255,255,255,.04); padding:9px 11px; text-align:left; font-size:10px; letter-spacing:1px; color:var(--gray); text-transform:uppercase; border-bottom:1px solid var(--border); }
+  td { padding:9px 11px; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
+  tr:hover td { background:rgba(255,255,255,.02); }
+  td input,td select { background:transparent; border:none; padding:3px 0; color:var(--white); font-size:13px; }
+  td input:focus,td select:focus { border-bottom:1px solid var(--accent2); outline:none; background:transparent; }
+  .total-row td { font-weight:600; color:var(--gold2); border-top:1px solid var(--border); }
 
   /* ── BADGE ── */
-  .badge {
-    display: inline-block; padding: 3px 10px; border-radius: 20px;
-    font-size: 10px; font-weight: 600; letter-spacing: .5px;
-  }
-  .badge-blue { background: rgba(26,74,122,.4); color: #6ab0ff; }
-  .badge-gold { background: rgba(200,146,42,.2); color: var(--accent2); }
-  .badge-green { background: rgba(45,122,74,.3); color: #7dffaa; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:.5px; }
+  .badge-blue  { background:rgba(0,112,192,.3); color:var(--accent2); }
+  .badge-gold  { background:rgba(245,166,35,.2); color:var(--gold2); }
+  .badge-green { background:rgba(26,122,74,.3); color:#7dffaa; }
 
-  /* ── DOC LIST ── */
-  .doc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  /* ── DASHBOARD ── */
+  .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:13px; margin-bottom:24px; }
+  .stat-card { background:var(--navy2); border:1px solid var(--border); border-radius:10px; padding:16px; border-top:3px solid var(--accent); }
+  .stat-val { font-family:'DM Mono',monospace; font-size:22px; color:var(--accent2); font-weight:600; }
+  .stat-lbl { font-size:11px; color:var(--gray); margin-top:4px; }
 
-  .doc-card {
-    background: rgba(255,255,255,.03);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .doc-card:hover { border-color: var(--accent); background: rgba(200,146,42,.05); }
+  .doc-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:13px; }
+  .doc-card { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:10px; padding:15px; cursor:pointer; transition:all .2s; }
+  .doc-card:hover { border-color:var(--accent2); background:rgba(0,112,192,.07); }
+  .doc-card-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:7px; }
+  .doc-number { font-family:'DM Mono',monospace; font-size:12px; color:var(--accent2); }
+  .doc-client { font-size:14px; font-weight:600; margin-bottom:3px; }
+  .doc-meta   { font-size:11px; color:var(--gray); }
+  .doc-amount { font-family:'DM Mono',monospace; font-size:14px; color:var(--gold2); font-weight:600; margin-top:7px; }
 
-  .doc-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-  .doc-number { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent2); }
-  .doc-client { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-  .doc-meta { font-size: 11px; color: var(--gray); }
-  .doc-amount { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--accent2); font-weight: 600; margin-top: 8px; }
-
-  /* ── PRINT VIEW ── */
-  .print-modal {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.7);
-    z-index: 1000;
-    overflow-y: auto;
-    padding: 40px 20px;
-  }
-  .print-modal.open { display: flex; justify-content: center; }
-
+  /* ── PRINT MODAL ── */
+  .print-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; overflow-y:auto; padding:40px 20px; }
+  .print-modal.open { display:flex; justify-content:center; }
+  .print-actions { position:fixed; top:12px; right:16px; display:flex; gap:8px; z-index:1001; }
   .print-doc {
-    background: #fff;
-    color: #111;
-    width: 794px;
-    min-height: 1123px;
-    padding: 48px;
-    border-radius: 4px;
-    position: relative;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    line-height: 1.5;
+    background:#fff; color:#111; width:794px; min-height:1000px; padding:44px;
+    border-radius:4px; font-family:'DM Sans',sans-serif; font-size:12px; line-height:1.5;
+    align-self:flex-start;
   }
 
-  .print-close {
-    position: fixed; top: 16px; right: 24px;
-    background: var(--accent); color: var(--navy);
-    border: none; padding: 8px 20px; border-radius: 6px;
-    cursor: pointer; font-weight: 700; font-size: 13px;
-    z-index: 1001;
-    display: flex; gap: 8px;
-  }
+  /* ── DOC PRINT STYLES ── */
+  .doc-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; padding-bottom:16px; border-bottom:3px solid #001529; }
+  .doc-logo-wrap { display:flex; align-items:center; gap:12px; }
+  .doc-logo-img  { width:54px; height:54px; object-fit:cover; border-radius:4px; background:#000; }
+  .doc-logo-area .co-name    { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#001529; }
+  .doc-logo-area .co-tagline { font-size:9px; color:#666; letter-spacing:1px; text-transform:uppercase; margin-top:1px; }
+  .doc-logo-area .co-addr    { font-size:9.5px; color:#555; margin-top:7px; line-height:1.6; }
+  .doc-title-area { text-align:right; }
+  .doc-title-area .doc-type  { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:#0070c0; line-height:1; }
+  .doc-title-area .doc-num   { font-family:'DM Mono',monospace; font-size:11px; color:#555; margin-top:3px; }
+  .doc-title-area .doc-date  { font-size:10px; color:#777; margin-top:2px; }
 
-  /* Document print styles */
-  .doc-header {
-    display: flex; justify-content: space-between;
-    align-items: flex-start; margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 3px solid #0d1b2a;
-  }
+  .info-box { background:#f0f6ff; border-left:3px solid #0070c0; padding:11px 14px; border-radius:0 6px 6px 0; margin-bottom:16px; }
+  .info-box .ib-label  { font-size:9px; letter-spacing:1.5px; color:#999; text-transform:uppercase; margin-bottom:3px; }
+  .info-box .ib-name   { font-size:13px; font-weight:600; color:#001529; }
+  .info-box .ib-detail { font-size:10.5px; color:#555; margin-top:2px; }
 
-  .doc-logo-area .co-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; font-weight: 700; color: #0d1b2a;
-  }
+  .print-table { width:100%; border-collapse:collapse; margin:14px 0; font-size:11px; }
+  .print-table th { background:#001529; color:#fff; padding:7px 9px; text-align:left; font-size:9.5px; text-transform:uppercase; letter-spacing:.5px; }
+  .print-table td { padding:7px 9px; border-bottom:1px solid #e8f0fa; }
+  .print-table tr:nth-child(even) td { background:#f5f9ff; }
 
-  .doc-logo-area .co-tagline {
-    font-size: 10px; color: #666; letter-spacing: 1px;
-    text-transform: uppercase; margin-top: 2px;
-  }
+  .total-section { margin-top:14px; display:flex; justify-content:flex-end; }
+  .total-box { width:250px; }
+  .total-row-p { display:flex; justify-content:space-between; padding:4px 0; font-size:11.5px; }
+  .total-row-p.final { font-weight:700; font-size:13px; border-top:2px solid #001529; padding-top:7px; color:#001529; }
 
-  .doc-logo-area .co-addr {
-    font-size: 10px; color: #555; margin-top: 8px; line-height: 1.6;
-  }
+  .terbilang { background:#f0f6ff; border:1px solid #b3d4ff; padding:9px 13px; border-radius:6px; margin-top:10px; font-size:10.5px; font-style:italic; color:#003a6b; }
 
-  .doc-title-area { text-align: right; }
+  .bank-info { background:#f0f6ff; border-radius:7px; padding:11px 14px; margin-top:16px; font-size:10.5px; display:flex; gap:24px; flex-wrap:wrap; }
+  .bank-info strong { display:block; font-size:9px; color:#999; text-transform:uppercase; letter-spacing:.5px; margin-bottom:2px; }
 
-  .doc-title-area .doc-type {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px; font-weight: 700;
-    color: #c8922a; line-height: 1;
-  }
+  .sign-area { display:flex; justify-content:space-between; margin-top:36px; }
+  .sign-box { text-align:center; width:155px; }
+  .sign-line { border-top:1px solid #aaa; margin-top:48px; margin-bottom:4px; }
+  .sign-name { font-weight:600; font-size:11.5px; }
+  .sign-title { font-size:10px; color:#777; }
 
-  .doc-title-area .doc-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px; color: #555; margin-top: 4px;
-  }
-
-  .doc-title-area .doc-date { font-size: 11px; color: #777; margin-top: 2px; }
-
-  .info-box {
-    background: #f8f4ed;
-    border-left: 3px solid #c8922a;
-    padding: 12px 16px; border-radius: 0 6px 6px 0;
-    margin-bottom: 20px;
-  }
-
-  .info-box .ib-label { font-size: 9px; letter-spacing: 1.5px; color: #999; text-transform: uppercase; margin-bottom: 4px; }
-  .info-box .ib-name { font-size: 14px; font-weight: 600; color: #0d1b2a; }
-  .info-box .ib-detail { font-size: 11px; color: #555; margin-top: 2px; }
-
-  .print-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 11px; }
-  .print-table th {
-    background: #0d1b2a; color: #fff;
-    padding: 8px 10px; text-align: left;
-    font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
-  }
-  .print-table td { padding: 8px 10px; border-bottom: 1px solid #eee; }
-  .print-table tr:nth-child(even) td { background: #fafafa; }
-
-  .total-section { margin-top: 16px; display: flex; justify-content: flex-end; }
-  .total-box { width: 260px; }
-  .total-row-p { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
-  .total-row-p.final { font-weight: 700; font-size: 14px; border-top: 2px solid #0d1b2a; padding-top: 8px; color: #0d1b2a; }
-  .terbilang { background: #f0f8f0; border: 1px solid #cde8cd; padding: 10px 14px; border-radius: 6px; margin-top: 12px; font-size: 11px; font-style: italic; color: #2d5a2d; }
-
-  .sign-area { display: flex; justify-content: space-between; margin-top: 40px; }
-  .sign-box { text-align: center; width: 160px; }
-  .sign-line { border-top: 1px solid #aaa; margin-top: 50px; margin-bottom: 4px; }
-  .sign-name { font-weight: 600; font-size: 12px; }
-  .sign-title { font-size: 10px; color: #777; }
-
-  .bank-info {
-    background: #f8f4ed; border-radius: 8px;
-    padding: 12px 16px; margin-top: 20px;
-    font-size: 11px;
-    display: flex; gap: 24px;
-  }
-  .bank-info strong { display: block; font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
-
-  .doc-footer {
-    margin-top: 32px; padding-top: 12px;
-    border-top: 1px solid #ddd;
-    font-size: 9px; color: #aaa;
-    display: flex; justify-content: space-between;
-  }
-
-  /* checklist items */
-  .chk-row { display: flex; gap: 6px; align-items: center; font-size: 12px; margin: 3px 0; }
-  .chk { width: 12px; height: 12px; border: 1px solid #999; border-radius: 2px; display: inline-block; text-align: center; line-height: 12px; font-size: 9px; }
-  .chk.done { background: #0d1b2a; color: #fff; border-color: #0d1b2a; }
-
-  /* dashboard stats */
-  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--navy2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px;
-    border-top: 3px solid var(--accent);
-  }
-  .stat-val { font-family: 'DM Mono', monospace; font-size: 22px; color: var(--accent2); font-weight: 600; }
-  .stat-lbl { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .doc-footer { margin-top:28px; padding-top:10px; border-top:1px solid #ddd; font-size:9px; color:#aaa; display:flex; justify-content:space-between; }
 
   /* toast */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: var(--success); color: #fff;
-    padding: 12px 20px; border-radius: 8px;
-    font-size: 13px; font-weight: 500;
-    z-index: 2000; display: none;
-    animation: slideUp .3s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .toast { position:fixed; bottom:22px; right:22px; background:var(--success); color:#fff; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:500; z-index:2000; display:none; }
 
-  /* responsive */
-  @media (max-width: 900px) {
-    .sidebar { width: 200px; }
-    .main { margin-left: 200px; }
-    .stats { grid-template-columns: repeat(3, 1fr); }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-grid.three { grid-template-columns: 1fr 1fr; }
-    .form-group.span2, .form-group.span3 { grid-column: span 1; }
-  }
-
-  @media print {
-    .sidebar, .main .topbar, .btn, .print-close { display: none !important; }
-    .print-modal { display: flex !important; position: static; background: none; padding: 0; }
-    .print-doc { box-shadow: none; }
+  @media(max-width:900px){
+    .sidebar{width:200px;} .main{margin-left:200px;}
+    .stats{grid-template-columns:repeat(3,1fr);}
+    .form-grid{grid-template-columns:1fr;}
+    .form-grid.three{grid-template-columns:1fr 1fr;}
+    .form-group.span2,.form-group.span3{grid-column:span 1;}
   }
 </style>
 </head>
 <body>
-
 <div class="app">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo">
-        <div class="brand-icon">❄️</div>
-        <div>
-          <div class="brand-name">Alfa Jaya Mandala</div>
-          <div class="brand-sub">Service AC & Maintenance</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="sidebar-menu">
-      <div class="menu-label">Navigasi</div>
-      <div class="menu-item active" onclick="showSection('dashboard', this)"><span class="icon">📊</span> Dashboard</div>
-      <div class="menu-item" onclick="showSection('invoice', this)"><span class="icon">🧾</span> Invoice</div>
-      <div class="menu-item" onclick="showSection('penawaran', this)"><span class="icon">📋</span> Penawaran</div>
-      <div class="menu-item" onclick="showSection('suratjalan', this)"><span class="icon">🚚</span> Surat Jalan</div>
-      <div class="menu-item" onclick="showSection('bast', this)"><span class="icon">✅</span> BAST</div>
-      <div class="menu-item" onclick="showSection('laporan', this)"><span class="icon">🔧</span> Laporan Pengerjaan</div>
-    </div>
-
-    <div class="sidebar-info">
-      <strong style="color:var(--accent2)">PT Alfa Jaya Mandala</strong><br>
-      Jln. H. Jubris, Warudoyong<br>
-      Jakarta Timur 13930<br><br>
-      📞 081314148511<br>
-      ✉️ irul@amaliah.id
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <div class="main">
-    <div class="topbar">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <img class="brand-img" src="data:image/png;base64,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" alt="Logo AJM">
       <div>
-        <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-sub">PT Alfa Jaya Mandala – Sistem Manajemen Dokumen</div>
+        <div class="brand-name">PT Alfa Jaya Mandala</div>
+        <div class="brand-sub">Service AC Profesional</div>
       </div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-label">Navigasi</div>
+    <div class="menu-item active" onclick="showSection('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+    <div class="menu-item" onclick="showSection('invoice',this)"><span class="icon">🧾</span> Invoice</div>
+    <div class="menu-item" onclick="showSection('penawaran',this)"><span class="icon">📋</span> Penawaran</div>
+    <div class="menu-item" onclick="showSection('suratjalan',this)"><span class="icon">🚚</span> Surat Jalan</div>
+    <div class="menu-item" onclick="showSection('bast',this)"><span class="icon">✅</span> BAST</div>
+    <div class="menu-item" onclick="showSection('laporan',this)"><span class="icon">🔧</span> Laporan Pengerjaan</div>
+  </div>
+  <div class="sidebar-info">
+    <strong style="color:var(--gold2)">PT Alfa Jaya Mandala</strong><br>
+    Jln. H. Jubris, Warudoyong Rt014 Rw08<br>
+    Kel. Jatinegara, Kec. Cakung<br>
+    Jakarta Timur 13930<br><br>
+    📞 081314148511<br>
+    ✉️ irul@amaliah.id
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-sub">PT Alfa Jaya Mandala – Sistem Manajemen Dokumen</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="sec-dashboard" class="section active">
+      <div class="stats">
+        <div class="stat-card"><div class="stat-val" id="st-inv">0</div><div class="stat-lbl">Invoice</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-pen">0</div><div class="stat-lbl">Penawaran</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-sj">0</div><div class="stat-lbl">Surat Jalan</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-bast">0</div><div class="stat-lbl">BAST</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-lap">0</div><div class="stat-lbl">Laporan</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Dokumen Terbaru</div>
+        <div class="doc-list" id="doc-recent">
+          <div style="color:var(--gray);font-size:13px;padding:20px;text-align:center;grid-column:span 3">
+            Belum ada dokumen. Buat dokumen baru dari menu di kiri.
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="content">
-
-      <!-- ══════════ DASHBOARD ══════════ -->
-      <div id="sec-dashboard" class="section active">
-        <div class="stats">
-          <div class="stat-card">
-            <div class="stat-val" id="st-inv">0</div>
-            <div class="stat-lbl">Invoice Dibuat</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="st-pen">0</div>
-            <div class="stat-lbl">Penawaran</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="st-sj">0</div>
-            <div class="stat-lbl">Surat Jalan</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="st-bast">0</div>
-            <div class="stat-lbl">BAST</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="st-lap">0</div>
-            <div class="stat-lbl">Laporan</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📋 Dokumen Terbaru</div>
-          <div class="doc-list" id="doc-recent">
-            <div style="color:var(--gray); font-size:13px; padding:20px; text-align:center; grid-column: span 3;">
-              Belum ada dokumen. Buat dokumen baru dari menu di kiri.
-            </div>
-          </div>
+    <!-- INVOICE -->
+    <div id="sec-invoice" class="section">
+      <div class="card">
+        <div class="card-title">🧾 Buat Invoice Baru</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Nomor Invoice</label><input type="text" id="inv-nomor" placeholder="INV-2025-001"></div>
+          <div class="form-group"><label>Tanggal Invoice</label><input type="date" id="inv-tanggal"></div>
+          <div class="form-group"><label>Jatuh Tempo</label><input type="date" id="inv-jatuh"></div>
+          <div class="form-group"><label>Nama Klien / Perusahaan</label><input type="text" id="inv-klien" placeholder="Nama klien"></div>
+          <div class="form-group span2"><label>Alamat Klien</label><input type="text" id="inv-alamat" placeholder="Alamat lengkap klien"></div>
+          <div class="form-group"><label>No. Telepon Klien</label><input type="text" id="inv-telp" placeholder="08xxxxxxxxxx"></div>
+          <div class="form-group"><label>Referensi / PO Number</label><input type="text" id="inv-ref" placeholder="Opsional"></div>
         </div>
       </div>
-
-      <!-- ══════════ INVOICE ══════════ -->
-      <div id="sec-invoice" class="section">
-        <div class="card">
-          <div class="card-title">🧾 Buat Invoice Baru</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Nomor Invoice</label>
-              <input type="text" id="inv-nomor" placeholder="INV-2025-001" oninput="autoNum()">
-            </div>
-            <div class="form-group">
-              <label>Tanggal Invoice</label>
-              <input type="date" id="inv-tanggal">
-            </div>
-            <div class="form-group">
-              <label>Jatuh Tempo</label>
-              <input type="date" id="inv-jatuh">
-            </div>
-            <div class="form-group">
-              <label>Nama Klien / Perusahaan</label>
-              <input type="text" id="inv-klien" placeholder="Nama klien atau perusahaan">
-            </div>
-            <div class="form-group span2">
-              <label>Alamat Klien</label>
-              <input type="text" id="inv-alamat" placeholder="Alamat lengkap klien">
-            </div>
-            <div class="form-group">
-              <label>No. Telepon Klien</label>
-              <input type="text" id="inv-telp" placeholder="08xxxxxxxxxx">
-            </div>
-            <div class="form-group">
-              <label>Referensi / PO Number</label>
-              <input type="text" id="inv-ref" placeholder="Optional">
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-title">📦 Detail Pekerjaan</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Harga Satuan (Rp)</th><th>Jumlah (Rp)</th><th></th></tr></thead>
+            <tbody id="inv-items">
+              <tr>
+                <td>1</td>
+                <td><input type="text" placeholder="Misal: Service AC ½ PK" onchange="hitungTotal('inv')"></td>
+                <td><input type="number" value="1" min="1" onchange="hitungTotal('inv')" style="width:55px"></td>
+                <td><input type="text" placeholder="Unit" style="width:70px"></td>
+                <td><input type="number" placeholder="0" onchange="hitungTotal('inv')" class="money"></td>
+                <td class="subtotal">Rp 0</td>
+                <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="total-row"><td colspan="5" style="text-align:right;font-size:11px;color:var(--gray)">Subtotal</td><td id="inv-subtotal">Rp 0</td><td></td></tr>
+              <tr class="total-row"><td colspan="4" style="text-align:right;font-size:11px;color:var(--gray)">PPN 11%</td><td><input type="checkbox" id="inv-ppn" onchange="hitungTotal('inv')"> Termasuk PPN</td><td id="inv-ppn-val">Rp 0</td><td></td></tr>
+              <tr class="total-row"><td colspan="5" style="text-align:right;color:var(--gold2)">TOTAL</td><td id="inv-total" style="color:var(--gold2);font-size:15px">Rp 0</td><td></td></tr>
+            </tfoot>
+          </table>
         </div>
-
-        <div class="card">
-          <div class="card-title">📦 Detail Pekerjaan / Item</div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:40px">#</th>
-                  <th>Uraian Pekerjaan</th>
-                  <th style="width:80px">Qty</th>
-                  <th style="width:100px">Satuan</th>
-                  <th style="width:130px">Harga Satuan (Rp)</th>
-                  <th style="width:130px">Jumlah (Rp)</th>
-                  <th style="width:40px"></th>
-                </tr>
-              </thead>
-              <tbody id="inv-items">
-                <tr>
-                  <td>1</td>
-                  <td><input type="text" placeholder="Misal: Service AC ½ PK" onchange="hitungTotal('inv')"></td>
-                  <td><input type="number" value="1" min="1" onchange="hitungTotal('inv')"></td>
-                  <td><input type="text" placeholder="Unit/Jam/Pcs"></td>
-                  <td><input type="number" placeholder="0" onchange="hitungTotal('inv')" class="money"></td>
-                  <td class="subtotal">Rp 0</td>
-                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr class="total-row">
-                  <td colspan="5" style="text-align:right; font-size:11px; color:var(--gray)">Subtotal</td>
-                  <td id="inv-subtotal">Rp 0</td>
-                  <td></td>
-                </tr>
-                <tr class="total-row">
-                  <td colspan="4" style="text-align:right; font-size:11px; color:var(--gray)">PPN 11%</td>
-                  <td style="padding-right:8px"><input type="checkbox" id="inv-ppn" onchange="hitungTotal('inv')"> Termasuk PPN</td>
-                  <td id="inv-ppn-val">Rp 0</td>
-                  <td></td>
-                </tr>
-                <tr class="total-row">
-                  <td colspan="5" style="text-align:right; font-size:11px; color:var(--accent2)">TOTAL</td>
-                  <td id="inv-total" style="color:var(--accent2); font-size:15px;">Rp 0</td>
-                  <td></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRow('inv-items','inv')">+ Tambah Item</button>
-        </div>
-
-        <div class="card">
-          <div class="form-grid">
-            <div class="form-group span2">
-              <label>Catatan / Keterangan</label>
-              <textarea id="inv-catatan" placeholder="Terima kasih atas kepercayaan Anda..."></textarea>
-            </div>
-          </div>
-          <div style="margin-top:16px; display:flex; gap:10px;">
-            <button class="btn btn-gold" onclick="previewDoc('invoice')">👁 Preview & Print</button>
-            <button class="btn btn-outline" onclick="saveDoc('invoice')">💾 Simpan</button>
-          </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRow('inv-items','inv')">+ Tambah Item</button>
+      </div>
+      <div class="card">
+        <div class="form-grid full"><div class="form-group"><label>Catatan</label><textarea id="inv-catatan" placeholder="Terima kasih atas kepercayaan Anda..."></textarea></div></div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-blue" onclick="previewDoc('invoice')">👁 Preview</button>
+          <button class="btn btn-gold" onclick="exportPDF('invoice')">⬇ Export PDF</button>
+          <button class="btn btn-outline" onclick="saveDoc('invoice')">💾 Simpan</button>
         </div>
       </div>
+    </div>
 
-      <!-- ══════════ PENAWARAN ══════════ -->
-      <div id="sec-penawaran" class="section">
-        <div class="card">
-          <div class="card-title">📋 Surat Penawaran Harga</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Nomor Penawaran</label>
-              <input type="text" id="pen-nomor" placeholder="SPH-2025-001">
-            </div>
-            <div class="form-group">
-              <label>Tanggal</label>
-              <input type="date" id="pen-tanggal">
-            </div>
-            <div class="form-group">
-              <label>Berlaku Hingga</label>
-              <input type="date" id="pen-berlaku">
-            </div>
-            <div class="form-group">
-              <label>Kepada (Nama/Perusahaan)</label>
-              <input type="text" id="pen-klien" placeholder="Nama klien">
-            </div>
-            <div class="form-group span2">
-              <label>Alamat Klien</label>
-              <input type="text" id="pen-alamat" placeholder="Alamat klien">
-            </div>
-            <div class="form-group span2">
-              <label>Perihal / Keterangan Proyek</label>
-              <input type="text" id="pen-perihal" placeholder="Misal: Penawaran Pemasangan & Service AC Gedung Kantor">
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📦 Detail Penawaran Item</div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:40px">#</th>
-                  <th>Uraian</th>
-                  <th style="width:80px">Qty</th>
-                  <th style="width:100px">Satuan</th>
-                  <th style="width:130px">Harga (Rp)</th>
-                  <th style="width:130px">Total (Rp)</th>
-                  <th style="width:40px"></th>
-                </tr>
-              </thead>
-              <tbody id="pen-items">
-                <tr>
-                  <td>1</td>
-                  <td><input type="text" placeholder="Uraian pekerjaan/barang" onchange="hitungTotal('pen')"></td>
-                  <td><input type="number" value="1" min="1" onchange="hitungTotal('pen')"></td>
-                  <td><input type="text" placeholder="Unit"></td>
-                  <td><input type="number" placeholder="0" onchange="hitungTotal('pen')" class="money"></td>
-                  <td class="subtotal">Rp 0</td>
-                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr class="total-row">
-                  <td colspan="5" style="text-align:right; font-size:11px; color:var(--gray)">Subtotal</td>
-                  <td id="pen-subtotal">Rp 0</td><td></td>
-                </tr>
-                <tr class="total-row">
-                  <td colspan="4" style="text-align:right; font-size:11px; color:var(--gray)">PPN 11%</td>
-                  <td><input type="checkbox" id="pen-ppn" onchange="hitungTotal('pen')"> Termasuk PPN</td>
-                  <td id="pen-ppn-val">Rp 0</td><td></td>
-                </tr>
-                <tr class="total-row">
-                  <td colspan="5" style="text-align:right; color:var(--accent2)">TOTAL</td>
-                  <td id="pen-total" style="color:var(--accent2); font-size:15px;">Rp 0</td><td></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRow('pen-items','pen')">+ Tambah Item</button>
-        </div>
-
-        <div class="card">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Syarat Pembayaran</label>
-              <select id="pen-syarat">
-                <option>50% DP, 50% setelah selesai</option>
-                <option>100% sebelum pengerjaan</option>
-                <option>100% setelah selesai</option>
-                <option>30 hari setelah invoice</option>
-                <option>Lainnya</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Garansi</label>
-              <input type="text" id="pen-garansi" value="30 hari setelah pengerjaan">
-            </div>
-            <div class="form-group span2">
-              <label>Catatan Tambahan</label>
-              <textarea id="pen-catatan" placeholder="Harga belum termasuk material tambahan jika diperlukan..."></textarea>
-            </div>
-          </div>
-          <div style="margin-top:16px; display:flex; gap:10px;">
-            <button class="btn btn-gold" onclick="previewDoc('penawaran')">👁 Preview & Print</button>
-            <button class="btn btn-outline" onclick="saveDoc('penawaran')">💾 Simpan</button>
-          </div>
+    <!-- PENAWARAN -->
+    <div id="sec-penawaran" class="section">
+      <div class="card">
+        <div class="card-title">📋 Surat Penawaran Harga</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Nomor Penawaran</label><input type="text" id="pen-nomor" placeholder="SPH-2025-001"></div>
+          <div class="form-group"><label>Tanggal</label><input type="date" id="pen-tanggal"></div>
+          <div class="form-group"><label>Berlaku Hingga</label><input type="date" id="pen-berlaku"></div>
+          <div class="form-group"><label>Kepada</label><input type="text" id="pen-klien" placeholder="Nama klien"></div>
+          <div class="form-group span2"><label>Alamat Klien</label><input type="text" id="pen-alamat" placeholder="Alamat klien"></div>
+          <div class="form-group span2"><label>Perihal</label><input type="text" id="pen-perihal" placeholder="Penawaran Pemasangan & Service AC"></div>
         </div>
       </div>
-
-      <!-- ══════════ SURAT JALAN ══════════ -->
-      <div id="sec-suratjalan" class="section">
-        <div class="card">
-          <div class="card-title">🚚 Surat Jalan</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Nomor Surat Jalan</label>
-              <input type="text" id="sj-nomor" placeholder="SJ-2025-001">
-            </div>
-            <div class="form-group">
-              <label>Tanggal</label>
-              <input type="date" id="sj-tanggal">
-            </div>
-            <div class="form-group">
-              <label>Nama Teknisi / Driver</label>
-              <input type="text" id="sj-driver" placeholder="Nama teknisi yang bertugas">
-            </div>
-            <div class="form-group">
-              <label>No. Kendaraan</label>
-              <input type="text" id="sj-kendaraan" placeholder="B 1234 XY (opsional)">
-            </div>
-            <div class="form-group">
-              <label>Tujuan (Nama/Perusahaan)</label>
-              <input type="text" id="sj-tujuan" placeholder="Nama klien / gedung">
-            </div>
-            <div class="form-group">
-              <label>No. Telepon Penerima</label>
-              <input type="text" id="sj-telp" placeholder="08xxxxxxxxxx">
-            </div>
-            <div class="form-group span2">
-              <label>Alamat Tujuan</label>
-              <input type="text" id="sj-alamat" placeholder="Alamat lengkap lokasi pengerjaan">
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-title">📦 Detail Penawaran</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Uraian</th><th>Qty</th><th>Satuan</th><th>Harga (Rp)</th><th>Total (Rp)</th><th></th></tr></thead>
+            <tbody id="pen-items">
+              <tr>
+                <td>1</td>
+                <td><input type="text" placeholder="Uraian pekerjaan" onchange="hitungTotal('pen')"></td>
+                <td><input type="number" value="1" min="1" onchange="hitungTotal('pen')" style="width:55px"></td>
+                <td><input type="text" placeholder="Unit" style="width:70px"></td>
+                <td><input type="number" placeholder="0" onchange="hitungTotal('pen')" class="money"></td>
+                <td class="subtotal">Rp 0</td>
+                <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="total-row"><td colspan="5" style="text-align:right;font-size:11px;color:var(--gray)">Subtotal</td><td id="pen-subtotal">Rp 0</td><td></td></tr>
+              <tr class="total-row"><td colspan="4" style="text-align:right;font-size:11px;color:var(--gray)">PPN 11%</td><td><input type="checkbox" id="pen-ppn" onchange="hitungTotal('pen')"> Termasuk PPN</td><td id="pen-ppn-val">Rp 0</td><td></td></tr>
+              <tr class="total-row"><td colspan="5" style="text-align:right;color:var(--gold2)">TOTAL</td><td id="pen-total" style="color:var(--gold2);font-size:15px">Rp 0</td><td></td></tr>
+            </tfoot>
+          </table>
         </div>
-
-        <div class="card">
-          <div class="card-title">📦 Daftar Barang / Peralatan Dibawa</div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Nama Barang / Peralatan</th>
-                  <th style="width:80px">Qty</th>
-                  <th style="width:100px">Satuan</th>
-                  <th>Keterangan</th>
-                  <th style="width:40px"></th>
-                </tr>
-              </thead>
-              <tbody id="sj-items">
-                <tr>
-                  <td>1</td>
-                  <td><input type="text" placeholder="Misal: Freon R-22"></td>
-                  <td><input type="number" value="1" min="1"></td>
-                  <td><input type="text" placeholder="Kg/Pcs/Set"></td>
-                  <td><input type="text" placeholder="Keterangan (opsional)"></td>
-                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
-                </tr>
-              </tbody>
-            </table>
+        <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRow('pen-items','pen')">+ Tambah Item</button>
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <div class="form-group"><label>Syarat Pembayaran</label>
+            <select id="pen-syarat"><option>50% DP, 50% setelah selesai</option><option>100% sebelum pengerjaan</option><option>100% setelah selesai</option><option>30 hari setelah invoice</option><option>Lainnya</option></select>
           </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRowSJ()">+ Tambah Barang</button>
+          <div class="form-group"><label>Garansi</label><input type="text" id="pen-garansi" value="30 hari setelah pengerjaan"></div>
+          <div class="form-group span2"><label>Catatan Tambahan</label><textarea id="pen-catatan" placeholder="Harga belum termasuk material tambahan jika diperlukan..."></textarea></div>
         </div>
-
-        <div class="card">
-          <div class="form-grid full">
-            <div class="form-group">
-              <label>Keterangan Pekerjaan</label>
-              <textarea id="sj-keterangan" placeholder="Misal: Teknisi datang untuk service berkala 5 unit AC di lantai 3..."></textarea>
-            </div>
-          </div>
-          <div style="margin-top:16px; display:flex; gap:10px;">
-            <button class="btn btn-gold" onclick="previewDoc('suratjalan')">👁 Preview & Print</button>
-            <button class="btn btn-outline" onclick="saveDoc('suratjalan')">💾 Simpan</button>
-          </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-blue" onclick="previewDoc('penawaran')">👁 Preview</button>
+          <button class="btn btn-gold" onclick="exportPDF('penawaran')">⬇ Export PDF</button>
+          <button class="btn btn-outline" onclick="saveDoc('penawaran')">💾 Simpan</button>
         </div>
       </div>
+    </div>
 
-      <!-- ══════════ BAST ══════════ -->
-      <div id="sec-bast" class="section">
-        <div class="card">
-          <div class="card-title">✅ Berita Acara Serah Terima (BAST)</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Nomor BAST</label>
-              <input type="text" id="bast-nomor" placeholder="BAST-2025-001">
-            </div>
-            <div class="form-group">
-              <label>Tanggal</label>
-              <input type="date" id="bast-tanggal">
-            </div>
-            <div class="form-group">
-              <label>Referensi Invoice / SPH</label>
-              <input type="text" id="bast-ref" placeholder="INV-2025-001">
-            </div>
-            <div class="form-group">
-              <label>Nama Klien / Perusahaan</label>
-              <input type="text" id="bast-klien" placeholder="Nama klien">
-            </div>
-            <div class="form-group span2">
-              <label>Alamat Lokasi Pekerjaan</label>
-              <input type="text" id="bast-alamat" placeholder="Alamat lokasi pengerjaan">
-            </div>
-            <div class="form-group">
-              <label>Nama PIC Klien (Penerima)</label>
-              <input type="text" id="bast-pic-klien" placeholder="Nama yang menandatangani">
-            </div>
-            <div class="form-group">
-              <label>Jabatan PIC Klien</label>
-              <input type="text" id="bast-jabatan-klien" placeholder="Jabatan">
-            </div>
-            <div class="form-group">
-              <label>Teknisi / PIC Alfa Jaya</label>
-              <input type="text" id="bast-pic-aj" placeholder="Nama teknisi">
-            </div>
-            <div class="form-group">
-              <label>Jabatan</label>
-              <input type="text" id="bast-jabatan-aj" value="Teknisi AC">
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🔧 Daftar Pekerjaan yang Diserahterimakan</div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Uraian Pekerjaan</th>
-                  <th style="width:80px">Qty</th>
-                  <th style="width:100px">Satuan</th>
-                  <th style="width:120px">Kondisi</th>
-                  <th style="width:40px"></th>
-                </tr>
-              </thead>
-              <tbody id="bast-items">
-                <tr>
-                  <td>1</td>
-                  <td><input type="text" placeholder="Misal: Service AC 1 PK – Ruang Direktur"></td>
-                  <td><input type="number" value="1" min="1"></td>
-                  <td><input type="text" placeholder="Unit"></td>
-                  <td>
-                    <select>
-                      <option>✅ Baik</option>
-                      <option>⚠️ Perlu Tindak Lanjut</option>
-                    </select>
-                  </td>
-                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRowBAST()">+ Tambah Pekerjaan</button>
-        </div>
-
-        <div class="card">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Status Garansi</label>
-              <input type="text" id="bast-garansi" value="30 hari sejak tanggal BAST ini ditandatangani">
-            </div>
-            <div class="form-group span2">
-              <label>Catatan / Keterangan Tambahan</label>
-              <textarea id="bast-catatan" placeholder="Semua pekerjaan telah selesai dilaksanakan sesuai kesepakatan..."></textarea>
-            </div>
-          </div>
-          <div style="margin-top:16px; display:flex; gap:10px;">
-            <button class="btn btn-gold" onclick="previewDoc('bast')">👁 Preview & Print</button>
-            <button class="btn btn-outline" onclick="saveDoc('bast')">💾 Simpan</button>
-          </div>
+    <!-- SURAT JALAN -->
+    <div id="sec-suratjalan" class="section">
+      <div class="card">
+        <div class="card-title">🚚 Surat Jalan</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Nomor Surat Jalan</label><input type="text" id="sj-nomor" placeholder="SJ-2025-001"></div>
+          <div class="form-group"><label>Tanggal</label><input type="date" id="sj-tanggal"></div>
+          <div class="form-group"><label>Nama Teknisi</label><input type="text" id="sj-driver" placeholder="Nama teknisi"></div>
+          <div class="form-group"><label>No. Kendaraan</label><input type="text" id="sj-kendaraan" placeholder="B 1234 XY"></div>
+          <div class="form-group"><label>Tujuan</label><input type="text" id="sj-tujuan" placeholder="Nama klien / gedung"></div>
+          <div class="form-group"><label>No. Telepon Penerima</label><input type="text" id="sj-telp" placeholder="08xxxxxxxxxx"></div>
+          <div class="form-group span2"><label>Alamat Tujuan</label><input type="text" id="sj-alamat" placeholder="Alamat lengkap lokasi pengerjaan"></div>
         </div>
       </div>
-
-      <!-- ══════════ LAPORAN PENGERJAAN ══════════ -->
-      <div id="sec-laporan" class="section">
-        <div class="card">
-          <div class="card-title">🔧 Laporan Pengerjaan Service AC</div>
-          <div class="form-grid three">
-            <div class="form-group">
-              <label>Nomor Laporan</label>
-              <input type="text" id="lap-nomor" placeholder="LAP-2025-001">
-            </div>
-            <div class="form-group">
-              <label>Tanggal Pengerjaan</label>
-              <input type="date" id="lap-tanggal">
-            </div>
-            <div class="form-group">
-              <label>Waktu Mulai – Selesai</label>
-              <input type="text" id="lap-waktu" placeholder="09:00 – 14:00">
-            </div>
-            <div class="form-group">
-              <label>Nama Teknisi</label>
-              <input type="text" id="lap-teknisi" placeholder="Nama teknisi">
-            </div>
-            <div class="form-group">
-              <label>Nama Klien</label>
-              <input type="text" id="lap-klien" placeholder="Nama klien / gedung">
-            </div>
-            <div class="form-group">
-              <label>No. Telepon Klien</label>
-              <input type="text" id="lap-telp" placeholder="08xxxxxxxxxx">
-            </div>
-            <div class="form-group span3">
-              <label>Alamat Lokasi</label>
-              <input type="text" id="lap-alamat" placeholder="Alamat lengkap lokasi pengerjaan">
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-title">📦 Daftar Barang / Peralatan</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Nama Barang / Peralatan</th><th>Qty</th><th>Satuan</th><th>Keterangan</th><th></th></tr></thead>
+            <tbody id="sj-items">
+              <tr>
+                <td>1</td>
+                <td><input type="text" placeholder="Misal: Freon R-22"></td>
+                <td><input type="number" value="1" min="1" style="width:55px"></td>
+                <td><input type="text" placeholder="Kg/Pcs" style="width:70px"></td>
+                <td><input type="text" placeholder="Keterangan"></td>
+                <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="card">
-          <div class="card-title">❄️ Detail Unit AC yang Diservice</div>
-          <div id="ac-units">
-            <div class="ac-unit" style="background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px;">
-              <div style="font-size:12px; color:var(--accent2); margin-bottom:10px; font-weight:600;">Unit #1</div>
-              <div class="form-grid three">
-                <div class="form-group">
-                  <label>Merk / Tipe AC</label>
-                  <input type="text" placeholder="Misal: Daikin FT-D05P">
-                </div>
-                <div class="form-group">
-                  <label>Kapasitas (PK)</label>
-                  <select>
-                    <option>½ PK</option><option>¾ PK</option><option>1 PK</option>
-                    <option>1½ PK</option><option>2 PK</option><option>2½ PK</option><option>3 PK</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Jenis Service</label>
-                  <select>
-                    <option>Service Ringan</option>
-                    <option>Service Berat (Bongkar)</option>
-                    <option>Tambah Freon</option>
-                    <option>Perbaikan Kebocoran</option>
-                    <option>Pemasangan Baru</option>
-                    <option>Pembongkaran</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Lokasi / Ruangan</label>
-                  <input type="text" placeholder="Misal: Ruang Tamu Lt.1">
-                </div>
-                <div class="form-group">
-                  <label>Tekanan Freon Sebelum (bar)</label>
-                  <input type="text" placeholder="misal: 60 psi">
-                </div>
-                <div class="form-group">
-                  <label>Tekanan Freon Sesudah (bar)</label>
-                  <input type="text" placeholder="misal: 75 psi">
-                </div>
-                <div class="form-group">
-                  <label>Kondisi Sebelum</label>
-                  <select>
-                    <option>Tidak Dingin</option>
-                    <option>Kurang Dingin</option>
-                    <option>Bocor Air</option>
-                    <option>Bau</option>
-                    <option>Suara Berisik</option>
-                    <option>Tidak Menyala</option>
-                    <option>Rutin Service</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Kondisi Sesudah</label>
-                  <select>
-                    <option>✅ Normal / Dingin</option>
-                    <option>⚠️ Perlu Tindak Lanjut</option>
-                    <option>❌ Butuh Spare Part</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Material Tambahan</label>
-                  <input type="text" placeholder="Misal: Freon R-32 0.5kg">
-                </div>
-              </div>
-            </div>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="tambahUnitAC()">+ Tambah Unit AC</button>
-        </div>
-
-        <div class="card">
-          <div class="form-grid">
-            <div class="form-group span2">
-              <label>Temuan & Rekomendasi</label>
-              <textarea id="lap-temuan" placeholder="Tuliskan temuan, kendala, atau rekomendasi tindakan lanjut..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>Jadwal Service Berikutnya</label>
-              <input type="date" id="lap-jadwal">
-            </div>
-            <div class="form-group">
-              <label>Tanda Tangan Klien</label>
-              <input type="text" id="lap-ttd-klien" placeholder="Nama lengkap klien yang menerima">
-            </div>
-          </div>
-          <div style="margin-top:16px; display:flex; gap:10px;">
-            <button class="btn btn-gold" onclick="previewDoc('laporan')">👁 Preview & Print</button>
-            <button class="btn btn-outline" onclick="saveDoc('laporan')">💾 Simpan</button>
-          </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRowSJ()">+ Tambah Barang</button>
+      </div>
+      <div class="card">
+        <div class="form-group"><label>Keterangan Pekerjaan</label><textarea id="sj-keterangan" placeholder="Misal: Teknisi datang untuk service berkala..."></textarea></div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-blue" onclick="previewDoc('suratjalan')">👁 Preview</button>
+          <button class="btn btn-gold" onclick="exportPDF('suratjalan')">⬇ Export PDF</button>
+          <button class="btn btn-outline" onclick="saveDoc('suratjalan')">💾 Simpan</button>
         </div>
       </div>
+    </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
+    <!-- BAST -->
+    <div id="sec-bast" class="section">
+      <div class="card">
+        <div class="card-title">✅ Berita Acara Serah Terima (BAST)</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Nomor BAST</label><input type="text" id="bast-nomor" placeholder="BAST-2025-001"></div>
+          <div class="form-group"><label>Tanggal</label><input type="date" id="bast-tanggal"></div>
+          <div class="form-group"><label>Referensi Invoice / SPH</label><input type="text" id="bast-ref" placeholder="INV-2025-001"></div>
+          <div class="form-group"><label>Nama Klien</label><input type="text" id="bast-klien" placeholder="Nama klien"></div>
+          <div class="form-group span2"><label>Alamat Lokasi</label><input type="text" id="bast-alamat" placeholder="Alamat lokasi pengerjaan"></div>
+          <div class="form-group"><label>PIC Klien (Penerima)</label><input type="text" id="bast-pic-klien" placeholder="Nama yang menandatangani"></div>
+          <div class="form-group"><label>Jabatan PIC Klien</label><input type="text" id="bast-jabatan-klien" placeholder="Jabatan"></div>
+          <div class="form-group"><label>Teknisi / PIC Alfa Jaya</label><input type="text" id="bast-pic-aj" placeholder="Nama teknisi"></div>
+          <div class="form-group"><label>Jabatan</label><input type="text" id="bast-jabatan-aj" value="Teknisi AC"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔧 Daftar Pekerjaan Diserahterimakan</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Kondisi</th><th></th></tr></thead>
+            <tbody id="bast-items">
+              <tr>
+                <td>1</td>
+                <td><input type="text" placeholder="Misal: Service AC 1 PK – Ruang Direktur"></td>
+                <td><input type="number" value="1" min="1" style="width:55px"></td>
+                <td><input type="text" placeholder="Unit" style="width:70px"></td>
+                <td><select><option>✅ Baik</option><option>⚠️ Perlu Tindak Lanjut</option></select></td>
+                <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRowBAST()">+ Tambah Pekerjaan</button>
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <div class="form-group"><label>Status Garansi</label><input type="text" id="bast-garansi" value="30 hari sejak tanggal BAST ini ditandatangani"></div>
+          <div class="form-group span2"><label>Catatan</label><textarea id="bast-catatan" placeholder="Semua pekerjaan telah selesai sesuai kesepakatan..."></textarea></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-blue" onclick="previewDoc('bast')">👁 Preview</button>
+          <button class="btn btn-gold" onclick="exportPDF('bast')">⬇ Export PDF</button>
+          <button class="btn btn-outline" onclick="saveDoc('bast')">💾 Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN -->
+    <div id="sec-laporan" class="section">
+      <div class="card">
+        <div class="card-title">🔧 Laporan Pengerjaan Service AC</div>
+        <div class="form-grid three">
+          <div class="form-group"><label>Nomor Laporan</label><input type="text" id="lap-nomor" placeholder="LAP-2025-001"></div>
+          <div class="form-group"><label>Tanggal</label><input type="date" id="lap-tanggal"></div>
+          <div class="form-group"><label>Waktu Mulai – Selesai</label><input type="text" id="lap-waktu" placeholder="09:00 – 14:00"></div>
+          <div class="form-group"><label>Nama Teknisi</label><input type="text" id="lap-teknisi" placeholder="Nama teknisi"></div>
+          <div class="form-group"><label>Nama Klien</label><input type="text" id="lap-klien" placeholder="Nama klien / gedung"></div>
+          <div class="form-group"><label>No. Telepon Klien</label><input type="text" id="lap-telp" placeholder="08xxxxxxxxxx"></div>
+          <div class="form-group span3"><label>Alamat Lokasi</label><input type="text" id="lap-alamat" placeholder="Alamat lengkap lokasi pengerjaan"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">❄️ Detail Unit AC yang Diservice</div>
+        <div id="ac-units">
+          <div class="ac-unit" style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:13px;margin-bottom:11px">
+            <div style="font-size:12px;color:var(--accent2);margin-bottom:9px;font-weight:600">Unit #1</div>
+            <div class="form-grid three">
+              <div class="form-group"><label>Merk / Tipe</label><input type="text" placeholder="Daikin FT-D05P"></div>
+              <div class="form-group"><label>Kapasitas</label><select><option>½ PK</option><option>¾ PK</option><option>1 PK</option><option>1½ PK</option><option>2 PK</option><option>2½ PK</option><option>3 PK</option></select></div>
+              <div class="form-group"><label>Jenis Service</label><select><option>Service Ringan</option><option>Service Berat (Bongkar)</option><option>Tambah Freon</option><option>Perbaikan Kebocoran</option><option>Pemasangan Baru</option><option>Pembongkaran</option></select></div>
+              <div class="form-group"><label>Lokasi / Ruangan</label><input type="text" placeholder="Ruang Tamu Lt.1"></div>
+              <div class="form-group"><label>Tekanan Freon Sebelum</label><input type="text" placeholder="60 psi"></div>
+              <div class="form-group"><label>Tekanan Freon Sesudah</label><input type="text" placeholder="75 psi"></div>
+              <div class="form-group"><label>Kondisi Sebelum</label><select><option>Tidak Dingin</option><option>Kurang Dingin</option><option>Bocor Air</option><option>Bau</option><option>Suara Berisik</option><option>Tidak Menyala</option><option>Rutin Service</option></select></div>
+              <div class="form-group"><label>Kondisi Sesudah</label><select><option>✅ Normal / Dingin</option><option>⚠️ Perlu Tindak Lanjut</option><option>❌ Butuh Spare Part</option></select></div>
+              <div class="form-group"><label>Material Tambahan</label><input type="text" placeholder="Freon R-32 0.5kg"></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="tambahUnitAC()">+ Tambah Unit AC</button>
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <div class="form-group span2"><label>Temuan & Rekomendasi</label><textarea id="lap-temuan" placeholder="Temuan, kendala, atau rekomendasi tindak lanjut..."></textarea></div>
+          <div class="form-group"><label>Jadwal Service Berikutnya</label><input type="date" id="lap-jadwal"></div>
+          <div class="form-group"><label>Nama Penerima (Klien)</label><input type="text" id="lap-ttd-klien" placeholder="Nama yang menerima laporan"></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-blue" onclick="previewDoc('laporan')">👁 Preview</button>
+          <button class="btn btn-gold" onclick="exportPDF('laporan')">⬇ Export PDF</button>
+          <button class="btn btn-outline" onclick="saveDoc('laporan')">💾 Simpan</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
 </div><!-- /app -->
 
 <!-- PRINT MODAL -->
 <div class="print-modal" id="print-modal">
-  <button class="print-close" onclick="tutupPreview()">✕ Tutup</button>
+  <div class="print-actions">
+    <button class="btn btn-gold" id="pdf-btn" onclick="exportPDFFromPreview()">⬇ Export PDF</button>
+    <button class="btn btn-outline" onclick="tutupPreview()" style="background:#333;color:#fff;border-color:#555">✕ Tutup</button>
+  </div>
   <div class="print-doc" id="print-doc"></div>
 </div>
 
 <div class="toast" id="toast">✅ Dokumen berhasil disimpan!</div>
 
 <script>
-// ── UTILITIES ──────────────────────────────────────────────────────────────
+const LOGO = "data:image/png;base64,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";
+
 const CO = {
-  name: "PT ALFA JAYA MANDALA",
-  tagline: "Service & Instalasi AC Profesional",
-  addr: "Jln. H. Jubris, Warudoyong Rt014 Rw08, Kel. Jatinegara<br>Kec. Cakung, Jakarta Timur, DKI Jakarta 13930",
-  email: "irul@amaliah.id | alfajayamandala@gmail.com",
-  phone: "081314148511",
-  bank: "Bank Permata",
-  rek: "702438411",
-  an: "Alfa Jaya Mandala",
-  dir: "Dede Arnot"
+  name:"PT ALFA JAYA MANDALA",
+  tagline:"Service & Instalasi AC Profesional",
+  addr:"Jln. H. Jubris, Warudoyong Rt014 Rw08, Kel. Jatinegara<br>Kec. Cakung, Jakarta Timur, DKI Jakarta 13930",
+  email:"irul@amaliah.id | alfajayamandala@gmail.com",
+  phone:"081314148511",
+  bank:"Bank Permata",
+  rek:"702438411",
+  an:"Alfa Jaya Mandala",
+  dir:"Dede Arnot"
 };
 
-function rp(n) {
-  return "Rp " + Math.round(n).toLocaleString('id-ID');
-}
+function rp(n){ return "Rp "+Math.round(n).toLocaleString("id-ID"); }
 
-function terbilang(n) {
-  const satuan = ["","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"];
-  function ribuan(n) {
-    if (n < 12) return satuan[n];
-    else if (n < 20) return satuan[n-10] + " belas";
-    else if (n < 100) return satuan[Math.floor(n/10)] + " puluh" + (n%10 ? " "+satuan[n%10] : "");
-    else if (n < 200) return "seratus" + (n-100 ? " "+ribuan(n-100) : "");
-    else if (n < 1000) return satuan[Math.floor(n/100)] + " ratus" + (n%100 ? " "+ribuan(n%100) : "");
-    else if (n < 2000) return "seribu" + (n-1000 ? " "+ribuan(n-1000) : "");
-    else if (n < 1000000) return ribuan(Math.floor(n/1000)) + " ribu" + (n%1000 ? " "+ribuan(n%1000) : "");
-    else if (n < 1000000000) return ribuan(Math.floor(n/1000000)) + " juta" + (n%1000000 ? " "+ribuan(n%1000000) : "");
-    else return ribuan(Math.floor(n/1000000000)) + " miliar" + (n%1000000000 ? " "+ribuan(n%1000000000) : "");
+function terbilang(n){
+  const s=["","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"];
+  function r(n){
+    if(n<12)return s[n];
+    if(n<20)return s[n-10]+" belas";
+    if(n<100)return s[Math.floor(n/10)]+" puluh"+(n%10?" "+s[n%10]:"");
+    if(n<200)return "seratus"+(n-100?" "+r(n-100):"");
+    if(n<1000)return s[Math.floor(n/100)]+" ratus"+(n%100?" "+r(n%100):"");
+    if(n<2000)return "seribu"+(n-1000?" "+r(n-1000):"");
+    if(n<1e6)return r(Math.floor(n/1000))+" ribu"+(n%1000?" "+r(n%1000):"");
+    if(n<1e9)return r(Math.floor(n/1e6))+" juta"+(n%1e6?" "+r(n%1e6):"");
+    return r(Math.floor(n/1e9))+" miliar"+(n%1e9?" "+r(n%1e9):"");
   }
-  if (!n || n === 0) return "nol rupiah";
-  return ribuan(n) + " rupiah";
+  if(!n)return"nol rupiah";
+  return r(n)+" rupiah";
 }
 
-function today() {
-  return new Date().toISOString().slice(0,10);
+function today(){ return new Date().toISOString().slice(0,10); }
+function fmtDate(d){
+  if(!d)return"-";
+  const[y,m,dd]=d.split("-");
+  const b=["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  return `${dd} ${b[+m]} ${y}`;
 }
 
-function fmtDate(d) {
-  if (!d) return "-";
-  const [y,m,dd] = d.split("-");
-  const bln = ["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-  return `${dd} ${bln[+m]} ${y}`;
-}
+document.querySelectorAll("input[type=date]").forEach(i=>i.value=today());
 
-// Set today defaults
-document.querySelectorAll('input[type=date]').forEach(i => i.value = today());
+const titles={dashboard:"Dashboard",invoice:"Invoice",penawaran:"Surat Penawaran Harga",suratjalan:"Surat Jalan",bast:"Berita Acara Serah Terima",laporan:"Laporan Pengerjaan"};
 
-// ── NAVIGATION ──────────────────────────────────────────────────────────────
-const titles = {
-  dashboard: "Dashboard",
-  invoice: "Invoice",
-  penawaran: "Surat Penawaran Harga",
-  suratjalan: "Surat Jalan",
-  bast: "Berita Acara Serah Terima",
-  laporan: "Laporan Pengerjaan"
-};
-
-function showSection(id, el) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  el.classList.add('active');
-  document.getElementById('topbar-title').textContent = titles[id];
+function showSection(id,el){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".menu-item").forEach(m=>m.classList.remove("active"));
+  document.getElementById("sec-"+id).classList.add("active");
+  el.classList.add("active");
+  document.getElementById("topbar-title").textContent=titles[id];
   updateStats();
 }
 
-// ── ROWS ────────────────────────────────────────────────────────────────────
-function tambahRow(tbodyId, prefix) {
-  const tbody = document.getElementById(tbodyId);
-  const n = tbody.rows.length + 1;
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${n}</td>
-    <td><input type="text" placeholder="Uraian pekerjaan" onchange="hitungTotal('${prefix}')"></td>
-    <td><input type="number" value="1" min="1" onchange="hitungTotal('${prefix}')"></td>
-    <td><input type="text" placeholder="Unit"></td>
-    <td><input type="number" placeholder="0" onchange="hitungTotal('${prefix}')" class="money"></td>
-    <td class="subtotal">Rp 0</td>
-    <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
-  tbody.appendChild(tr);
+function tambahRow(tbodyId,prefix){
+  const tb=document.getElementById(tbodyId);
+  const n=tb.rows.length+1;
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td>${n}</td><td><input type="text" placeholder="Uraian" onchange="hitungTotal('${prefix}')"></td><td><input type="number" value="1" min="1" onchange="hitungTotal('${prefix}')" style="width:55px"></td><td><input type="text" placeholder="Unit" style="width:70px"></td><td><input type="number" placeholder="0" onchange="hitungTotal('${prefix}')" class="money"></td><td class="subtotal">Rp 0</td><td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
+  tb.appendChild(tr);
 }
 
-function tambahRowSJ() {
-  const tbody = document.getElementById('sj-items');
-  const n = tbody.rows.length + 1;
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${n}</td>
-    <td><input type="text" placeholder="Nama barang/peralatan"></td>
-    <td><input type="number" value="1" min="1"></td>
-    <td><input type="text" placeholder="Satuan"></td>
-    <td><input type="text" placeholder="Keterangan"></td>
-    <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
-  tbody.appendChild(tr);
+function tambahRowSJ(){
+  const tb=document.getElementById("sj-items"),n=tb.rows.length+1,tr=document.createElement("tr");
+  tr.innerHTML=`<td>${n}</td><td><input type="text" placeholder="Nama barang"></td><td><input type="number" value="1" min="1" style="width:55px"></td><td><input type="text" placeholder="Satuan" style="width:70px"></td><td><input type="text" placeholder="Keterangan"></td><td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
+  tb.appendChild(tr);
 }
 
-function tambahRowBAST() {
-  const tbody = document.getElementById('bast-items');
-  const n = tbody.rows.length + 1;
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${n}</td>
-    <td><input type="text" placeholder="Uraian pekerjaan"></td>
-    <td><input type="number" value="1" min="1"></td>
-    <td><input type="text" placeholder="Satuan"></td>
-    <td><select><option>✅ Baik</option><option>⚠️ Perlu Tindak Lanjut</option></select></td>
-    <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
-  tbody.appendChild(tr);
+function tambahRowBAST(){
+  const tb=document.getElementById("bast-items"),n=tb.rows.length+1,tr=document.createElement("tr");
+  tr.innerHTML=`<td>${n}</td><td><input type="text" placeholder="Uraian pekerjaan"></td><td><input type="number" value="1" min="1" style="width:55px"></td><td><input type="text" placeholder="Unit" style="width:70px"></td><td><select><option>✅ Baik</option><option>⚠️ Perlu Tindak Lanjut</option></select></td><td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
+  tb.appendChild(tr);
 }
 
-function hapusRow(btn) {
-  btn.closest('tr').remove();
-}
+function hapusRow(btn){ btn.closest("tr").remove(); }
 
-let acCount = 1;
-function tambahUnitAC() {
+let acCount=1;
+function tambahUnitAC(){
   acCount++;
-  const div = document.createElement('div');
-  div.className = 'ac-unit';
-  div.style.cssText = 'background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;';
-  div.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <span style="font-size:12px;color:var(--accent2);font-weight:600;">Unit #${acCount}</span>
-      <button class="btn btn-danger btn-sm" onclick="this.closest('.ac-unit').remove()">✕ Hapus</button>
-    </div>
-    <div class="form-grid three">
-      <div class="form-group"><label>Merk / Tipe AC</label><input type="text" placeholder="Misal: Daikin FT-D05P"></div>
-      <div class="form-group"><label>Kapasitas (PK)</label>
-        <select><option>½ PK</option><option>¾ PK</option><option>1 PK</option><option>1½ PK</option><option>2 PK</option><option>2½ PK</option><option>3 PK</option></select>
-      </div>
-      <div class="form-group"><label>Jenis Service</label>
-        <select><option>Service Ringan</option><option>Service Berat (Bongkar)</option><option>Tambah Freon</option><option>Perbaikan Kebocoran</option><option>Pemasangan Baru</option><option>Pembongkaran</option></select>
-      </div>
-      <div class="form-group"><label>Lokasi / Ruangan</label><input type="text" placeholder="Misal: Ruang Tamu Lt.1"></div>
-      <div class="form-group"><label>Tekanan Freon Sebelum</label><input type="text" placeholder="60 psi"></div>
-      <div class="form-group"><label>Tekanan Freon Sesudah</label><input type="text" placeholder="75 psi"></div>
-      <div class="form-group"><label>Kondisi Sebelum</label>
-        <select><option>Tidak Dingin</option><option>Kurang Dingin</option><option>Bocor Air</option><option>Bau</option><option>Suara Berisik</option><option>Tidak Menyala</option><option>Rutin Service</option></select>
-      </div>
-      <div class="form-group"><label>Kondisi Sesudah</label>
-        <select><option>✅ Normal / Dingin</option><option>⚠️ Perlu Tindak Lanjut</option><option>❌ Butuh Spare Part</option></select>
-      </div>
-      <div class="form-group"><label>Material Tambahan</label><input type="text" placeholder="Misal: Freon R-32 0.5kg"></div>
-    </div>`;
-  document.getElementById('ac-units').appendChild(div);
+  const div=document.createElement("div");
+  div.className="ac-unit";
+  div.style.cssText="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:13px;margin-bottom:11px";
+  div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span style="font-size:12px;color:var(--accent2);font-weight:600">Unit #${acCount}</span><button class="btn btn-danger btn-sm" onclick="this.closest('.ac-unit').remove()">✕ Hapus</button></div><div class="form-grid three"><div class="form-group"><label>Merk / Tipe</label><input type="text" placeholder="Daikin FT-D05P"></div><div class="form-group"><label>Kapasitas</label><select><option>½ PK</option><option>¾ PK</option><option>1 PK</option><option>1½ PK</option><option>2 PK</option><option>2½ PK</option><option>3 PK</option></select></div><div class="form-group"><label>Jenis Service</label><select><option>Service Ringan</option><option>Service Berat (Bongkar)</option><option>Tambah Freon</option><option>Perbaikan Kebocoran</option><option>Pemasangan Baru</option><option>Pembongkaran</option></select></div><div class="form-group"><label>Lokasi / Ruangan</label><input type="text" placeholder="Ruang Tamu Lt.1"></div><div class="form-group"><label>Tekanan Freon Sebelum</label><input type="text" placeholder="60 psi"></div><div class="form-group"><label>Tekanan Freon Sesudah</label><input type="text" placeholder="75 psi"></div><div class="form-group"><label>Kondisi Sebelum</label><select><option>Tidak Dingin</option><option>Kurang Dingin</option><option>Bocor Air</option><option>Bau</option><option>Suara Berisik</option><option>Tidak Menyala</option><option>Rutin Service</option></select></div><div class="form-group"><label>Kondisi Sesudah</label><select><option>✅ Normal / Dingin</option><option>⚠️ Perlu Tindak Lanjut</option><option>❌ Butuh Spare Part</option></select></div><div class="form-group"><label>Material Tambahan</label><input type="text" placeholder="Freon R-32 0.5kg"></div></div>`;
+  document.getElementById("ac-units").appendChild(div);
 }
 
-// ── HITUNG TOTAL ────────────────────────────────────────────────────────────
-function hitungTotal(prefix) {
-  const tbody = document.getElementById(prefix+'-items');
-  let sub = 0;
-  tbody.querySelectorAll('tr').forEach(tr => {
-    const inputs = tr.querySelectorAll('input');
-    const qty = parseFloat(inputs[1]?.value) || 0;
-    const harga = parseFloat(inputs[3]?.value) || 0;
-    const total = qty * harga;
-    sub += total;
-    const subtotalCell = tr.querySelector('.subtotal');
-    if (subtotalCell) subtotalCell.textContent = rp(total);
+function hitungTotal(p){
+  const tb=document.getElementById(p+"-items");
+  let sub=0;
+  tb.querySelectorAll("tr").forEach(tr=>{
+    const inp=tr.querySelectorAll("input");
+    const qty=parseFloat(inp[1]?.value)||0, harga=parseFloat(inp[3]?.value)||0, tot=qty*harga;
+    sub+=tot;
+    const sc=tr.querySelector(".subtotal");
+    if(sc)sc.textContent=rp(tot);
   });
-  const ppn = document.getElementById(prefix+'-ppn')?.checked ? sub * 0.11 : 0;
-  const grand = sub + ppn;
-  const elSub = document.getElementById(prefix+'-subtotal');
-  const elPPN = document.getElementById(prefix+'-ppn-val');
-  const elTotal = document.getElementById(prefix+'-total');
-  if (elSub) elSub.textContent = rp(sub);
-  if (elPPN) elPPN.textContent = rp(ppn);
-  if (elTotal) elTotal.textContent = rp(grand);
+  const ppn=document.getElementById(p+"-ppn")?.checked?sub*.11:0;
+  const grand=sub+ppn;
+  const elS=document.getElementById(p+"-subtotal");
+  const elP=document.getElementById(p+"-ppn-val");
+  const elT=document.getElementById(p+"-total");
+  if(elS)elS.textContent=rp(sub);
+  if(elP)elP.textContent=rp(ppn);
+  if(elT)elT.textContent=rp(grand);
 }
 
-// ── SIMPAN ──────────────────────────────────────────────────────────────────
-let docs = { invoice: [], penawaran: [], suratjalan: [], bast: [], laporan: [] };
+let docs={invoice:[],penawaran:[],suratjalan:[],bast:[],laporan:[]};
 
-function saveDoc(type) {
-  let doc = { type, ts: Date.now() };
-  if (type === 'invoice') {
-    doc = { ...doc,
-      nomor: document.getElementById('inv-nomor').value || 'INV-???',
-      klien: document.getElementById('inv-klien').value || '-',
-      tanggal: document.getElementById('inv-tanggal').value,
-      total: document.getElementById('inv-total').textContent
-    };
-  } else if (type === 'penawaran') {
-    doc = { ...doc,
-      nomor: document.getElementById('pen-nomor').value || 'SPH-???',
-      klien: document.getElementById('pen-klien').value || '-',
-      tanggal: document.getElementById('pen-tanggal').value,
-      total: document.getElementById('pen-total').textContent
-    };
-  } else if (type === 'suratjalan') {
-    doc = { ...doc,
-      nomor: document.getElementById('sj-nomor').value || 'SJ-???',
-      klien: document.getElementById('sj-tujuan').value || '-',
-      tanggal: document.getElementById('sj-tanggal').value,
-      total: '-'
-    };
-  } else if (type === 'bast') {
-    doc = { ...doc,
-      nomor: document.getElementById('bast-nomor').value || 'BAST-???',
-      klien: document.getElementById('bast-klien').value || '-',
-      tanggal: document.getElementById('bast-tanggal').value,
-      total: '-'
-    };
-  } else if (type === 'laporan') {
-    doc = { ...doc,
-      nomor: document.getElementById('lap-nomor').value || 'LAP-???',
-      klien: document.getElementById('lap-klien').value || '-',
-      tanggal: document.getElementById('lap-tanggal').value,
-      total: '-'
-    };
-  }
+function saveDoc(type){
+  let doc={type,ts:Date.now()};
+  const map={invoice:{nomor:"inv-nomor",klien:"inv-klien",tgl:"inv-tanggal",total:"inv-total"},penawaran:{nomor:"pen-nomor",klien:"pen-klien",tgl:"pen-tanggal",total:"pen-total"},suratjalan:{nomor:"sj-nomor",klien:"sj-tujuan",tgl:"sj-tanggal",total:null},bast:{nomor:"bast-nomor",klien:"bast-klien",tgl:"bast-tanggal",total:null},laporan:{nomor:"lap-nomor",klien:"lap-klien",tgl:"lap-tanggal",total:null}};
+  const m=map[type];
+  doc.nomor=document.getElementById(m.nomor)?.value||type.toUpperCase()+"???";
+  doc.klien=document.getElementById(m.klien)?.value||"-";
+  doc.tanggal=document.getElementById(m.tgl)?.value;
+  doc.total=m.total?document.getElementById(m.total)?.textContent:"-";
   docs[type].push(doc);
   updateStats();
   toast();
 }
 
-function updateStats() {
-  document.getElementById('st-inv').textContent = docs.invoice.length;
-  document.getElementById('st-pen').textContent = docs.penawaran.length;
-  document.getElementById('st-sj').textContent = docs.suratjalan.length;
-  document.getElementById('st-bast').textContent = docs.bast.length;
-  document.getElementById('st-lap').textContent = docs.laporan.length;
-
-  const all = [...docs.invoice, ...docs.penawaran, ...docs.suratjalan, ...docs.bast, ...docs.laporan]
-    .sort((a,b) => b.ts - a.ts).slice(0,6);
-
-  const cont = document.getElementById('doc-recent');
-  if (!all.length) {
-    cont.innerHTML = `<div style="color:var(--gray);font-size:13px;padding:20px;text-align:center;grid-column:span 3;">Belum ada dokumen. Buat dokumen baru dari menu di kiri.</div>`;
-    return;
-  }
-  const icons = { invoice:'🧾', penawaran:'📋', suratjalan:'🚚', bast:'✅', laporan:'🔧' };
-  const labels = { invoice:'Invoice', penawaran:'Penawaran', suratjalan:'Surat Jalan', bast:'BAST', laporan:'Laporan' };
-  cont.innerHTML = all.map(d => `
-    <div class="doc-card">
-      <div class="doc-card-head">
-        <span class="badge badge-gold">${icons[d.type]} ${labels[d.type]}</span>
-        <span style="font-size:10px;color:var(--gray)">${fmtDate(d.tanggal)}</span>
-      </div>
-      <div class="doc-client">${d.klien}</div>
-      <div class="doc-number">${d.nomor}</div>
-      ${d.total !== '-' ? `<div class="doc-amount">${d.total}</div>` : ''}
-    </div>`).join('');
-}
-
-function toast() {
-  const t = document.getElementById('toast');
-  t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 2500);
-}
-
-// ── PREVIEW / PRINT ─────────────────────────────────────────────────────────
-function previewDoc(type) {
-  let html = '';
-  if (type === 'invoice') html = buildInvoice();
-  else if (type === 'penawaran') html = buildPenawaran();
-  else if (type === 'suratjalan') html = buildSuratJalan();
-  else if (type === 'bast') html = buildBAST();
-  else if (type === 'laporan') html = buildLaporan();
-
-  document.getElementById('print-doc').innerHTML = html;
-  document.getElementById('print-modal').classList.add('open');
-}
-
-function tutupPreview() {
-  document.getElementById('print-modal').classList.remove('open');
-}
-
-// helper: doc header
-function docHeader(type, nomor, tanggal) {
-  return `
-    <div class="doc-header">
-      <div class="doc-logo-area">
-        <div class="co-name">${CO.name}</div>
-        <div class="co-tagline">${CO.tagline}</div>
-        <div class="co-addr" style="font-size:10px;color:#555;margin-top:8px;line-height:1.6">
-          ${CO.addr}<br>
-          📞 ${CO.phone} &nbsp;|&nbsp; ✉ ${CO.email}
-        </div>
-      </div>
-      <div class="doc-title-area">
-        <div class="doc-type">${type}</div>
-        <div class="doc-num">${nomor}</div>
-        <div class="doc-date">${fmtDate(tanggal)}</div>
-      </div>
-    </div>`;
-}
-
-function docFooter() {
-  return `
-    <div class="doc-footer">
-      <span>${CO.name} &nbsp;|&nbsp; ${CO.phone}</span>
-      <span>Dokumen ini dicetak oleh sistem internal PT Alfa Jaya Mandala</span>
-    </div>`;
-}
-
-// ── BUILD INVOICE ────────────────────────────────────────────────────────────
-function buildInvoice() {
-  const nomor = document.getElementById('inv-nomor').value || 'INV-2025-001';
-  const tgl = document.getElementById('inv-tanggal').value;
-  const jatuh = document.getElementById('inv-jatuh').value;
-  const klien = document.getElementById('inv-klien').value || '-';
-  const alamat = document.getElementById('inv-alamat').value || '-';
-  const telp = document.getElementById('inv-telp').value || '-';
-  const ref = document.getElementById('inv-ref').value;
-  const catatan = document.getElementById('inv-catatan').value;
-  const ppnOn = document.getElementById('inv-ppn').checked;
-
-  let rows = '', sub = 0, no = 1;
-  document.getElementById('inv-items').querySelectorAll('tr').forEach(tr => {
-    const inputs = tr.querySelectorAll('input');
-    const uraian = inputs[0]?.value || '-';
-    const qty = parseFloat(inputs[1]?.value) || 0;
-    const satuan = inputs[2]?.value || '-';
-    const harga = parseFloat(inputs[3]?.value) || 0;
-    const total = qty * harga;
-    sub += total;
-    rows += `<tr><td>${no++}</td><td>${uraian}</td><td style="text-align:center">${qty}</td><td>${satuan}</td><td style="text-align:right">${rp(harga)}</td><td style="text-align:right">${rp(total)}</td></tr>`;
+function updateStats(){
+  ["inv","pen","sj","bast","lap"].forEach((k,i)=>{
+    const types=["invoice","penawaran","suratjalan","bast","laporan"];
+    document.getElementById("st-"+k).textContent=docs[types[i]].length;
   });
-  const ppn = ppnOn ? sub * 0.11 : 0;
-  const grand = sub + ppn;
-
-  return `
-    ${docHeader('INVOICE', nomor, tgl)}
-    <div style="display:flex; gap:16px; margin-bottom:20px;">
-      <div class="info-box" style="flex:1">
-        <div class="ib-label">Kepada</div>
-        <div class="ib-name">${klien}</div>
-        <div class="ib-detail">${alamat}</div>
-        <div class="ib-detail">📞 ${telp}</div>
-      </div>
-      <div class="info-box" style="width:200px">
-        <div class="ib-label">Detail Invoice</div>
-        <div class="ib-detail"><strong>No.</strong> ${nomor}</div>
-        <div class="ib-detail"><strong>Tgl:</strong> ${fmtDate(tgl)}</div>
-        <div class="ib-detail"><strong>Jatuh Tempo:</strong> ${fmtDate(jatuh)}</div>
-        ${ref ? `<div class="ib-detail"><strong>Ref:</strong> ${ref}</div>` : ''}
-      </div>
-    </div>
-
-    <table class="print-table">
-      <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Harga Satuan</th><th>Jumlah</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-
-    <div class="total-section">
-      <div class="total-box">
-        <div class="total-row-p"><span>Subtotal</span><span>${rp(sub)}</span></div>
-        ${ppnOn ? `<div class="total-row-p"><span>PPN 11%</span><span>${rp(ppn)}</span></div>` : ''}
-        <div class="total-row-p final"><span>TOTAL</span><span>${rp(grand)}</span></div>
-      </div>
-    </div>
-
-    <div class="terbilang">Terbilang: <em>${terbilang(grand)}</em></div>
-
-    <div class="bank-info">
-      <div><strong>Bank</strong>${CO.bank}</div>
-      <div><strong>No. Rekening</strong>${CO.rek}</div>
-      <div><strong>Atas Nama</strong>${CO.an}</div>
-    </div>
-
-    ${catatan ? `<div style="margin-top:16px;font-size:11px;color:#555;"><strong>Catatan:</strong> ${catatan}</div>` : ''}
-
-    <div class="sign-area">
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">Penerima</div>
-        <div class="sign-title">Klien</div>
-      </div>
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${CO.dir}</div>
-        <div class="sign-title">Direktur – ${CO.name}</div>
-      </div>
-    </div>
-    ${docFooter()}`;
+  const all=[...docs.invoice,...docs.penawaran,...docs.suratjalan,...docs.bast,...docs.laporan].sort((a,b)=>b.ts-a.ts).slice(0,6);
+  const cont=document.getElementById("doc-recent");
+  if(!all.length){cont.innerHTML='<div style="color:var(--gray);font-size:13px;padding:20px;text-align:center;grid-column:span 3">Belum ada dokumen.</div>';return;}
+  const icons={invoice:"🧾",penawaran:"📋",suratjalan:"🚚",bast:"✅",laporan:"🔧"};
+  const labels={invoice:"Invoice",penawaran:"Penawaran",suratjalan:"Surat Jalan",bast:"BAST",laporan:"Laporan"};
+  cont.innerHTML=all.map(d=>`<div class="doc-card"><div class="doc-card-head"><span class="badge badge-blue">${icons[d.type]} ${labels[d.type]}</span><span style="font-size:10px;color:var(--gray)">${fmtDate(d.tanggal)}</span></div><div class="doc-client">${d.klien}</div><div class="doc-number">${d.nomor}</div>${d.total!=="-"?`<div class="doc-amount">${d.total}</div>`:""}</div>`).join("");
 }
 
-// ── BUILD PENAWARAN ──────────────────────────────────────────────────────────
-function buildPenawaran() {
-  const nomor = document.getElementById('pen-nomor').value || 'SPH-2025-001';
-  const tgl = document.getElementById('pen-tanggal').value;
-  const berlaku = document.getElementById('pen-berlaku').value;
-  const klien = document.getElementById('pen-klien').value || '-';
-  const alamat = document.getElementById('pen-alamat').value || '-';
-  const perihal = document.getElementById('pen-perihal').value || 'Penawaran Jasa Service AC';
-  const syarat = document.getElementById('pen-syarat').value;
-  const garansi = document.getElementById('pen-garansi').value;
-  const catatan = document.getElementById('pen-catatan').value;
-  const ppnOn = document.getElementById('pen-ppn').checked;
+function toast(){const t=document.getElementById("toast");t.style.display="block";setTimeout(()=>t.style.display="none",2500);}
 
-  let rows = '', sub = 0, no = 1;
-  document.getElementById('pen-items').querySelectorAll('tr').forEach(tr => {
-    const inputs = tr.querySelectorAll('input');
-    const uraian = inputs[0]?.value || '-';
-    const qty = parseFloat(inputs[1]?.value) || 0;
-    const satuan = inputs[2]?.value || '-';
-    const harga = parseFloat(inputs[3]?.value) || 0;
-    const total = qty * harga;
-    sub += total;
-    rows += `<tr><td>${no++}</td><td>${uraian}</td><td style="text-align:center">${qty}</td><td>${satuan}</td><td style="text-align:right">${rp(harga)}</td><td style="text-align:right">${rp(total)}</td></tr>`;
-  });
-  const ppn = ppnOn ? sub * 0.11 : 0;
-  const grand = sub + ppn;
-
-  return `
-    ${docHeader('PENAWARAN HARGA', nomor, tgl)}
-    <div class="info-box" style="margin-bottom:16px">
-      <div class="ib-label">Kepada Yth.</div>
-      <div class="ib-name">${klien}</div>
-      <div class="ib-detail">${alamat}</div>
-    </div>
-    <p style="font-size:12px; margin-bottom:12px;">
-      Dengan hormat,<br><br>
-      Bersama ini kami dari <strong>${CO.name}</strong> mengajukan penawaran harga untuk pekerjaan:
-      <strong>${perihal}</strong>. Adapun rincian penawaran kami adalah sebagai berikut:
-    </p>
-
-    <table class="print-table">
-      <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-
-    <div class="total-section">
-      <div class="total-box">
-        <div class="total-row-p"><span>Subtotal</span><span>${rp(sub)}</span></div>
-        ${ppnOn ? `<div class="total-row-p"><span>PPN 11%</span><span>${rp(ppn)}</span></div>` : ''}
-        <div class="total-row-p final"><span>TOTAL PENAWARAN</span><span>${rp(grand)}</span></div>
-      </div>
-    </div>
-
-    <div class="terbilang">Terbilang: <em>${terbilang(grand)}</em></div>
-
-    <div style="margin-top:16px; background:#f8f4ed; border-radius:8px; padding:12px 16px; font-size:11px;">
-      <div style="display:flex; gap:32px; flex-wrap:wrap;">
-        <div><strong>Syarat Pembayaran:</strong><br>${syarat}</div>
-        <div><strong>Garansi:</strong><br>${garansi}</div>
-        <div><strong>Berlaku Hingga:</strong><br>${fmtDate(berlaku)}</div>
-      </div>
-    </div>
-
-    ${catatan ? `<div style="margin-top:12px;font-size:11px;color:#555;"><strong>Catatan:</strong> ${catatan}</div>` : ''}
-
-    <p style="font-size:11px; margin-top:16px; color:#555;">Demikian penawaran ini kami sampaikan. Atas perhatian dan kepercayaan Bapak/Ibu, kami mengucapkan terima kasih.</p>
-
-    <div class="sign-area">
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">Disetujui Oleh</div>
-        <div class="sign-title">${klien}</div>
-      </div>
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${CO.dir}</div>
-        <div class="sign-title">Direktur – ${CO.name}</div>
-      </div>
-    </div>
-    ${docFooter()}`;
+/* ── PREVIEW ── */
+let currentDocType="";
+function previewDoc(type){
+  currentDocType=type;
+  let html="";
+  if(type==="invoice")html=buildInvoice();
+  else if(type==="penawaran")html=buildPenawaran();
+  else if(type==="suratjalan")html=buildSuratJalan();
+  else if(type==="bast")html=buildBAST();
+  else if(type==="laporan")html=buildLaporan();
+  document.getElementById("print-doc").innerHTML=html;
+  document.getElementById("print-modal").classList.add("open");
 }
 
-// ── BUILD SURAT JALAN ────────────────────────────────────────────────────────
-function buildSuratJalan() {
-  const nomor = document.getElementById('sj-nomor').value || 'SJ-2025-001';
-  const tgl = document.getElementById('sj-tanggal').value;
-  const driver = document.getElementById('sj-driver').value || '-';
-  const kendaraan = document.getElementById('sj-kendaraan').value;
-  const tujuan = document.getElementById('sj-tujuan').value || '-';
-  const telp = document.getElementById('sj-telp').value || '-';
-  const alamat = document.getElementById('sj-alamat').value || '-';
-  const ket = document.getElementById('sj-keterangan').value;
+function tutupPreview(){document.getElementById("print-modal").classList.remove("open");}
 
-  let rows = '', no = 1;
-  document.getElementById('sj-items').querySelectorAll('tr').forEach(tr => {
-    const inputs = tr.querySelectorAll('input');
-    rows += `<tr>
-      <td>${no++}</td>
-      <td>${inputs[0]?.value || '-'}</td>
-      <td style="text-align:center">${inputs[1]?.value || 0}</td>
-      <td>${inputs[2]?.value || '-'}</td>
-      <td>${inputs[3]?.value || '-'}</td>
-    </tr>`;
-  });
+/* ── EXPORT PDF ── */
+function exportPDF(type){
+  currentDocType=type;
+  let html="";
+  if(type==="invoice")html=buildInvoice();
+  else if(type==="penawaran")html=buildPenawaran();
+  else if(type==="suratjalan")html=buildSuratJalan();
+  else if(type==="bast")html=buildBAST();
+  else if(type==="laporan")html=buildLaporan();
 
-  return `
-    ${docHeader('SURAT JALAN', nomor, tgl)}
-    <div style="display:flex; gap:16px; margin-bottom:16px;">
-      <div class="info-box" style="flex:1">
-        <div class="ib-label">Tujuan / Penerima</div>
-        <div class="ib-name">${tujuan}</div>
-        <div class="ib-detail">${alamat}</div>
-        <div class="ib-detail">📞 ${telp}</div>
-      </div>
-      <div class="info-box" style="width:200px">
-        <div class="ib-label">Detail Pengiriman</div>
-        <div class="ib-detail"><strong>Teknisi:</strong> ${driver}</div>
-        ${kendaraan ? `<div class="ib-detail"><strong>Kendaraan:</strong> ${kendaraan}</div>` : ''}
-        <div class="ib-detail"><strong>Tanggal:</strong> ${fmtDate(tgl)}</div>
-      </div>
-    </div>
+  const container=document.createElement("div");
+  container.style.cssText="position:absolute;left:-9999px;top:0;background:#fff;padding:44px;width:794px;font-family:DM Sans,sans-serif;font-size:12px;line-height:1.5;color:#111";
+  container.innerHTML=html;
+  document.body.appendChild(container);
 
-    <table class="print-table">
-      <thead><tr><th>#</th><th>Nama Barang / Peralatan</th><th>Qty</th><th>Satuan</th><th>Keterangan</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-
-    ${ket ? `<div style="margin-top:16px;font-size:11px;color:#555;"><strong>Keterangan:</strong> ${ket}</div>` : ''}
-
-    <div class="sign-area">
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">Penerima</div>
-        <div class="sign-title">${tujuan}</div>
-      </div>
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${driver}</div>
-        <div class="sign-title">Teknisi – ${CO.name}</div>
-      </div>
-    </div>
-    ${docFooter()}`;
+  const nomor=getNomor(type)||type;
+  const opt={margin:.5,filename:`${nomor}.pdf`,image:{type:"jpeg",quality:.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};
+  html2pdf().from(container).set(opt).save().then(()=>document.body.removeChild(container));
 }
 
-// ── BUILD BAST ───────────────────────────────────────────────────────────────
-function buildBAST() {
-  const nomor = document.getElementById('bast-nomor').value || 'BAST-2025-001';
-  const tgl = document.getElementById('bast-tanggal').value;
-  const ref = document.getElementById('bast-ref').value;
-  const klien = document.getElementById('bast-klien').value || '-';
-  const alamat = document.getElementById('bast-alamat').value || '-';
-  const picKlien = document.getElementById('bast-pic-klien').value || 'Penerima';
-  const jabKlien = document.getElementById('bast-jabatan-klien').value || '-';
-  const picAJ = document.getElementById('bast-pic-aj').value || CO.dir;
-  const jabAJ = document.getElementById('bast-jabatan-aj').value || 'Teknisi AC';
-  const garansi = document.getElementById('bast-garansi').value;
-  const catatan = document.getElementById('bast-catatan').value;
+function exportPDFFromPreview(){exportPDF(currentDocType);}
 
-  let rows = '', no = 1;
-  document.getElementById('bast-items').querySelectorAll('tr').forEach(tr => {
-    const inputs = tr.querySelectorAll('input');
-    const sel = tr.querySelector('select');
-    rows += `<tr>
-      <td>${no++}</td>
-      <td>${inputs[0]?.value || '-'}</td>
-      <td style="text-align:center">${inputs[1]?.value || 1}</td>
-      <td>${inputs[2]?.value || '-'}</td>
-      <td style="text-align:center">${sel?.value || '✅ Baik'}</td>
-    </tr>`;
-  });
-
-  return `
-    ${docHeader('BERITA ACARA SERAH TERIMA', nomor, tgl)}
-
-    <p style="font-size:12px; margin-bottom:16px;">
-      Pada hari ini, <strong>${fmtDate(tgl)}</strong>, yang bertanda tangan di bawah ini menyatakan bahwa telah dilakukan serah terima hasil pekerjaan jasa service AC antara:
-    </p>
-
-    <div style="display:flex; gap:16px; margin-bottom:16px;">
-      <div class="info-box" style="flex:1">
-        <div class="ib-label">Pihak Pertama (Penyedia Jasa)</div>
-        <div class="ib-name">${CO.name}</div>
-        <div class="ib-detail">${CO.addr}</div>
-        <div class="ib-detail">Diwakili oleh: <strong>${picAJ}</strong> (${jabAJ})</div>
-      </div>
-      <div class="info-box" style="flex:1">
-        <div class="ib-label">Pihak Kedua (Penerima Jasa)</div>
-        <div class="ib-name">${klien}</div>
-        <div class="ib-detail">${alamat}</div>
-        <div class="ib-detail">Diwakili oleh: <strong>${picKlien}</strong> (${jabKlien})</div>
-      </div>
-    </div>
-
-    <p style="font-size:11px; margin-bottom:12px;">${ref ? `Referensi: <strong>${ref}</strong> &nbsp;|&nbsp; ` : ''}Pekerjaan yang diserahterimakan:</p>
-
-    <table class="print-table">
-      <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Kondisi</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-
-    <div style="margin-top:16px; background:#f0f8f0; border:1px solid #cde8cd; border-radius:6px; padding:12px 16px; font-size:11px;">
-      <strong>Garansi:</strong> ${garansi}
-    </div>
-
-    ${catatan ? `<div style="margin-top:12px;font-size:11px;color:#555;"><strong>Catatan:</strong> ${catatan}</div>` : ''}
-
-    <p style="font-size:11px; margin-top:16px; color:#555;">
-      Demikian berita acara ini dibuat dengan sebenarnya dan ditandatangani oleh kedua pihak sebagai bukti serah terima yang sah.
-    </p>
-
-    <div class="sign-area">
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${picKlien}</div>
-        <div class="sign-title">${jabKlien}<br>${klien}</div>
-      </div>
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${picAJ}</div>
-        <div class="sign-title">${jabAJ}<br>${CO.name}</div>
-      </div>
-    </div>
-    ${docFooter()}`;
+function getNomor(type){
+  const map={invoice:"inv-nomor",penawaran:"pen-nomor",suratjalan:"sj-nomor",bast:"bast-nomor",laporan:"lap-nomor"};
+  return document.getElementById(map[type])?.value||type;
 }
 
-// ── BUILD LAPORAN ────────────────────────────────────────────────────────────
-function buildLaporan() {
-  const nomor = document.getElementById('lap-nomor').value || 'LAP-2025-001';
-  const tgl = document.getElementById('lap-tanggal').value;
-  const waktu = document.getElementById('lap-waktu').value || '-';
-  const teknisi = document.getElementById('lap-teknisi').value || '-';
-  const klien = document.getElementById('lap-klien').value || '-';
-  const telp = document.getElementById('lap-telp').value || '-';
-  const alamat = document.getElementById('lap-alamat').value || '-';
-  const temuan = document.getElementById('lap-temuan').value;
-  const jadwal = document.getElementById('lap-jadwal').value;
-  const ttdKlien = document.getElementById('lap-ttd-klien').value || 'Penerima';
+/* ── DOC HEADER ── */
+function docHeader(type,nomor,tanggal){
+  return `<div class="doc-header"><div class="doc-logo-wrap"><img class="doc-logo-img" src="${LOGO}" alt="Logo AJM"><div class="doc-logo-area"><div class="co-name">${CO.name}</div><div class="co-tagline">${CO.tagline}</div><div class="co-addr" style="font-size:9.5px;color:#555;margin-top:6px;line-height:1.6">${CO.addr}<br>📞 ${CO.phone} &nbsp;|&nbsp; ✉ ${CO.email}</div></div></div><div class="doc-title-area"><div class="doc-type">${type}</div><div class="doc-num">${nomor}</div><div class="doc-date">${fmtDate(tanggal)}</div></div></div>`;
+}
+function docFooter(){return `<div class="doc-footer"><span>${CO.name} | ${CO.phone}</span><span>Dokumen internal PT Alfa Jaya Mandala</span></div>`;}
 
-  let unitsHtml = '';
-  document.querySelectorAll('.ac-unit').forEach((unit, i) => {
-    const inputs = unit.querySelectorAll('input');
-    const selects = unit.querySelectorAll('select');
-    unitsHtml += `
-      <tr>
-        <td style="text-align:center">${i+1}</td>
-        <td>${inputs[0]?.value || '-'}</td>
-        <td style="text-align:center">${selects[0]?.value || '-'}</td>
-        <td>${selects[1]?.value || '-'}</td>
-        <td>${inputs[1]?.value || '-'}</td>
-        <td>${inputs[2]?.value || '-'} → ${inputs[3]?.value || '-'}</td>
-        <td>${selects[2]?.value || '-'}</td>
-        <td>${selects[3]?.value || '-'}</td>
-        <td>${inputs[4]?.value || '-'}</td>
-      </tr>`;
+/* ── BUILD INVOICE ── */
+function buildInvoice(){
+  const nomor=document.getElementById("inv-nomor").value||"INV-2025-001";
+  const tgl=document.getElementById("inv-tanggal").value;
+  const jatuh=document.getElementById("inv-jatuh").value;
+  const klien=document.getElementById("inv-klien").value||"-";
+  const alamat=document.getElementById("inv-alamat").value||"-";
+  const telp=document.getElementById("inv-telp").value||"-";
+  const ref=document.getElementById("inv-ref").value;
+  const catatan=document.getElementById("inv-catatan").value;
+  const ppnOn=document.getElementById("inv-ppn").checked;
+  let rows="",sub=0,no=1;
+  document.getElementById("inv-items").querySelectorAll("tr").forEach(tr=>{
+    const i=tr.querySelectorAll("input");
+    const qty=parseFloat(i[1]?.value)||0,harga=parseFloat(i[3]?.value)||0,tot=qty*harga;
+    sub+=tot;
+    rows+=`<tr><td>${no++}</td><td>${i[0]?.value||"-"}</td><td style="text-align:center">${qty}</td><td>${i[2]?.value||"-"}</td><td style="text-align:right">${rp(harga)}</td><td style="text-align:right">${rp(tot)}</td></tr>`;
   });
+  const ppn=ppnOn?sub*.11:0,grand=sub+ppn;
+  return `${docHeader("INVOICE",nomor,tgl)}<div style="display:flex;gap:14px;margin-bottom:18px"><div class="info-box" style="flex:1"><div class="ib-label">Kepada</div><div class="ib-name">${klien}</div><div class="ib-detail">${alamat}</div><div class="ib-detail">📞 ${telp}</div></div><div class="info-box" style="width:190px"><div class="ib-label">Detail</div><div class="ib-detail"><strong>No.:</strong> ${nomor}</div><div class="ib-detail"><strong>Tgl:</strong> ${fmtDate(tgl)}</div><div class="ib-detail"><strong>Jatuh Tempo:</strong> ${fmtDate(jatuh)}</div>${ref?`<div class="ib-detail"><strong>Ref:</strong> ${ref}</div>`:""}</div></div><table class="print-table"><thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Harga Satuan</th><th>Jumlah</th></tr></thead><tbody>${rows}</tbody></table><div class="total-section"><div class="total-box"><div class="total-row-p"><span>Subtotal</span><span>${rp(sub)}</span></div>${ppnOn?`<div class="total-row-p"><span>PPN 11%</span><span>${rp(ppn)}</span></div>`:""}<div class="total-row-p final"><span>TOTAL</span><span>${rp(grand)}</span></div></div></div><div class="terbilang">Terbilang: <em>${terbilang(grand)}</em></div><div class="bank-info"><div><strong>Bank</strong>${CO.bank}</div><div><strong>No. Rekening</strong>${CO.rek}</div><div><strong>Atas Nama</strong>${CO.an}</div></div>${catatan?`<div style="margin-top:12px;font-size:11px;color:#555"><strong>Catatan:</strong> ${catatan}</div>`:""}<div class="sign-area"><div class="sign-box"><div class="sign-line"></div><div class="sign-name">Penerima</div><div class="sign-title">Klien</div></div><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${CO.dir}</div><div class="sign-title">Direktur – ${CO.name}</div></div></div>${docFooter()}`;
+}
 
-  return `
-    ${docHeader('LAPORAN PENGERJAAN', nomor, tgl)}
+/* ── BUILD PENAWARAN ── */
+function buildPenawaran(){
+  const nomor=document.getElementById("pen-nomor").value||"SPH-2025-001";
+  const tgl=document.getElementById("pen-tanggal").value;
+  const berlaku=document.getElementById("pen-berlaku").value;
+  const klien=document.getElementById("pen-klien").value||"-";
+  const alamat=document.getElementById("pen-alamat").value||"-";
+  const perihal=document.getElementById("pen-perihal").value||"Penawaran Jasa Service AC";
+  const syarat=document.getElementById("pen-syarat").value;
+  const garansi=document.getElementById("pen-garansi").value;
+  const catatan=document.getElementById("pen-catatan").value;
+  const ppnOn=document.getElementById("pen-ppn").checked;
+  let rows="",sub=0,no=1;
+  document.getElementById("pen-items").querySelectorAll("tr").forEach(tr=>{
+    const i=tr.querySelectorAll("input");
+    const qty=parseFloat(i[1]?.value)||0,harga=parseFloat(i[3]?.value)||0,tot=qty*harga;
+    sub+=tot;
+    rows+=`<tr><td>${no++}</td><td>${i[0]?.value||"-"}</td><td style="text-align:center">${qty}</td><td>${i[2]?.value||"-"}</td><td style="text-align:right">${rp(harga)}</td><td style="text-align:right">${rp(tot)}</td></tr>`;
+  });
+  const ppn=ppnOn?sub*.11:0,grand=sub+ppn;
+  return `${docHeader("PENAWARAN HARGA",nomor,tgl)}<div class="info-box" style="margin-bottom:14px"><div class="ib-label">Kepada Yth.</div><div class="ib-name">${klien}</div><div class="ib-detail">${alamat}</div></div><p style="font-size:11.5px;margin-bottom:11px">Dengan hormat,<br><br>Bersama ini kami dari <strong>${CO.name}</strong> mengajukan penawaran harga untuk pekerjaan: <strong>${perihal}</strong>.</p><table class="print-table"><thead><tr><th>#</th><th>Uraian</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><div class="total-section"><div class="total-box"><div class="total-row-p"><span>Subtotal</span><span>${rp(sub)}</span></div>${ppnOn?`<div class="total-row-p"><span>PPN 11%</span><span>${rp(ppn)}</span></div>`:""}<div class="total-row-p final"><span>TOTAL</span><span>${rp(grand)}</span></div></div></div><div class="terbilang">Terbilang: <em>${terbilang(grand)}</em></div><div style="margin-top:14px;background:#f0f6ff;border-radius:7px;padding:11px 14px;font-size:11px"><div style="display:flex;gap:28px;flex-wrap:wrap"><div><strong>Syarat Pembayaran:</strong><br>${syarat}</div><div><strong>Garansi:</strong><br>${garansi}</div><div><strong>Berlaku Hingga:</strong><br>${fmtDate(berlaku)}</div></div></div>${catatan?`<div style="margin-top:11px;font-size:11px;color:#555"><strong>Catatan:</strong> ${catatan}</div>`:""}<p style="font-size:10.5px;margin-top:14px;color:#555">Demikian penawaran ini kami sampaikan. Atas perhatian dan kepercayaan Bapak/Ibu, kami mengucapkan terima kasih.</p><div class="sign-area"><div class="sign-box"><div class="sign-line"></div><div class="sign-name">Disetujui Oleh</div><div class="sign-title">${klien}</div></div><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${CO.dir}</div><div class="sign-title">Direktur – ${CO.name}</div></div></div>${docFooter()}`;
+}
 
-    <div style="display:flex; gap:16px; margin-bottom:16px;">
-      <div class="info-box" style="flex:1">
-        <div class="ib-label">Lokasi Pengerjaan</div>
-        <div class="ib-name">${klien}</div>
-        <div class="ib-detail">${alamat}</div>
-        <div class="ib-detail">📞 ${telp}</div>
-      </div>
-      <div class="info-box" style="width:220px">
-        <div class="ib-label">Detail Pekerjaan</div>
-        <div class="ib-detail"><strong>Teknisi:</strong> ${teknisi}</div>
-        <div class="ib-detail"><strong>Tanggal:</strong> ${fmtDate(tgl)}</div>
-        <div class="ib-detail"><strong>Waktu:</strong> ${waktu}</div>
-      </div>
-    </div>
+/* ── BUILD SURAT JALAN ── */
+function buildSuratJalan(){
+  const nomor=document.getElementById("sj-nomor").value||"SJ-2025-001";
+  const tgl=document.getElementById("sj-tanggal").value;
+  const driver=document.getElementById("sj-driver").value||"-";
+  const kendaraan=document.getElementById("sj-kendaraan").value;
+  const tujuan=document.getElementById("sj-tujuan").value||"-";
+  const telp=document.getElementById("sj-telp").value||"-";
+  const alamat=document.getElementById("sj-alamat").value||"-";
+  const ket=document.getElementById("sj-keterangan").value;
+  let rows="",no=1;
+  document.getElementById("sj-items").querySelectorAll("tr").forEach(tr=>{
+    const i=tr.querySelectorAll("input");
+    rows+=`<tr><td>${no++}</td><td>${i[0]?.value||"-"}</td><td style="text-align:center">${i[1]?.value||0}</td><td>${i[2]?.value||"-"}</td><td>${i[3]?.value||"-"}</td></tr>`;
+  });
+  return `${docHeader("SURAT JALAN",nomor,tgl)}<div style="display:flex;gap:14px;margin-bottom:14px"><div class="info-box" style="flex:1"><div class="ib-label">Tujuan / Penerima</div><div class="ib-name">${tujuan}</div><div class="ib-detail">${alamat}</div><div class="ib-detail">📞 ${telp}</div></div><div class="info-box" style="width:190px"><div class="ib-label">Detail</div><div class="ib-detail"><strong>Teknisi:</strong> ${driver}</div>${kendaraan?`<div class="ib-detail"><strong>Kendaraan:</strong> ${kendaraan}</div>`:""}<div class="ib-detail"><strong>Tanggal:</strong> ${fmtDate(tgl)}</div></div></div><table class="print-table"><thead><tr><th>#</th><th>Nama Barang / Peralatan</th><th>Qty</th><th>Satuan</th><th>Keterangan</th></tr></thead><tbody>${rows}</tbody></table>${ket?`<div style="margin-top:14px;font-size:11px;color:#555"><strong>Keterangan:</strong> ${ket}</div>`:""}<div class="sign-area"><div class="sign-box"><div class="sign-line"></div><div class="sign-name">Penerima</div><div class="sign-title">${tujuan}</div></div><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${driver}</div><div class="sign-title">Teknisi – ${CO.name}</div></div></div>${docFooter()}`;
+}
 
-    <div style="font-size:12px; font-weight:600; color:#0d1b2a; margin-bottom:8px;">Detail Unit AC yang Diservice:</div>
-    <div style="overflow-x:auto;">
-      <table class="print-table" style="font-size:10px;">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Merk/Tipe</th>
-            <th>PK</th>
-            <th>Jenis Service</th>
-            <th>Lokasi</th>
-            <th>Tekanan Freon</th>
-            <th>Kondisi Sebelum</th>
-            <th>Kondisi Sesudah</th>
-            <th>Material</th>
-          </tr>
-        </thead>
-        <tbody>${unitsHtml}</tbody>
-      </table>
-    </div>
+/* ── BUILD BAST ── */
+function buildBAST(){
+  const nomor=document.getElementById("bast-nomor").value||"BAST-2025-001";
+  const tgl=document.getElementById("bast-tanggal").value;
+  const ref=document.getElementById("bast-ref").value;
+  const klien=document.getElementById("bast-klien").value||"-";
+  const alamat=document.getElementById("bast-alamat").value||"-";
+  const picKlien=document.getElementById("bast-pic-klien").value||"Penerima";
+  const jabKlien=document.getElementById("bast-jabatan-klien").value||"-";
+  const picAJ=document.getElementById("bast-pic-aj").value||CO.dir;
+  const jabAJ=document.getElementById("bast-jabatan-aj").value||"Teknisi AC";
+  const garansi=document.getElementById("bast-garansi").value;
+  const catatan=document.getElementById("bast-catatan").value;
+  let rows="",no=1;
+  document.getElementById("bast-items").querySelectorAll("tr").forEach(tr=>{
+    const i=tr.querySelectorAll("input"),sel=tr.querySelector("select");
+    rows+=`<tr><td>${no++}</td><td>${i[0]?.value||"-"}</td><td style="text-align:center">${i[1]?.value||1}</td><td>${i[2]?.value||"-"}</td><td style="text-align:center">${sel?.value||"✅ Baik"}</td></tr>`;
+  });
+  return `${docHeader("BERITA ACARA SERAH TERIMA",nomor,tgl)}<p style="font-size:11.5px;margin-bottom:14px">Pada hari ini, <strong>${fmtDate(tgl)}</strong>, yang bertanda tangan di bawah ini menyatakan bahwa telah dilakukan serah terima hasil pekerjaan jasa service AC antara:</p><div style="display:flex;gap:14px;margin-bottom:14px"><div class="info-box" style="flex:1"><div class="ib-label">Pihak Pertama (Penyedia Jasa)</div><div class="ib-name">${CO.name}</div><div class="ib-detail">${CO.addr}</div><div class="ib-detail">Diwakili: <strong>${picAJ}</strong> (${jabAJ})</div></div><div class="info-box" style="flex:1"><div class="ib-label">Pihak Kedua (Penerima Jasa)</div><div class="ib-name">${klien}</div><div class="ib-detail">${alamat}</div><div class="ib-detail">Diwakili: <strong>${picKlien}</strong> (${jabKlien})</div></div></div>${ref?`<p style="font-size:11px;margin-bottom:10px">Referensi: <strong>${ref}</strong></p>`:""}<table class="print-table"><thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Kondisi</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:14px;background:#f0fff4;border:1px solid #b3e6cd;border-radius:6px;padding:11px 14px;font-size:11px"><strong>Garansi:</strong> ${garansi}</div>${catatan?`<div style="margin-top:11px;font-size:11px;color:#555"><strong>Catatan:</strong> ${catatan}</div>`:""}<p style="font-size:10.5px;margin-top:14px;color:#555">Demikian berita acara ini dibuat dengan sebenarnya dan ditandatangani oleh kedua pihak sebagai bukti serah terima yang sah.</p><div class="sign-area"><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${picKlien}</div><div class="sign-title">${jabKlien}<br>${klien}</div></div><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${picAJ}</div><div class="sign-title">${jabAJ}<br>${CO.name}</div></div></div>${docFooter()}`;
+}
 
-    ${temuan ? `
-      <div style="margin-top:16px; background:#fff8f0; border-left:3px solid #e8891a; padding:12px 16px; border-radius:0 6px 6px 0; font-size:11px;">
-        <strong>Temuan & Rekomendasi:</strong><br>${temuan}
-      </div>` : ''}
-
-    ${jadwal ? `
-      <div style="margin-top:12px; background:#f0f8f0; border:1px solid #cde8cd; padding:10px 16px; border-radius:6px; font-size:11px;">
-        <strong>Jadwal Service Berikutnya:</strong> ${fmtDate(jadwal)}
-      </div>` : ''}
-
-    <div class="sign-area">
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${ttdKlien}</div>
-        <div class="sign-title">Pelanggan</div>
-      </div>
-      <div class="sign-box">
-        <div class="sign-line"></div>
-        <div class="sign-name">${teknisi}</div>
-        <div class="sign-title">Teknisi – ${CO.name}</div>
-      </div>
-    </div>
-    ${docFooter()}`;
+/* ── BUILD LAPORAN ── */
+function buildLaporan(){
+  const nomor=document.getElementById("lap-nomor").value||"LAP-2025-001";
+  const tgl=document.getElementById("lap-tanggal").value;
+  const waktu=document.getElementById("lap-waktu").value||"-";
+  const teknisi=document.getElementById("lap-teknisi").value||"-";
+  const klien=document.getElementById("lap-klien").value||"-";
+  const telp=document.getElementById("lap-telp").value||"-";
+  const alamat=document.getElementById("lap-alamat").value||"-";
+  const temuan=document.getElementById("lap-temuan").value;
+  const jadwal=document.getElementById("lap-jadwal").value;
+  const ttdKlien=document.getElementById("lap-ttd-klien").value||"Penerima";
+  let units="";
+  document.querySelectorAll(".ac-unit").forEach((unit,i)=>{
+    const inp=unit.querySelectorAll("input"),sel=unit.querySelectorAll("select");
+    units+=`<tr><td style="text-align:center">${i+1}</td><td>${inp[0]?.value||"-"}</td><td style="text-align:center">${sel[0]?.value||"-"}</td><td>${sel[1]?.value||"-"}</td><td>${inp[1]?.value||"-"}</td><td>${inp[2]?.value||"-"} → ${inp[3]?.value||"-"}</td><td>${sel[2]?.value||"-"}</td><td>${sel[3]?.value||"-"}</td><td>${inp[4]?.value||"-"}</td></tr>`;
+  });
+  return `${docHeader("LAPORAN PENGERJAAN",nomor,tgl)}<div style="display:flex;gap:14px;margin-bottom:14px"><div class="info-box" style="flex:1"><div class="ib-label">Lokasi</div><div class="ib-name">${klien}</div><div class="ib-detail">${alamat}</div><div class="ib-detail">📞 ${telp}</div></div><div class="info-box" style="width:200px"><div class="ib-label">Detail</div><div class="ib-detail"><strong>Teknisi:</strong> ${teknisi}</div><div class="ib-detail"><strong>Tanggal:</strong> ${fmtDate(tgl)}</div><div class="ib-detail"><strong>Waktu:</strong> ${waktu}</div></div></div><div style="font-size:11.5px;font-weight:600;color:#001529;margin-bottom:7px">Detail Unit AC yang Diservice:</div><div style="overflow-x:auto"><table class="print-table" style="font-size:10px"><thead><tr><th>#</th><th>Merk/Tipe</th><th>PK</th><th>Jenis Service</th><th>Lokasi</th><th>Tekanan Freon</th><th>Sblm</th><th>Ssdh</th><th>Material</th></tr></thead><tbody>${units}</tbody></table></div>${temuan?`<div style="margin-top:14px;background:#fff8f0;border-left:3px solid #e8891a;padding:11px 14px;border-radius:0 6px 6px 0;font-size:11px"><strong>Temuan & Rekomendasi:</strong><br>${temuan}</div>`:""} ${jadwal?`<div style="margin-top:10px;background:#f0fff4;border:1px solid #b3e6cd;padding:9px 14px;border-radius:6px;font-size:11px"><strong>Service Berikutnya:</strong> ${fmtDate(jadwal)}</div>`:""}<div class="sign-area"><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${ttdKlien}</div><div class="sign-title">Pelanggan</div></div><div class="sign-box"><div class="sign-line"></div><div class="sign-name">${teknisi}</div><div class="sign-title">Teknisi – ${CO.name}</div></div></div>${docFooter()}`;
 }
 </script>
 </body>
