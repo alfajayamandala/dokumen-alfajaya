@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem Dokumen – PT Alfa Jaya Mandala</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy2: #162033;
+    --blue: #1a4a7a;
+    --accent: #c8922a;
+    --accent2: #e8b84b;
+    --light: #f5f0e8;
+    --white: #ffffff;
+    --gray: #8a95a3;
+    --border: #2a3a4a;
+    --success: #2d7a4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── APP SHELL ── */
+  .app { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    background: var(--navy2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand-logo {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+  }
+
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--accent2);
+    line-height: 1.2;
+  }
+
+  .brand-sub { font-size: 10px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
+
+  .sidebar-menu { padding: 16px 12px; flex: 1; }
+
+  .menu-label {
+    font-size: 9px; letter-spacing: 2px; color: var(--gray);
+    text-transform: uppercase; padding: 8px 8px 6px;
+  }
+
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    cursor: pointer; font-size: 13px; font-weight: 500;
+    color: var(--gray); transition: all .2s;
+    margin-bottom: 2px;
+  }
+
+  .menu-item:hover { background: rgba(200,146,42,.1); color: var(--accent2); }
+  .menu-item.active { background: rgba(200,146,42,.15); color: var(--accent2); }
+  .menu-item .icon { font-size: 15px; width: 20px; text-align: center; }
+
+  .sidebar-info {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px; color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* ── MAIN ── */
+  .main { margin-left: 260px; flex: 1; }
+
+  .topbar {
+    background: var(--navy2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .topbar-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--accent2); }
+  .topbar-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+  .btn {
+    padding: 8px 18px; border-radius: 7px; border: none;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600; transition: all .2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: var(--navy);
+  }
+  .btn-gold:hover { opacity: .9; transform: translateY(-1px); }
+
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--gray);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-danger { background: #7a1a1a; color: #ffaaaa; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* ── CONTENT ── */
+  .content { padding: 32px; }
+
+  /* ── TABS / SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; color: var(--accent2);
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.full { grid-template-columns: 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.span2 { grid-column: span 2; }
+  .form-group.span3 { grid-column: span 3; }
+
+  label { font-size: 11px; color: var(--gray); letter-spacing: .5px; text-transform: uppercase; font-weight: 500; }
+
+  input, select, textarea {
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 12px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    transition: border-color .2s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(200,146,42,.05);
+  }
+
+  select option { background: var(--navy2); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin-top: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  th {
+    background: rgba(255,255,255,.04);
+    padding: 10px 12px; text-align: left;
+    font-size: 10px; letter-spacing: 1px;
+    color: var(--gray); text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    vertical-align: middle;
+  }
+
+  tr:hover td { background: rgba(255,255,255,.02); }
+
+  td input, td select {
+    background: transparent;
+    border: none;
+    padding: 4px 0;
+    color: var(--white);
+    font-size: 13px;
+  }
+
+  td input:focus, td select:focus {
+    border-bottom: 1px solid var(--accent);
+    outline: none;
+    background: transparent;
+  }
+
+  .total-row td { font-weight: 600; color: var(--accent2); border-top: 1px solid var(--border); }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+  }
+  .badge-blue { background: rgba(26,74,122,.4); color: #6ab0ff; }
+  .badge-gold { background: rgba(200,146,42,.2); color: var(--accent2); }
+  .badge-green { background: rgba(45,122,74,.3); color: #7dffaa; }
+
+  /* ── DOC LIST ── */
+  .doc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+  .doc-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .doc-card:hover { border-color: var(--accent); background: rgba(200,146,42,.05); }
+
+  .doc-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .doc-number { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent2); }
+  .doc-client { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .doc-meta { font-size: 11px; color: var(--gray); }
+  .doc-amount { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--accent2); font-weight: 600; margin-top: 8px; }
+
+  /* ── PRINT VIEW ── */
+  .print-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+  .print-modal.open { display: flex; justify-content: center; }
+
+  .print-doc {
+    background: #fff;
+    color: #111;
+    width: 794px;
+    min-height: 1123px;
+    padding: 48px;
+    border-radius: 4px;
+    position: relative;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .print-close {
+    position: fixed; top: 16px; right: 24px;
+    background: var(--accent); color: var(--navy);
+    border: none; padding: 8px 20px; border-radius: 6px;
+    cursor: pointer; font-weight: 700; font-size: 13px;
+    z-index: 1001;
+    display: flex; gap: 8px;
+  }
+
+  /* Document print styles */
+  .doc-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #0d1b2a;
+  }
+
+  .doc-logo-area .co-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 700; color: #0d1b2a;
+  }
+
+  .doc-logo-area .co-tagline {
+    font-size: 10px; color: #666; letter-spacing: 1px;
+    text-transform: uppercase; margin-top: 2px;
+  }
+
+  .doc-logo-area .co-addr {
+    font-size: 10px; color: #555; margin-top: 8px; line-height: 1.6;
+  }
+
+  .doc-title-area { text-align: right; }
+
+  .doc-title-area .doc-type {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700;
+    color: #c8922a; line-height: 1;
+  }
+
+  .doc-title-area .doc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: #555; margin-top: 4px;
+  }
+
+  .doc-title-area .doc-date { font-size: 11px; color: #777; margin-top: 2px; }
+
+  .info-box {
+    background: #f8f4ed;
+    border-left: 3px solid #c8922a;
+    padding: 12px 16px; border-radius: 0 6px 6px 0;
+    margin-bottom: 20px;
+  }
+
+  .info-box .ib-label { font-size: 9px; letter-spacing: 1.5px; color: #999; text-transform: uppercase; margin-bottom: 4px; }
+  .info-box .ib-name { font-size: 14px; font-weight: 600; color: #0d1b2a; }
+  .info-box .ib-detail { font-size: 11px; color: #555; margin-top: 2px; }
+
+  .print-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 11px; }
+  .print-table th {
+    background: #0d1b2a; color: #fff;
+    padding: 8px 10px; text-align: left;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .print-table td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+  .print-table tr:nth-child(even) td { background: #fafafa; }
+
+  .total-section { margin-top: 16px; display: flex; justify-content: flex-end; }
+  .total-box { width: 260px; }
+  .total-row-p { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
+  .total-row-p.final { font-weight: 700; font-size: 14px; border-top: 2px solid #0d1b2a; padding-top: 8px; color: #0d1b2a; }
+  .terbilang { background: #f0f8f0; border: 1px solid #cde8cd; padding: 10px 14px; border-radius: 6px; margin-top: 12px; font-size: 11px; font-style: italic; color: #2d5a2d; }
+
+  .sign-area { display: flex; justify-content: space-between; margin-top: 40px; }
+  .sign-box { text-align: center; width: 160px; }
+  .sign-line { border-top: 1px solid #aaa; margin-top: 50px; margin-bottom: 4px; }
+  .sign-name { font-weight: 600; font-size: 12px; }
+  .sign-title { font-size: 10px; color: #777; }
+
+  .bank-info {
+    background: #f8f4ed; border-radius: 8px;
+    padding: 12px 16px; margin-top: 20px;
+    font-size: 11px;
+    display: flex; gap: 24px;
+  }
+  .bank-info strong { display: block; font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+
+  .doc-footer {
+    margin-top: 32px; padding-top: 12px;
+    border-top: 1px solid #ddd;
+    font-size: 9px; color: #aaa;
+    display: flex; justify-content: space-between;
+  }
+
+  /* checklist items */
+  .chk-row { display: flex; gap: 6px; align-items: center; font-size: 12px; margin: 3px 0; }
+  .chk { width: 12px; height: 12px; border: 1px solid #999; border-radius: 2px; display: inline-block; text-align: center; line-height: 12px; font-size: 9px; }
+  .chk.done { background: #0d1b2a; color: #fff; border-color: #0d1b2a; }
+
+  /* dashboard stats */
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    border-top: 3px solid var(--accent);
+  }
+  .stat-val { font-family: 'DM Mono', monospace; font-size: 22px; color: var(--accent2); font-weight: 600; }
+  .stat-lbl { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--success); color: #fff;
+    padding: 12px 20px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    z-index: 2000; display: none;
+    animation: slideUp .3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .sidebar { width: 200px; }
+    .main { margin-left: 200px; }
+    .stats { grid-template-columns: repeat(3, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid.three { grid-template-columns: 1fr 1fr; }
+    .form-group.span2, .form-group.span3 { grid-column: span 1; }
+  }
+
+  @media print {
+    .sidebar, .main .topbar, .btn, .print-close { display: none !important; }
+    .print-modal { display: flex !important; position: static; background: none; padding: 0; }
+    .print-doc { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <div class="brand-icon">❄️</div>
+        <div>
+          <div class="brand-name">Alfa Jaya Mandala</div>
+          <div class="brand-sub">Service AC & Maintenance</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <div class="menu-label">Navigasi</div>
+      <div class="menu-item active" onclick="showSection('dashboard', this)"><span class="icon">📊</span> Dashboard</div>
+      <div class="menu-item" onclick="showSection('invoice', this)"><span class="icon">🧾</span> Invoice</div>
+      <div class="menu-item" onclick="showSection('penawaran', this)"><span class="icon">📋</span> Penawaran</div>
+      <div class="menu-item" onclick="showSection('suratjalan', this)"><span class="icon">🚚</span> Surat Jalan</div>
+      <div class="menu-item" onclick="showSection('bast', this)"><span class="icon">✅</span> BAST</div>
+      <div class="menu-item" onclick="showSection('laporan', this)"><span class="icon">🔧</span> Laporan Pengerjaan</div>
+    </div>
+
+    <div class="sidebar-info">
+      <strong style="color:var(--accent2)">PT Alfa Jaya Mandala</strong><br>
+      Jln. H. Jubris, Warudoyong<br>
+      Jakarta Timur 13930<br><br>
+      📞 081314148511<br>
+      ✉️ irul@amaliah.id
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub">PT Alfa Jaya Mandala – Sistem Manajemen Dokumen</div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Print</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <div id="sec-dashboard" class="section active">
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-val" id="st-inv">0</div>
+            <div class="stat-lbl">Invoice Dibuat</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-pen">0</div>
+            <div class="stat-lbl">Penawaran</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-sj">0</div>
+            <div class="stat-lbl">Surat Jalan</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-bast">0</div>
+            <div class="stat-lbl">BAST</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="st-lap">0</div>
+            <div class="stat-lbl">Laporan</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Dokumen Terbaru</div>
+          <div class="doc-list" id="doc-recent">
+            <div style="color:var(--gray); font-size:13px; padding:20px; text-align:center; grid-column: span 3;">
+              Belum ada dokumen. Buat dokumen baru dari menu di kiri.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ INVOICE ══════════ -->
+      <div id="sec-invoice" class="section">
+        <div class="card">
+          <div class="card-title">🧾 Buat Invoice Baru</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nomor Invoice</label>
+              <input type="text" id="inv-nomor" placeholder="INV-2025-001" oninput="autoNum()">
+            </div>
+            <div class="form-group">
+              <label>Tanggal Invoice</label>
+              <input type="date" id="inv-tanggal">
+            </div>
+            <div class="form-group">
+              <label>Jatuh Tempo</label>
+              <input type="date" id="inv-jatuh">
+            </div>
+            <div class="form-group">
+              <label>Nama Klien / Perusahaan</label>
+              <input type="text" id="inv-klien" placeholder="Nama klien atau perusahaan">
+            </div>
+            <div class="form-group span2">
+              <label>Alamat Klien</label>
+              <input type="text" id="inv-alamat" placeholder="Alamat lengkap klien">
+            </div>
+            <div class="form-group">
+              <label>No. Telepon Klien</label>
+              <input type="text" id="inv-telp" placeholder="08xxxxxxxxxx">
+            </div>
+            <div class="form-group">
+              <label>Referensi / PO Number</label>
+              <input type="text" id="inv-ref" placeholder="Optional">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📦 Detail Pekerjaan / Item</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>Uraian Pekerjaan</th>
+                  <th style="width:80px">Qty</th>
+                  <th style="width:100px">Satuan</th>
+                  <th style="width:130px">Harga Satuan (Rp)</th>
+                  <th style="width:130px">Jumlah (Rp)</th>
+                  <th style="width:40px"></th>
+                </tr>
+              </thead>
+              <tbody id="inv-items">
+                <tr>
+                  <td>1</td>
+                  <td><input type="text" placeholder="Misal: Service AC ½ PK" onchange="hitungTotal('inv')"></td>
+                  <td><input type="number" value="1" min="1" onchange="hitungTotal('inv')"></td>
+                  <td><input type="text" placeholder="Unit/Jam/Pcs"></td>
+                  <td><input type="number" placeholder="0" onchange="hitungTotal('inv')" class="money"></td>
+                  <td class="subtotal">Rp 0</td>
+                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="5" style="text-align:right; font-size:11px; color:var(--gray)">Subtotal</td>
+                  <td id="inv-subtotal">Rp 0</td>
+                  <td></td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="4" style="text-align:right; font-size:11px; color:var(--gray)">PPN 11%</td>
+                  <td style="padding-right:8px"><input type="checkbox" id="inv-ppn" onchange="hitungTotal('inv')"> Termasuk PPN</td>
+                  <td id="inv-ppn-val">Rp 0</td>
+                  <td></td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="5" style="text-align:right; font-size:11px; color:var(--accent2)">TOTAL</td>
+                  <td id="inv-total" style="color:var(--accent2); font-size:15px;">Rp 0</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRow('inv-items','inv')">+ Tambah Item</button>
+        </div>
+
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label>Catatan / Keterangan</label>
+              <textarea id="inv-catatan" placeholder="Terima kasih atas kepercayaan Anda..."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:10px;">
+            <button class="btn btn-gold" onclick="previewDoc('invoice')">👁 Preview & Print</button>
+            <button class="btn btn-outline" onclick="saveDoc('invoice')">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ PENAWARAN ══════════ -->
+      <div id="sec-penawaran" class="section">
+        <div class="card">
+          <div class="card-title">📋 Surat Penawaran Harga</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nomor Penawaran</label>
+              <input type="text" id="pen-nomor" placeholder="SPH-2025-001">
+            </div>
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="date" id="pen-tanggal">
+            </div>
+            <div class="form-group">
+              <label>Berlaku Hingga</label>
+              <input type="date" id="pen-berlaku">
+            </div>
+            <div class="form-group">
+              <label>Kepada (Nama/Perusahaan)</label>
+              <input type="text" id="pen-klien" placeholder="Nama klien">
+            </div>
+            <div class="form-group span2">
+              <label>Alamat Klien</label>
+              <input type="text" id="pen-alamat" placeholder="Alamat klien">
+            </div>
+            <div class="form-group span2">
+              <label>Perihal / Keterangan Proyek</label>
+              <input type="text" id="pen-perihal" placeholder="Misal: Penawaran Pemasangan & Service AC Gedung Kantor">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📦 Detail Penawaran Item</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>Uraian</th>
+                  <th style="width:80px">Qty</th>
+                  <th style="width:100px">Satuan</th>
+                  <th style="width:130px">Harga (Rp)</th>
+                  <th style="width:130px">Total (Rp)</th>
+                  <th style="width:40px"></th>
+                </tr>
+              </thead>
+              <tbody id="pen-items">
+                <tr>
+                  <td>1</td>
+                  <td><input type="text" placeholder="Uraian pekerjaan/barang" onchange="hitungTotal('pen')"></td>
+                  <td><input type="number" value="1" min="1" onchange="hitungTotal('pen')"></td>
+                  <td><input type="text" placeholder="Unit"></td>
+                  <td><input type="number" placeholder="0" onchange="hitungTotal('pen')" class="money"></td>
+                  <td class="subtotal">Rp 0</td>
+                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="5" style="text-align:right; font-size:11px; color:var(--gray)">Subtotal</td>
+                  <td id="pen-subtotal">Rp 0</td><td></td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="4" style="text-align:right; font-size:11px; color:var(--gray)">PPN 11%</td>
+                  <td><input type="checkbox" id="pen-ppn" onchange="hitungTotal('pen')"> Termasuk PPN</td>
+                  <td id="pen-ppn-val">Rp 0</td><td></td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="5" style="text-align:right; color:var(--accent2)">TOTAL</td>
+                  <td id="pen-total" style="color:var(--accent2); font-size:15px;">Rp 0</td><td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRow('pen-items','pen')">+ Tambah Item</button>
+        </div>
+
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Syarat Pembayaran</label>
+              <select id="pen-syarat">
+                <option>50% DP, 50% setelah selesai</option>
+                <option>100% sebelum pengerjaan</option>
+                <option>100% setelah selesai</option>
+                <option>30 hari setelah invoice</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Garansi</label>
+              <input type="text" id="pen-garansi" value="30 hari setelah pengerjaan">
+            </div>
+            <div class="form-group span2">
+              <label>Catatan Tambahan</label>
+              <textarea id="pen-catatan" placeholder="Harga belum termasuk material tambahan jika diperlukan..."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:10px;">
+            <button class="btn btn-gold" onclick="previewDoc('penawaran')">👁 Preview & Print</button>
+            <button class="btn btn-outline" onclick="saveDoc('penawaran')">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ SURAT JALAN ══════════ -->
+      <div id="sec-suratjalan" class="section">
+        <div class="card">
+          <div class="card-title">🚚 Surat Jalan</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nomor Surat Jalan</label>
+              <input type="text" id="sj-nomor" placeholder="SJ-2025-001">
+            </div>
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="date" id="sj-tanggal">
+            </div>
+            <div class="form-group">
+              <label>Nama Teknisi / Driver</label>
+              <input type="text" id="sj-driver" placeholder="Nama teknisi yang bertugas">
+            </div>
+            <div class="form-group">
+              <label>No. Kendaraan</label>
+              <input type="text" id="sj-kendaraan" placeholder="B 1234 XY (opsional)">
+            </div>
+            <div class="form-group">
+              <label>Tujuan (Nama/Perusahaan)</label>
+              <input type="text" id="sj-tujuan" placeholder="Nama klien / gedung">
+            </div>
+            <div class="form-group">
+              <label>No. Telepon Penerima</label>
+              <input type="text" id="sj-telp" placeholder="08xxxxxxxxxx">
+            </div>
+            <div class="form-group span2">
+              <label>Alamat Tujuan</label>
+              <input type="text" id="sj-alamat" placeholder="Alamat lengkap lokasi pengerjaan">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📦 Daftar Barang / Peralatan Dibawa</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nama Barang / Peralatan</th>
+                  <th style="width:80px">Qty</th>
+                  <th style="width:100px">Satuan</th>
+                  <th>Keterangan</th>
+                  <th style="width:40px"></th>
+                </tr>
+              </thead>
+              <tbody id="sj-items">
+                <tr>
+                  <td>1</td>
+                  <td><input type="text" placeholder="Misal: Freon R-22"></td>
+                  <td><input type="number" value="1" min="1"></td>
+                  <td><input type="text" placeholder="Kg/Pcs/Set"></td>
+                  <td><input type="text" placeholder="Keterangan (opsional)"></td>
+                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRowSJ()">+ Tambah Barang</button>
+        </div>
+
+        <div class="card">
+          <div class="form-grid full">
+            <div class="form-group">
+              <label>Keterangan Pekerjaan</label>
+              <textarea id="sj-keterangan" placeholder="Misal: Teknisi datang untuk service berkala 5 unit AC di lantai 3..."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:10px;">
+            <button class="btn btn-gold" onclick="previewDoc('suratjalan')">👁 Preview & Print</button>
+            <button class="btn btn-outline" onclick="saveDoc('suratjalan')">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ BAST ══════════ -->
+      <div id="sec-bast" class="section">
+        <div class="card">
+          <div class="card-title">✅ Berita Acara Serah Terima (BAST)</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nomor BAST</label>
+              <input type="text" id="bast-nomor" placeholder="BAST-2025-001">
+            </div>
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="date" id="bast-tanggal">
+            </div>
+            <div class="form-group">
+              <label>Referensi Invoice / SPH</label>
+              <input type="text" id="bast-ref" placeholder="INV-2025-001">
+            </div>
+            <div class="form-group">
+              <label>Nama Klien / Perusahaan</label>
+              <input type="text" id="bast-klien" placeholder="Nama klien">
+            </div>
+            <div class="form-group span2">
+              <label>Alamat Lokasi Pekerjaan</label>
+              <input type="text" id="bast-alamat" placeholder="Alamat lokasi pengerjaan">
+            </div>
+            <div class="form-group">
+              <label>Nama PIC Klien (Penerima)</label>
+              <input type="text" id="bast-pic-klien" placeholder="Nama yang menandatangani">
+            </div>
+            <div class="form-group">
+              <label>Jabatan PIC Klien</label>
+              <input type="text" id="bast-jabatan-klien" placeholder="Jabatan">
+            </div>
+            <div class="form-group">
+              <label>Teknisi / PIC Alfa Jaya</label>
+              <input type="text" id="bast-pic-aj" placeholder="Nama teknisi">
+            </div>
+            <div class="form-group">
+              <label>Jabatan</label>
+              <input type="text" id="bast-jabatan-aj" value="Teknisi AC">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔧 Daftar Pekerjaan yang Diserahterimakan</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Uraian Pekerjaan</th>
+                  <th style="width:80px">Qty</th>
+                  <th style="width:100px">Satuan</th>
+                  <th style="width:120px">Kondisi</th>
+                  <th style="width:40px"></th>
+                </tr>
+              </thead>
+              <tbody id="bast-items">
+                <tr>
+                  <td>1</td>
+                  <td><input type="text" placeholder="Misal: Service AC 1 PK – Ruang Direktur"></td>
+                  <td><input type="number" value="1" min="1"></td>
+                  <td><input type="text" placeholder="Unit"></td>
+                  <td>
+                    <select>
+                      <option>✅ Baik</option>
+                      <option>⚠️ Perlu Tindak Lanjut</option>
+                    </select>
+                  </td>
+                  <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="tambahRowBAST()">+ Tambah Pekerjaan</button>
+        </div>
+
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Status Garansi</label>
+              <input type="text" id="bast-garansi" value="30 hari sejak tanggal BAST ini ditandatangani">
+            </div>
+            <div class="form-group span2">
+              <label>Catatan / Keterangan Tambahan</label>
+              <textarea id="bast-catatan" placeholder="Semua pekerjaan telah selesai dilaksanakan sesuai kesepakatan..."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:10px;">
+            <button class="btn btn-gold" onclick="previewDoc('bast')">👁 Preview & Print</button>
+            <button class="btn btn-outline" onclick="saveDoc('bast')">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ LAPORAN PENGERJAAN ══════════ -->
+      <div id="sec-laporan" class="section">
+        <div class="card">
+          <div class="card-title">🔧 Laporan Pengerjaan Service AC</div>
+          <div class="form-grid three">
+            <div class="form-group">
+              <label>Nomor Laporan</label>
+              <input type="text" id="lap-nomor" placeholder="LAP-2025-001">
+            </div>
+            <div class="form-group">
+              <label>Tanggal Pengerjaan</label>
+              <input type="date" id="lap-tanggal">
+            </div>
+            <div class="form-group">
+              <label>Waktu Mulai – Selesai</label>
+              <input type="text" id="lap-waktu" placeholder="09:00 – 14:00">
+            </div>
+            <div class="form-group">
+              <label>Nama Teknisi</label>
+              <input type="text" id="lap-teknisi" placeholder="Nama teknisi">
+            </div>
+            <div class="form-group">
+              <label>Nama Klien</label>
+              <input type="text" id="lap-klien" placeholder="Nama klien / gedung">
+            </div>
+            <div class="form-group">
+              <label>No. Telepon Klien</label>
+              <input type="text" id="lap-telp" placeholder="08xxxxxxxxxx">
+            </div>
+            <div class="form-group span3">
+              <label>Alamat Lokasi</label>
+              <input type="text" id="lap-alamat" placeholder="Alamat lengkap lokasi pengerjaan">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">❄️ Detail Unit AC yang Diservice</div>
+          <div id="ac-units">
+            <div class="ac-unit" style="background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px;">
+              <div style="font-size:12px; color:var(--accent2); margin-bottom:10px; font-weight:600;">Unit #1</div>
+              <div class="form-grid three">
+                <div class="form-group">
+                  <label>Merk / Tipe AC</label>
+                  <input type="text" placeholder="Misal: Daikin FT-D05P">
+                </div>
+                <div class="form-group">
+                  <label>Kapasitas (PK)</label>
+                  <select>
+                    <option>½ PK</option><option>¾ PK</option><option>1 PK</option>
+                    <option>1½ PK</option><option>2 PK</option><option>2½ PK</option><option>3 PK</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Jenis Service</label>
+                  <select>
+                    <option>Service Ringan</option>
+                    <option>Service Berat (Bongkar)</option>
+                    <option>Tambah Freon</option>
+                    <option>Perbaikan Kebocoran</option>
+                    <option>Pemasangan Baru</option>
+                    <option>Pembongkaran</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Lokasi / Ruangan</label>
+                  <input type="text" placeholder="Misal: Ruang Tamu Lt.1">
+                </div>
+                <div class="form-group">
+                  <label>Tekanan Freon Sebelum (bar)</label>
+                  <input type="text" placeholder="misal: 60 psi">
+                </div>
+                <div class="form-group">
+                  <label>Tekanan Freon Sesudah (bar)</label>
+                  <input type="text" placeholder="misal: 75 psi">
+                </div>
+                <div class="form-group">
+                  <label>Kondisi Sebelum</label>
+                  <select>
+                    <option>Tidak Dingin</option>
+                    <option>Kurang Dingin</option>
+                    <option>Bocor Air</option>
+                    <option>Bau</option>
+                    <option>Suara Berisik</option>
+                    <option>Tidak Menyala</option>
+                    <option>Rutin Service</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Kondisi Sesudah</label>
+                  <select>
+                    <option>✅ Normal / Dingin</option>
+                    <option>⚠️ Perlu Tindak Lanjut</option>
+                    <option>❌ Butuh Spare Part</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Material Tambahan</label>
+                  <input type="text" placeholder="Misal: Freon R-32 0.5kg">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="tambahUnitAC()">+ Tambah Unit AC</button>
+        </div>
+
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label>Temuan & Rekomendasi</label>
+              <textarea id="lap-temuan" placeholder="Tuliskan temuan, kendala, atau rekomendasi tindakan lanjut..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Jadwal Service Berikutnya</label>
+              <input type="date" id="lap-jadwal">
+            </div>
+            <div class="form-group">
+              <label>Tanda Tangan Klien</label>
+              <input type="text" id="lap-ttd-klien" placeholder="Nama lengkap klien yang menerima">
+            </div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:10px;">
+            <button class="btn btn-gold" onclick="previewDoc('laporan')">👁 Preview & Print</button>
+            <button class="btn btn-outline" onclick="saveDoc('laporan')">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- PRINT MODAL -->
+<div class="print-modal" id="print-modal">
+  <button class="print-close" onclick="tutupPreview()">✕ Tutup</button>
+  <div class="print-doc" id="print-doc"></div>
+</div>
+
+<div class="toast" id="toast">✅ Dokumen berhasil disimpan!</div>
+
+<script>
+// ── UTILITIES ──────────────────────────────────────────────────────────────
+const CO = {
+  name: "PT ALFA JAYA MANDALA",
+  tagline: "Service & Instalasi AC Profesional",
+  addr: "Jln. H. Jubris, Warudoyong Rt014 Rw08, Kel. Jatinegara<br>Kec. Cakung, Jakarta Timur, DKI Jakarta 13930",
+  email: "irul@amaliah.id | alfajayamandala@gmail.com",
+  phone: "081314148511",
+  bank: "Bank Permata",
+  rek: "702438411",
+  an: "Alfa Jaya Mandala",
+  dir: "Dede Arnot"
+};
+
+function rp(n) {
+  return "Rp " + Math.round(n).toLocaleString('id-ID');
+}
+
+function terbilang(n) {
+  const satuan = ["","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"];
+  function ribuan(n) {
+    if (n < 12) return satuan[n];
+    else if (n < 20) return satuan[n-10] + " belas";
+    else if (n < 100) return satuan[Math.floor(n/10)] + " puluh" + (n%10 ? " "+satuan[n%10] : "");
+    else if (n < 200) return "seratus" + (n-100 ? " "+ribuan(n-100) : "");
+    else if (n < 1000) return satuan[Math.floor(n/100)] + " ratus" + (n%100 ? " "+ribuan(n%100) : "");
+    else if (n < 2000) return "seribu" + (n-1000 ? " "+ribuan(n-1000) : "");
+    else if (n < 1000000) return ribuan(Math.floor(n/1000)) + " ribu" + (n%1000 ? " "+ribuan(n%1000) : "");
+    else if (n < 1000000000) return ribuan(Math.floor(n/1000000)) + " juta" + (n%1000000 ? " "+ribuan(n%1000000) : "");
+    else return ribuan(Math.floor(n/1000000000)) + " miliar" + (n%1000000000 ? " "+ribuan(n%1000000000) : "");
+  }
+  if (!n || n === 0) return "nol rupiah";
+  return ribuan(n) + " rupiah";
+}
+
+function today() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function fmtDate(d) {
+  if (!d) return "-";
+  const [y,m,dd] = d.split("-");
+  const bln = ["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  return `${dd} ${bln[+m]} ${y}`;
+}
+
+// Set today defaults
+document.querySelectorAll('input[type=date]').forEach(i => i.value = today());
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────────
+const titles = {
+  dashboard: "Dashboard",
+  invoice: "Invoice",
+  penawaran: "Surat Penawaran Harga",
+  suratjalan: "Surat Jalan",
+  bast: "Berita Acara Serah Terima",
+  laporan: "Laporan Pengerjaan"
+};
+
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('topbar-title').textContent = titles[id];
+  updateStats();
+}
+
+// ── ROWS ────────────────────────────────────────────────────────────────────
+function tambahRow(tbodyId, prefix) {
+  const tbody = document.getElementById(tbodyId);
+  const n = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${n}</td>
+    <td><input type="text" placeholder="Uraian pekerjaan" onchange="hitungTotal('${prefix}')"></td>
+    <td><input type="number" value="1" min="1" onchange="hitungTotal('${prefix}')"></td>
+    <td><input type="text" placeholder="Unit"></td>
+    <td><input type="number" placeholder="0" onchange="hitungTotal('${prefix}')" class="money"></td>
+    <td class="subtotal">Rp 0</td>
+    <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function tambahRowSJ() {
+  const tbody = document.getElementById('sj-items');
+  const n = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${n}</td>
+    <td><input type="text" placeholder="Nama barang/peralatan"></td>
+    <td><input type="number" value="1" min="1"></td>
+    <td><input type="text" placeholder="Satuan"></td>
+    <td><input type="text" placeholder="Keterangan"></td>
+    <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function tambahRowBAST() {
+  const tbody = document.getElementById('bast-items');
+  const n = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${n}</td>
+    <td><input type="text" placeholder="Uraian pekerjaan"></td>
+    <td><input type="number" value="1" min="1"></td>
+    <td><input type="text" placeholder="Satuan"></td>
+    <td><select><option>✅ Baik</option><option>⚠️ Perlu Tindak Lanjut</option></select></td>
+    <td><button class="btn btn-danger btn-sm" onclick="hapusRow(this)">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function hapusRow(btn) {
+  btn.closest('tr').remove();
+}
+
+let acCount = 1;
+function tambahUnitAC() {
+  acCount++;
+  const div = document.createElement('div');
+  div.className = 'ac-unit';
+  div.style.cssText = 'background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-size:12px;color:var(--accent2);font-weight:600;">Unit #${acCount}</span>
+      <button class="btn btn-danger btn-sm" onclick="this.closest('.ac-unit').remove()">✕ Hapus</button>
+    </div>
+    <div class="form-grid three">
+      <div class="form-group"><label>Merk / Tipe AC</label><input type="text" placeholder="Misal: Daikin FT-D05P"></div>
+      <div class="form-group"><label>Kapasitas (PK)</label>
+        <select><option>½ PK</option><option>¾ PK</option><option>1 PK</option><option>1½ PK</option><option>2 PK</option><option>2½ PK</option><option>3 PK</option></select>
+      </div>
+      <div class="form-group"><label>Jenis Service</label>
+        <select><option>Service Ringan</option><option>Service Berat (Bongkar)</option><option>Tambah Freon</option><option>Perbaikan Kebocoran</option><option>Pemasangan Baru</option><option>Pembongkaran</option></select>
+      </div>
+      <div class="form-group"><label>Lokasi / Ruangan</label><input type="text" placeholder="Misal: Ruang Tamu Lt.1"></div>
+      <div class="form-group"><label>Tekanan Freon Sebelum</label><input type="text" placeholder="60 psi"></div>
+      <div class="form-group"><label>Tekanan Freon Sesudah</label><input type="text" placeholder="75 psi"></div>
+      <div class="form-group"><label>Kondisi Sebelum</label>
+        <select><option>Tidak Dingin</option><option>Kurang Dingin</option><option>Bocor Air</option><option>Bau</option><option>Suara Berisik</option><option>Tidak Menyala</option><option>Rutin Service</option></select>
+      </div>
+      <div class="form-group"><label>Kondisi Sesudah</label>
+        <select><option>✅ Normal / Dingin</option><option>⚠️ Perlu Tindak Lanjut</option><option>❌ Butuh Spare Part</option></select>
+      </div>
+      <div class="form-group"><label>Material Tambahan</label><input type="text" placeholder="Misal: Freon R-32 0.5kg"></div>
+    </div>`;
+  document.getElementById('ac-units').appendChild(div);
+}
+
+// ── HITUNG TOTAL ────────────────────────────────────────────────────────────
+function hitungTotal(prefix) {
+  const tbody = document.getElementById(prefix+'-items');
+  let sub = 0;
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const inputs = tr.querySelectorAll('input');
+    const qty = parseFloat(inputs[1]?.value) || 0;
+    const harga = parseFloat(inputs[3]?.value) || 0;
+    const total = qty * harga;
+    sub += total;
+    const subtotalCell = tr.querySelector('.subtotal');
+    if (subtotalCell) subtotalCell.textContent = rp(total);
+  });
+  const ppn = document.getElementById(prefix+'-ppn')?.checked ? sub * 0.11 : 0;
+  const grand = sub + ppn;
+  const elSub = document.getElementById(prefix+'-subtotal');
+  const elPPN = document.getElementById(prefix+'-ppn-val');
+  const elTotal = document.getElementById(prefix+'-total');
+  if (elSub) elSub.textContent = rp(sub);
+  if (elPPN) elPPN.textContent = rp(ppn);
+  if (elTotal) elTotal.textContent = rp(grand);
+}
+
+// ── SIMPAN ──────────────────────────────────────────────────────────────────
+let docs = { invoice: [], penawaran: [], suratjalan: [], bast: [], laporan: [] };
+
+function saveDoc(type) {
+  let doc = { type, ts: Date.now() };
+  if (type === 'invoice') {
+    doc = { ...doc,
+      nomor: document.getElementById('inv-nomor').value || 'INV-???',
+      klien: document.getElementById('inv-klien').value || '-',
+      tanggal: document.getElementById('inv-tanggal').value,
+      total: document.getElementById('inv-total').textContent
+    };
+  } else if (type === 'penawaran') {
+    doc = { ...doc,
+      nomor: document.getElementById('pen-nomor').value || 'SPH-???',
+      klien: document.getElementById('pen-klien').value || '-',
+      tanggal: document.getElementById('pen-tanggal').value,
+      total: document.getElementById('pen-total').textContent
+    };
+  } else if (type === 'suratjalan') {
+    doc = { ...doc,
+      nomor: document.getElementById('sj-nomor').value || 'SJ-???',
+      klien: document.getElementById('sj-tujuan').value || '-',
+      tanggal: document.getElementById('sj-tanggal').value,
+      total: '-'
+    };
+  } else if (type === 'bast') {
+    doc = { ...doc,
+      nomor: document.getElementById('bast-nomor').value || 'BAST-???',
+      klien: document.getElementById('bast-klien').value || '-',
+      tanggal: document.getElementById('bast-tanggal').value,
+      total: '-'
+    };
+  } else if (type === 'laporan') {
+    doc = { ...doc,
+      nomor: document.getElementById('lap-nomor').value || 'LAP-???',
+      klien: document.getElementById('lap-klien').value || '-',
+      tanggal: document.getElementById('lap-tanggal').value,
+      total: '-'
+    };
+  }
+  docs[type].push(doc);
+  updateStats();
+  toast();
+}
+
+function updateStats() {
+  document.getElementById('st-inv').textContent = docs.invoice.length;
+  document.getElementById('st-pen').textContent = docs.penawaran.length;
+  document.getElementById('st-sj').textContent = docs.suratjalan.length;
+  document.getElementById('st-bast').textContent = docs.bast.length;
+  document.getElementById('st-lap').textContent = docs.laporan.length;
+
+  const all = [...docs.invoice, ...docs.penawaran, ...docs.suratjalan, ...docs.bast, ...docs.laporan]
+    .sort((a,b) => b.ts - a.ts).slice(0,6);
+
+  const cont = document.getElementById('doc-recent');
+  if (!all.length) {
+    cont.innerHTML = `<div style="color:var(--gray);font-size:13px;padding:20px;text-align:center;grid-column:span 3;">Belum ada dokumen. Buat dokumen baru dari menu di kiri.</div>`;
+    return;
+  }
+  const icons = { invoice:'🧾', penawaran:'📋', suratjalan:'🚚', bast:'✅', laporan:'🔧' };
+  const labels = { invoice:'Invoice', penawaran:'Penawaran', suratjalan:'Surat Jalan', bast:'BAST', laporan:'Laporan' };
+  cont.innerHTML = all.map(d => `
+    <div class="doc-card">
+      <div class="doc-card-head">
+        <span class="badge badge-gold">${icons[d.type]} ${labels[d.type]}</span>
+        <span style="font-size:10px;color:var(--gray)">${fmtDate(d.tanggal)}</span>
+      </div>
+      <div class="doc-client">${d.klien}</div>
+      <div class="doc-number">${d.nomor}</div>
+      ${d.total !== '-' ? `<div class="doc-amount">${d.total}</div>` : ''}
+    </div>`).join('');
+}
+
+function toast() {
+  const t = document.getElementById('toast');
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+// ── PREVIEW / PRINT ─────────────────────────────────────────────────────────
+function previewDoc(type) {
+  let html = '';
+  if (type === 'invoice') html = buildInvoice();
+  else if (type === 'penawaran') html = buildPenawaran();
+  else if (type === 'suratjalan') html = buildSuratJalan();
+  else if (type === 'bast') html = buildBAST();
+  else if (type === 'laporan') html = buildLaporan();
+
+  document.getElementById('print-doc').innerHTML = html;
+  document.getElementById('print-modal').classList.add('open');
+}
+
+function tutupPreview() {
+  document.getElementById('print-modal').classList.remove('open');
+}
+
+// helper: doc header
+function docHeader(type, nomor, tanggal) {
+  return `
+    <div class="doc-header">
+      <div class="doc-logo-area">
+        <div class="co-name">${CO.name}</div>
+        <div class="co-tagline">${CO.tagline}</div>
+        <div class="co-addr" style="font-size:10px;color:#555;margin-top:8px;line-height:1.6">
+          ${CO.addr}<br>
+          📞 ${CO.phone} &nbsp;|&nbsp; ✉ ${CO.email}
+        </div>
+      </div>
+      <div class="doc-title-area">
+        <div class="doc-type">${type}</div>
+        <div class="doc-num">${nomor}</div>
+        <div class="doc-date">${fmtDate(tanggal)}</div>
+      </div>
+    </div>`;
+}
+
+function docFooter() {
+  return `
+    <div class="doc-footer">
+      <span>${CO.name} &nbsp;|&nbsp; ${CO.phone}</span>
+      <span>Dokumen ini dicetak oleh sistem internal PT Alfa Jaya Mandala</span>
+    </div>`;
+}
+
+// ── BUILD INVOICE ────────────────────────────────────────────────────────────
+function buildInvoice() {
+  const nomor = document.getElementById('inv-nomor').value || 'INV-2025-001';
+  const tgl = document.getElementById('inv-tanggal').value;
+  const jatuh = document.getElementById('inv-jatuh').value;
+  const klien = document.getElementById('inv-klien').value || '-';
+  const alamat = document.getElementById('inv-alamat').value || '-';
+  const telp = document.getElementById('inv-telp').value || '-';
+  const ref = document.getElementById('inv-ref').value;
+  const catatan = document.getElementById('inv-catatan').value;
+  const ppnOn = document.getElementById('inv-ppn').checked;
+
+  let rows = '', sub = 0, no = 1;
+  document.getElementById('inv-items').querySelectorAll('tr').forEach(tr => {
+    const inputs = tr.querySelectorAll('input');
+    const uraian = inputs[0]?.value || '-';
+    const qty = parseFloat(inputs[1]?.value) || 0;
+    const satuan = inputs[2]?.value || '-';
+    const harga = parseFloat(inputs[3]?.value) || 0;
+    const total = qty * harga;
+    sub += total;
+    rows += `<tr><td>${no++}</td><td>${uraian}</td><td style="text-align:center">${qty}</td><td>${satuan}</td><td style="text-align:right">${rp(harga)}</td><td style="text-align:right">${rp(total)}</td></tr>`;
+  });
+  const ppn = ppnOn ? sub * 0.11 : 0;
+  const grand = sub + ppn;
+
+  return `
+    ${docHeader('INVOICE', nomor, tgl)}
+    <div style="display:flex; gap:16px; margin-bottom:20px;">
+      <div class="info-box" style="flex:1">
+        <div class="ib-label">Kepada</div>
+        <div class="ib-name">${klien}</div>
+        <div class="ib-detail">${alamat}</div>
+        <div class="ib-detail">📞 ${telp}</div>
+      </div>
+      <div class="info-box" style="width:200px">
+        <div class="ib-label">Detail Invoice</div>
+        <div class="ib-detail"><strong>No.</strong> ${nomor}</div>
+        <div class="ib-detail"><strong>Tgl:</strong> ${fmtDate(tgl)}</div>
+        <div class="ib-detail"><strong>Jatuh Tempo:</strong> ${fmtDate(jatuh)}</div>
+        ${ref ? `<div class="ib-detail"><strong>Ref:</strong> ${ref}</div>` : ''}
+      </div>
+    </div>
+
+    <table class="print-table">
+      <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Harga Satuan</th><th>Jumlah</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div class="total-section">
+      <div class="total-box">
+        <div class="total-row-p"><span>Subtotal</span><span>${rp(sub)}</span></div>
+        ${ppnOn ? `<div class="total-row-p"><span>PPN 11%</span><span>${rp(ppn)}</span></div>` : ''}
+        <div class="total-row-p final"><span>TOTAL</span><span>${rp(grand)}</span></div>
+      </div>
+    </div>
+
+    <div class="terbilang">Terbilang: <em>${terbilang(grand)}</em></div>
+
+    <div class="bank-info">
+      <div><strong>Bank</strong>${CO.bank}</div>
+      <div><strong>No. Rekening</strong>${CO.rek}</div>
+      <div><strong>Atas Nama</strong>${CO.an}</div>
+    </div>
+
+    ${catatan ? `<div style="margin-top:16px;font-size:11px;color:#555;"><strong>Catatan:</strong> ${catatan}</div>` : ''}
+
+    <div class="sign-area">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">Penerima</div>
+        <div class="sign-title">Klien</div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${CO.dir}</div>
+        <div class="sign-title">Direktur – ${CO.name}</div>
+      </div>
+    </div>
+    ${docFooter()}`;
+}
+
+// ── BUILD PENAWARAN ──────────────────────────────────────────────────────────
+function buildPenawaran() {
+  const nomor = document.getElementById('pen-nomor').value || 'SPH-2025-001';
+  const tgl = document.getElementById('pen-tanggal').value;
+  const berlaku = document.getElementById('pen-berlaku').value;
+  const klien = document.getElementById('pen-klien').value || '-';
+  const alamat = document.getElementById('pen-alamat').value || '-';
+  const perihal = document.getElementById('pen-perihal').value || 'Penawaran Jasa Service AC';
+  const syarat = document.getElementById('pen-syarat').value;
+  const garansi = document.getElementById('pen-garansi').value;
+  const catatan = document.getElementById('pen-catatan').value;
+  const ppnOn = document.getElementById('pen-ppn').checked;
+
+  let rows = '', sub = 0, no = 1;
+  document.getElementById('pen-items').querySelectorAll('tr').forEach(tr => {
+    const inputs = tr.querySelectorAll('input');
+    const uraian = inputs[0]?.value || '-';
+    const qty = parseFloat(inputs[1]?.value) || 0;
+    const satuan = inputs[2]?.value || '-';
+    const harga = parseFloat(inputs[3]?.value) || 0;
+    const total = qty * harga;
+    sub += total;
+    rows += `<tr><td>${no++}</td><td>${uraian}</td><td style="text-align:center">${qty}</td><td>${satuan}</td><td style="text-align:right">${rp(harga)}</td><td style="text-align:right">${rp(total)}</td></tr>`;
+  });
+  const ppn = ppnOn ? sub * 0.11 : 0;
+  const grand = sub + ppn;
+
+  return `
+    ${docHeader('PENAWARAN HARGA', nomor, tgl)}
+    <div class="info-box" style="margin-bottom:16px">
+      <div class="ib-label">Kepada Yth.</div>
+      <div class="ib-name">${klien}</div>
+      <div class="ib-detail">${alamat}</div>
+    </div>
+    <p style="font-size:12px; margin-bottom:12px;">
+      Dengan hormat,<br><br>
+      Bersama ini kami dari <strong>${CO.name}</strong> mengajukan penawaran harga untuk pekerjaan:
+      <strong>${perihal}</strong>. Adapun rincian penawaran kami adalah sebagai berikut:
+    </p>
+
+    <table class="print-table">
+      <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Harga</th><th>Total</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div class="total-section">
+      <div class="total-box">
+        <div class="total-row-p"><span>Subtotal</span><span>${rp(sub)}</span></div>
+        ${ppnOn ? `<div class="total-row-p"><span>PPN 11%</span><span>${rp(ppn)}</span></div>` : ''}
+        <div class="total-row-p final"><span>TOTAL PENAWARAN</span><span>${rp(grand)}</span></div>
+      </div>
+    </div>
+
+    <div class="terbilang">Terbilang: <em>${terbilang(grand)}</em></div>
+
+    <div style="margin-top:16px; background:#f8f4ed; border-radius:8px; padding:12px 16px; font-size:11px;">
+      <div style="display:flex; gap:32px; flex-wrap:wrap;">
+        <div><strong>Syarat Pembayaran:</strong><br>${syarat}</div>
+        <div><strong>Garansi:</strong><br>${garansi}</div>
+        <div><strong>Berlaku Hingga:</strong><br>${fmtDate(berlaku)}</div>
+      </div>
+    </div>
+
+    ${catatan ? `<div style="margin-top:12px;font-size:11px;color:#555;"><strong>Catatan:</strong> ${catatan}</div>` : ''}
+
+    <p style="font-size:11px; margin-top:16px; color:#555;">Demikian penawaran ini kami sampaikan. Atas perhatian dan kepercayaan Bapak/Ibu, kami mengucapkan terima kasih.</p>
+
+    <div class="sign-area">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">Disetujui Oleh</div>
+        <div class="sign-title">${klien}</div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${CO.dir}</div>
+        <div class="sign-title">Direktur – ${CO.name}</div>
+      </div>
+    </div>
+    ${docFooter()}`;
+}
+
+// ── BUILD SURAT JALAN ────────────────────────────────────────────────────────
+function buildSuratJalan() {
+  const nomor = document.getElementById('sj-nomor').value || 'SJ-2025-001';
+  const tgl = document.getElementById('sj-tanggal').value;
+  const driver = document.getElementById('sj-driver').value || '-';
+  const kendaraan = document.getElementById('sj-kendaraan').value;
+  const tujuan = document.getElementById('sj-tujuan').value || '-';
+  const telp = document.getElementById('sj-telp').value || '-';
+  const alamat = document.getElementById('sj-alamat').value || '-';
+  const ket = document.getElementById('sj-keterangan').value;
+
+  let rows = '', no = 1;
+  document.getElementById('sj-items').querySelectorAll('tr').forEach(tr => {
+    const inputs = tr.querySelectorAll('input');
+    rows += `<tr>
+      <td>${no++}</td>
+      <td>${inputs[0]?.value || '-'}</td>
+      <td style="text-align:center">${inputs[1]?.value || 0}</td>
+      <td>${inputs[2]?.value || '-'}</td>
+      <td>${inputs[3]?.value || '-'}</td>
+    </tr>`;
+  });
+
+  return `
+    ${docHeader('SURAT JALAN', nomor, tgl)}
+    <div style="display:flex; gap:16px; margin-bottom:16px;">
+      <div class="info-box" style="flex:1">
+        <div class="ib-label">Tujuan / Penerima</div>
+        <div class="ib-name">${tujuan}</div>
+        <div class="ib-detail">${alamat}</div>
+        <div class="ib-detail">📞 ${telp}</div>
+      </div>
+      <div class="info-box" style="width:200px">
+        <div class="ib-label">Detail Pengiriman</div>
+        <div class="ib-detail"><strong>Teknisi:</strong> ${driver}</div>
+        ${kendaraan ? `<div class="ib-detail"><strong>Kendaraan:</strong> ${kendaraan}</div>` : ''}
+        <div class="ib-detail"><strong>Tanggal:</strong> ${fmtDate(tgl)}</div>
+      </div>
+    </div>
+
+    <table class="print-table">
+      <thead><tr><th>#</th><th>Nama Barang / Peralatan</th><th>Qty</th><th>Satuan</th><th>Keterangan</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    ${ket ? `<div style="margin-top:16px;font-size:11px;color:#555;"><strong>Keterangan:</strong> ${ket}</div>` : ''}
+
+    <div class="sign-area">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">Penerima</div>
+        <div class="sign-title">${tujuan}</div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${driver}</div>
+        <div class="sign-title">Teknisi – ${CO.name}</div>
+      </div>
+    </div>
+    ${docFooter()}`;
+}
+
+// ── BUILD BAST ───────────────────────────────────────────────────────────────
+function buildBAST() {
+  const nomor = document.getElementById('bast-nomor').value || 'BAST-2025-001';
+  const tgl = document.getElementById('bast-tanggal').value;
+  const ref = document.getElementById('bast-ref').value;
+  const klien = document.getElementById('bast-klien').value || '-';
+  const alamat = document.getElementById('bast-alamat').value || '-';
+  const picKlien = document.getElementById('bast-pic-klien').value || 'Penerima';
+  const jabKlien = document.getElementById('bast-jabatan-klien').value || '-';
+  const picAJ = document.getElementById('bast-pic-aj').value || CO.dir;
+  const jabAJ = document.getElementById('bast-jabatan-aj').value || 'Teknisi AC';
+  const garansi = document.getElementById('bast-garansi').value;
+  const catatan = document.getElementById('bast-catatan').value;
+
+  let rows = '', no = 1;
+  document.getElementById('bast-items').querySelectorAll('tr').forEach(tr => {
+    const inputs = tr.querySelectorAll('input');
+    const sel = tr.querySelector('select');
+    rows += `<tr>
+      <td>${no++}</td>
+      <td>${inputs[0]?.value || '-'}</td>
+      <td style="text-align:center">${inputs[1]?.value || 1}</td>
+      <td>${inputs[2]?.value || '-'}</td>
+      <td style="text-align:center">${sel?.value || '✅ Baik'}</td>
+    </tr>`;
+  });
+
+  return `
+    ${docHeader('BERITA ACARA SERAH TERIMA', nomor, tgl)}
+
+    <p style="font-size:12px; margin-bottom:16px;">
+      Pada hari ini, <strong>${fmtDate(tgl)}</strong>, yang bertanda tangan di bawah ini menyatakan bahwa telah dilakukan serah terima hasil pekerjaan jasa service AC antara:
+    </p>
+
+    <div style="display:flex; gap:16px; margin-bottom:16px;">
+      <div class="info-box" style="flex:1">
+        <div class="ib-label">Pihak Pertama (Penyedia Jasa)</div>
+        <div class="ib-name">${CO.name}</div>
+        <div class="ib-detail">${CO.addr}</div>
+        <div class="ib-detail">Diwakili oleh: <strong>${picAJ}</strong> (${jabAJ})</div>
+      </div>
+      <div class="info-box" style="flex:1">
+        <div class="ib-label">Pihak Kedua (Penerima Jasa)</div>
+        <div class="ib-name">${klien}</div>
+        <div class="ib-detail">${alamat}</div>
+        <div class="ib-detail">Diwakili oleh: <strong>${picKlien}</strong> (${jabKlien})</div>
+      </div>
+    </div>
+
+    <p style="font-size:11px; margin-bottom:12px;">${ref ? `Referensi: <strong>${ref}</strong> &nbsp;|&nbsp; ` : ''}Pekerjaan yang diserahterimakan:</p>
+
+    <table class="print-table">
+      <thead><tr><th>#</th><th>Uraian Pekerjaan</th><th>Qty</th><th>Satuan</th><th>Kondisi</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div style="margin-top:16px; background:#f0f8f0; border:1px solid #cde8cd; border-radius:6px; padding:12px 16px; font-size:11px;">
+      <strong>Garansi:</strong> ${garansi}
+    </div>
+
+    ${catatan ? `<div style="margin-top:12px;font-size:11px;color:#555;"><strong>Catatan:</strong> ${catatan}</div>` : ''}
+
+    <p style="font-size:11px; margin-top:16px; color:#555;">
+      Demikian berita acara ini dibuat dengan sebenarnya dan ditandatangani oleh kedua pihak sebagai bukti serah terima yang sah.
+    </p>
+
+    <div class="sign-area">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${picKlien}</div>
+        <div class="sign-title">${jabKlien}<br>${klien}</div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${picAJ}</div>
+        <div class="sign-title">${jabAJ}<br>${CO.name}</div>
+      </div>
+    </div>
+    ${docFooter()}`;
+}
+
+// ── BUILD LAPORAN ────────────────────────────────────────────────────────────
+function buildLaporan() {
+  const nomor = document.getElementById('lap-nomor').value || 'LAP-2025-001';
+  const tgl = document.getElementById('lap-tanggal').value;
+  const waktu = document.getElementById('lap-waktu').value || '-';
+  const teknisi = document.getElementById('lap-teknisi').value || '-';
+  const klien = document.getElementById('lap-klien').value || '-';
+  const telp = document.getElementById('lap-telp').value || '-';
+  const alamat = document.getElementById('lap-alamat').value || '-';
+  const temuan = document.getElementById('lap-temuan').value;
+  const jadwal = document.getElementById('lap-jadwal').value;
+  const ttdKlien = document.getElementById('lap-ttd-klien').value || 'Penerima';
+
+  let unitsHtml = '';
+  document.querySelectorAll('.ac-unit').forEach((unit, i) => {
+    const inputs = unit.querySelectorAll('input');
+    const selects = unit.querySelectorAll('select');
+    unitsHtml += `
+      <tr>
+        <td style="text-align:center">${i+1}</td>
+        <td>${inputs[0]?.value || '-'}</td>
+        <td style="text-align:center">${selects[0]?.value || '-'}</td>
+        <td>${selects[1]?.value || '-'}</td>
+        <td>${inputs[1]?.value || '-'}</td>
+        <td>${inputs[2]?.value || '-'} → ${inputs[3]?.value || '-'}</td>
+        <td>${selects[2]?.value || '-'}</td>
+        <td>${selects[3]?.value || '-'}</td>
+        <td>${inputs[4]?.value || '-'}</td>
+      </tr>`;
+  });
+
+  return `
+    ${docHeader('LAPORAN PENGERJAAN', nomor, tgl)}
+
+    <div style="display:flex; gap:16px; margin-bottom:16px;">
+      <div class="info-box" style="flex:1">
+        <div class="ib-label">Lokasi Pengerjaan</div>
+        <div class="ib-name">${klien}</div>
+        <div class="ib-detail">${alamat}</div>
+        <div class="ib-detail">📞 ${telp}</div>
+      </div>
+      <div class="info-box" style="width:220px">
+        <div class="ib-label">Detail Pekerjaan</div>
+        <div class="ib-detail"><strong>Teknisi:</strong> ${teknisi}</div>
+        <div class="ib-detail"><strong>Tanggal:</strong> ${fmtDate(tgl)}</div>
+        <div class="ib-detail"><strong>Waktu:</strong> ${waktu}</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px; font-weight:600; color:#0d1b2a; margin-bottom:8px;">Detail Unit AC yang Diservice:</div>
+    <div style="overflow-x:auto;">
+      <table class="print-table" style="font-size:10px;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Merk/Tipe</th>
+            <th>PK</th>
+            <th>Jenis Service</th>
+            <th>Lokasi</th>
+            <th>Tekanan Freon</th>
+            <th>Kondisi Sebelum</th>
+            <th>Kondisi Sesudah</th>
+            <th>Material</th>
+          </tr>
+        </thead>
+        <tbody>${unitsHtml}</tbody>
+      </table>
+    </div>
+
+    ${temuan ? `
+      <div style="margin-top:16px; background:#fff8f0; border-left:3px solid #e8891a; padding:12px 16px; border-radius:0 6px 6px 0; font-size:11px;">
+        <strong>Temuan & Rekomendasi:</strong><br>${temuan}
+      </div>` : ''}
+
+    ${jadwal ? `
+      <div style="margin-top:12px; background:#f0f8f0; border:1px solid #cde8cd; padding:10px 16px; border-radius:6px; font-size:11px;">
+        <strong>Jadwal Service Berikutnya:</strong> ${fmtDate(jadwal)}
+      </div>` : ''}
+
+    <div class="sign-area">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${ttdKlien}</div>
+        <div class="sign-title">Pelanggan</div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div class="sign-name">${teknisi}</div>
+        <div class="sign-title">Teknisi – ${CO.name}</div>
+      </div>
+    </div>
+    ${docFooter()}`;
+}
+</script>
+</body>
+</html>
