@@ -8,6 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --ink:#0B1F33; --ink-soft:#4A5D70; --muted:#7C8D9C;
@@ -184,8 +185,18 @@
     .photo-grid{grid-template-columns:1fr}
     .page-head h1{font-size:20px}
     .wrap{padding:16px 13px 90px}
-    .brand-sub{display:none}
-  }
+  /* ===== Auth / login ===== */
+  .auth-wrap{max-width:400px;margin:6vh auto 0;padding:0 16px}
+  .auth-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px 24px;box-shadow:0 10px 40px rgba(15,60,90,.08)}
+  .auth-card h2{font-size:20px;margin:0 0 4px}
+  .auth-card .sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+  .auth-card .field{margin-bottom:13px}
+  .auth-card .btn{width:100%;justify-content:center;margin-top:4px}
+  .auth-switch{text-align:center;margin-top:15px;font-size:13.5px;color:var(--muted)}
+  .auth-switch a{color:var(--primary);cursor:pointer;font-weight:600;text-decoration:none}
+  .auth-note{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--muted);margin-top:16px;line-height:1.5}
+  .btn-logout{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--muted);padding:7px 13px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .btn-logout:hover{color:var(--danger);border-color:var(--danger)}
 </style>
 </head>
 <body>
@@ -207,15 +218,50 @@
 <main class="wrap" id="app"></main>
 <div class="toast" id="toast"></div>
 <script>
-/* ============ STORAGE LAYER (persisten + fallback memori) ============ */
-const HAS_STORE = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
-const MEM = {};
+/* ============================================================
+   KONFIGURASI SUPABASE  —  ISI 2 BARIS DI BAWAH INI
+   Ambil dari dashboard Supabase: Project Settings > API
+   ============================================================ */
+const SUPABASE_URL      = 'https://bopypmrhxjnjgaybjjar.supabase.co/rest/v1/';      // contoh: https://abcd1234.supabase.co
+const SUPABASE_ANON_KEY = 'sb_publishable_VWx3k5kFCRDhk9sD2PA6Aw_zMBZWueU';        // kunci publik "anon"
+/* ============================================================ */
+
+const CONFIGURED = SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.includes('GANTI') && !SUPABASE_ANON_KEY.includes('GANTI');
+let sb = null;
+try{ if(CONFIGURED && window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+catch(e){ console.error('Gagal inisialisasi Supabase:', e); }
+
+const MEM = {}; // cadangan sementara bila offline / belum dikonfigurasi
 async function dbGet(key, def){
-  if(HAS_STORE){ try{ const r=await window.storage.get(key); return (r&&r.value!=null)?JSON.parse(r.value):(def??null);}catch(e){ return (key in MEM)?MEM[key]:(def??null);} }
+  if(sb){ try{ const {data,error}=await sb.from('kv').select('value').eq('key',key).maybeSingle(); if(error) throw error; return (data&&data.value!=null)?data.value:(def??null);}catch(e){ console.warn('dbGet',key,e); return (key in MEM)?MEM[key]:(def??null);} }
   return (key in MEM)?MEM[key]:(def??null);
 }
-async function dbSet(key, val){ MEM[key]=val; if(HAS_STORE){ try{ await window.storage.set(key, JSON.stringify(val), false);}catch(e){ console.warn('set gagal',key,e);} } }
-async function dbDel(key){ delete MEM[key]; if(HAS_STORE){ try{ await window.storage.delete(key,false);}catch(e){} } }
+async function dbSet(key, val){ MEM[key]=val; if(sb){ try{ const {error}=await sb.from('kv').upsert({key:key, value:val, updated_at:new Date().toISOString()}); if(error) throw error;}catch(e){ console.warn('dbSet',key,e);} } }
+async function dbDel(key){ delete MEM[key]; if(sb){ try{ await sb.from('kv').delete().eq('key',key);}catch(e){} } }
+
+/* ===== Upload foto ke Supabase Storage (bucket: photos) ===== */
+async function uploadDataUrl(dataURL, prefix){
+  const res=await fetch(dataURL); const blob=await res.blob();
+  const path=prefix+'/'+uid()+'.jpg';
+  const {error}=await sb.storage.from('photos').upload(path, blob, {contentType:'image/jpeg', upsert:false});
+  if(error) throw error;
+  return sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+}
+async function uploadPhotos(arr, prefix){
+  const out=[];
+  for(const it of (arr||[])){
+    if(typeof it!=='string') continue;
+    if(it.startsWith('http')){ out.push(it); continue; }      // sudah di cloud
+    if(it.startsWith('data:')){ if(sb){ try{ out.push(await uploadDataUrl(it,prefix)); continue;}catch(e){ console.warn('upload foto gagal',e);} } out.push(it); }
+  }
+  return out;
+}
+async function asDataURL(src){
+  if(!src) return null;
+  if(src.startsWith('data:')) return src;
+  try{ const r=await fetch(src,{mode:'cors'}); const b=await r.blob(); return await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(b);}); }
+  catch(e){ console.warn('ambil foto gagal',e); return src; }
+}
 
 /* ============ STATE ============ */
 const S = {
@@ -830,6 +876,11 @@ async function saveWorkreport(){
   e.rekomendasi=document.getElementById('f_rekom').value;
   e.hasil=document.getElementById('f_hasil').value;
   if(!e.customerNama){ toast('Isi nama pelanggan dulu'); return; }
+  if(sb){ toast('Mengunggah foto ke cloud...'); }
+  try{
+    e.before = await uploadPhotos(e.before, 'wr/'+e.id+'/before');
+    e.after  = await uploadPhotos(e.after,  'wr/'+e.id+'/after');
+  }catch(err){ console.warn('upload foto:', err); }
   await dbSet('ac:wr:'+e.id, e);
   const summary={id:e.id,nomor:e.nomor,tanggal:e.tanggal,customerNama:e.customerNama,types:e.types};
   const idx=S.wrIndex.findIndex(x=>x.id===e.id);
@@ -838,6 +889,12 @@ async function saveWorkreport(){
   toast('Laporan tersimpan'); S.form=null; go('workreport');
 }
 async function delWorkreport(id){
+  if(sb){ try{
+    for(const sub of ['before','after']){
+      const {data:files}=await sb.storage.from('photos').list('wr/'+id+'/'+sub);
+      if(files&&files.length) await sb.storage.from('photos').remove(files.map(f=>'wr/'+id+'/'+sub+'/'+f.name));
+    }
+  }catch(e){ console.warn('hapus foto cloud:',e); } }
   await dbDel('ac:wr:'+id);
   S.wrIndex=S.wrIndex.filter(x=>x.id!==id);
   await dbSet('ac:wr_index', S.wrIndex);
@@ -1139,10 +1196,10 @@ async function pdfPhotos(doc,y,label,arr){
   doc.setFont('helvetica','bold');doc.setFontSize(9.2);doc.setTextColor(31,111,178);doc.text(label,M,y); y+=4;
   if(!arr||!arr.length){ doc.setFont('helvetica','italic');doc.setFontSize(8.6);doc.setTextColor(150,150,150);doc.text('(tidak ada foto)',M,y+2); return y+7; }
   const boxW=88, gap=6, maxH=60; let col=0, rowMaxH=0;
-  for(const d of arr){ const dim=await imgDims(d); const sc=Math.min(boxW/dim.w, maxH/dim.h); const w=dim.w*sc, h=dim.h*sc;
+  for(const d of arr){ const du=await asDataURL(d); const dim=await imgDims(du); const sc=Math.min(boxW/dim.w, maxH/dim.h); const w=dim.w*sc, h=dim.h*sc;
     if(col===0) y=ensureSpace(doc,y,maxH+8);
     const x=M+col*(boxW+gap);
-    try{ doc.addImage(d, fmtType(d), x, y, w, h); }catch(e){}
+    try{ doc.addImage(du, fmtType(du), x, y, w, h); }catch(e){}
     doc.setLineWidth(0.2); doc.rect(x,y,w,h);
     rowMaxH=Math.max(rowMaxH,h); col++;
     if(col>=2){ col=0; y+=rowMaxH+gap; rowMaxH=0; }
@@ -1364,6 +1421,11 @@ async function handleAction(action,id,el){
   const inForm=!!document.getElementById('f_pph23');
   switch(action){
     case 'cancel': S.form=null; render(); break;
+    case 'auth-login': await doLogin(); break;
+    case 'auth-signup': await doSignup(); break;
+    case 'auth-to-signup': renderAuth('signup'); break;
+    case 'auth-to-login': renderAuth('login'); break;
+    case 'logout': if(confirm('Keluar dari akun?')) await doLogout(); break;
     case 'add-row': { readAllItems(); const lk=el.getAttribute('data-list'); EDIT[lk]=EDIT[lk]||[]; EDIT[lk].push(blankItem()); rerenderItems(lk); (inForm?recalcInvoice:recalcQuote)(); break; }
     case 'del-row': { readAllItems(); const lk=el.getAttribute('data-list'); EDIT[lk].splice(+el.getAttribute('data-i'),1); rerenderItems(lk); (inForm?recalcInvoice:recalcQuote)(); break; }
     case 'rm-photo': { const side=el.getAttribute('data-side'); (EDIT[side]||[]).splice(+el.getAttribute('data-i'),1); refreshThumbs(side); break; }
@@ -1435,17 +1497,71 @@ document.addEventListener('change', async ev=>{
   if(ev.target.id==='c_logo'){ const f=ev.target.files&&ev.target.files[0]; if(f){ try{ S.company.logo=await compressImage(f,640,.82); render(); toast('Logo dimuat — klik Simpan profil'); }catch(e){ toast('Gagal memuat logo'); } } }
 });
 
+/* ============ AUTH / LOGIN ============ */
+const LOGOUT_SVG='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+function renderConfigNeeded(){
+  document.getElementById('nav').style.display='none';
+  document.getElementById('app').innerHTML =
+    '<div class="auth-wrap"><div class="auth-card">'
+    +'<h2>Belum terhubung ke server</h2>'
+    +'<p class="sub">Aplikasi ini perlu dihubungkan ke Supabase agar bisa online &amp; tersinkron antar perangkat.</p>'
+    +'<div class="auth-note">Buka file <b>ini</b> dengan editor teks (mis. Notepad), lalu isi <b>SUPABASE_URL</b> dan <b>SUPABASE_ANON_KEY</b> di bagian atas script sesuai panduan, simpan, dan unggah ulang. Ikuti langkah pada panduan yang disertakan.</div>'
+    +'</div></div>';
+}
+function renderAuth(mode){
+  S._authMode = mode||'login'; const login = S._authMode==='login';
+  document.getElementById('nav').style.display='none';
+  document.getElementById('brandName').textContent = S.company.nama || 'Sistem Bisnis AC';
+  document.getElementById('app').innerHTML =
+    '<div class="auth-wrap"><div class="auth-card">'
+    +'<h2>'+(login?'Masuk':'Daftar akun')+'</h2>'
+    +'<p class="sub">'+(login?'Masuk untuk mengelola dokumen bisnis Anda.':'Buat akun untuk Anda atau teknisi.')+'</p>'
+    +'<div class="field"><label>Email</label><input type="email" id="au_email" autocomplete="username" placeholder="nama@email.com"></div>'
+    +'<div class="field"><label>Password</label><input type="password" id="au_pass" autocomplete="'+(login?'current-password':'new-password')+'" placeholder="Minimal 6 karakter"></div>'
+    +'<button class="btn btn-primary" data-action="'+(login?'auth-login':'auth-signup')+'">'+(login?'Masuk':'Daftar')+'</button>'
+    +'<div class="auth-switch">'+(login?'Belum punya akun? <a data-action="auth-to-signup">Daftar di sini</a>':'Sudah punya akun? <a data-action="auth-to-login">Masuk</a>')+'</div>'
+    +'</div></div>';
+  const pass=document.getElementById('au_pass');
+  if(pass) pass.onkeydown=e=>{ if(e.key==='Enter') login?doLogin():doSignup(); };
+}
+async function doLogin(){
+  const email=(document.getElementById('au_email').value||'').trim(); const pass=document.getElementById('au_pass').value||'';
+  if(!email||!pass){ toast('Isi email & password'); return; }
+  toast('Masuk...');
+  const {error}=await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ toast('Gagal masuk: '+error.message); return; }
+  await startApp();
+}
+async function doSignup(){
+  const email=(document.getElementById('au_email').value||'').trim(); const pass=document.getElementById('au_pass').value||'';
+  if(!email||pass.length<6){ toast('Email wajib & password minimal 6 karakter'); return; }
+  toast('Membuat akun...');
+  const {data,error}=await sb.auth.signUp({email, password:pass});
+  if(error){ toast('Gagal daftar: '+error.message); return; }
+  if(data && data.session){ await startApp(); }
+  else { toast('Akun dibuat. Bila diminta, konfirmasi via email lalu masuk.'); renderAuth('login'); }
+}
+async function doLogout(){ try{ await sb.auth.signOut(); }catch(e){} location.reload(); }
+function injectLogout(){
+  const bar=document.querySelector('.topbar-inner');
+  if(bar && !document.getElementById('logoutBtn')){
+    const b=document.createElement('button'); b.id='logoutBtn'; b.className='btn-logout'; b.setAttribute('data-action','logout');
+    b.innerHTML=LOGOUT_SVG+'<span>Keluar</span>'; bar.appendChild(b);
+  }
+}
+async function startApp(){
+  document.getElementById('nav').style.display='';
+  try{ await loadAll(); }catch(e){ console.error('Gagal memuat data:',e); toast('Gagal memuat data dari server'); }
+  injectLogout(); renderNav(); render();
+}
+
 /* ============ INISIALISASI ============ */
 (async function init(){
-  try{ await loadAll(); }catch(e){ console.error('Gagal memuat data:',e); }
-  if(!HAS_STORE){
-    const b=document.createElement('div');
-    b.style.cssText='background:#FFF4E5;color:#8A5A00;border-bottom:1px solid #F0D9AE;padding:9px 16px;font-size:12.5px;text-align:center;line-height:1.4';
-    b.textContent='⚠ Penyimpanan permanen tidak aktif di lingkungan ini — data hanya bertahan selama sesi ini. Unduh PDF/Excel untuk menyimpan dokumen Anda.';
-    document.body.insertBefore(b, document.body.firstChild);
-  }
-  renderNav();
-  render();
+  if(!sb){ renderConfigNeeded(); return; }
+  try{
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session) await startApp(); else renderAuth('login');
+  }catch(e){ console.error('init',e); renderAuth('login'); }
 })();
 </script>
 </body>
