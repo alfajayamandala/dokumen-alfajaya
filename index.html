@@ -432,6 +432,7 @@ function viewDashboard(){
   ].sort((a,b)=>(b.d||'').localeCompare(a.d||'')).slice(0,6);
 
   return ''
+  +'<div class="banner" style="background:var(--primary-tint);border-color:var(--primary);margin-bottom:16px">'+svg(I.arrow,15)+'<div><b>Alur dokumen:</b> Penawaran &rarr; Laporan Pengerjaan &rarr; BAST &rarr; Invoice. Setiap dokumen punya tombol <b>Invoice</b> atau <b>BAST</b> untuk membuat dokumen lanjutan tanpa ketik ulang.</div></div>'
   +'<div class="page-head"><div><div class="eyebrow">Ringkasan</div><h1>Selamat datang'+(S.company.nama?', '+esc(S.company.nama):'')+'</h1>'
   +'<p>Pantau penawaran, invoice, dan arus kas bisnis AC Anda.</p></div></div>'
   +(S.company.nama?'':'<div class="banner">'+svg(I.gear,16)+'<div>Lengkapi <b>Pengaturan</b> dulu (nama perusahaan, kontak, rekening). Data ini muncul di kop semua dokumen PDF & Excel.</div></div>')
@@ -560,7 +561,7 @@ function listQuotation(){
         +'<td class="muted" style="font-size:13px">'+esc(x.perihal||'-')+'</td>'
         +'<td class="num">'+rupiah(x.grandTotal)+'</td>'
         +'<td><div class="row-actions">'
-          +'<button class="btn btn-sm" data-action="quote-toinv" data-id="'+x.id+'" title="Jadikan invoice">'+svg(I.arrow,13)+'</button>'
+          +'<button class="btn btn-sm" data-action="quote-toinv" data-id="'+x.id+'" title="Buat Invoice">'+svg(I.invoice,13)+'Invoice</button>'+'<button class="btn btn-sm" data-action="quote-tobast" data-id="'+x.id+'" title="Buat BAST">'+svg(I.handover,13)+'BAST</button>'
           +'<button class="btn btn-sm" data-action="quote-pdf" data-id="'+x.id+'">'+svg(I.pdf,13)+'PDF</button>'
           +'<button class="btn btn-sm" data-action="quote-xls" data-id="'+x.id+'">'+svg(I.xls,13)+'Excel</button>'
           +'<button class="btn btn-sm" data-action="quote-edit" data-id="'+x.id+'">'+svg(I.edit,13)+'</button>'
@@ -588,6 +589,7 @@ function quotationFormHtml(){
   return ''
   +'<div class="page-head"><div><div class="eyebrow">Penawaran</div><h1>'+(S.quotations.find(x=>x.id===e.id)?'Edit penawaran':'Penawaran baru')+'</h1></div>'
   +'<button class="btn btn-ghost" data-action="cancel">Batal</button></div>'
+  +(e.refDoc?'<div class="banner" style="margin-bottom:12px">'+svg(I.handover,15)+'<div>Dibuat dari dokumen <b>'+esc(e.refDoc)+'</b> — periksa dan sesuaikan data sebelum menyimpan.</div></div>':'')
   +'<div class="card card-pad">'
     +'<div class="form-grid">'
       +'<div class="field"><label>Nomor</label><input type="text" id="f_nomor" value="'+esc(e.nomor)+'"></div>'
@@ -671,7 +673,7 @@ function listInvoice(){
         +'<td><button class="badge '+st[0]+'" data-action="inv-status" data-id="'+x.id+'" style="border:none;cursor:pointer">'+st[1]+'</button></td>'
         +'<td class="num">'+rupiah(x.totalTagihan)+'</td>'
         +'<td><div class="row-actions">'
-          +'<button class="btn btn-sm" data-action="inv-income" data-id="'+x.id+'" title="Catat sebagai pemasukan">'+svg(I.money,13)+'</button>'
+          +'<button class="btn btn-sm" data-action="inv-income" data-id="'+x.id+'" title="Catat sebagai pemasukan">'+svg(I.money,13)+'</button>'+'<button class="btn btn-sm" data-action="inv-tobast" data-id="'+x.id+'" title="Buat BAST">'+svg(I.handover,13)+'BAST</button>'
           +'<button class="btn btn-sm" data-action="inv-pdf" data-id="'+x.id+'">'+svg(I.pdf,13)+'PDF</button>'
           +'<button class="btn btn-sm" data-action="inv-xls" data-id="'+x.id+'">'+svg(I.xls,13)+'Excel</button>'
           +'<button class="btn btn-sm" data-action="inv-edit" data-id="'+x.id+'">'+svg(I.edit,13)+'</button>'
@@ -708,7 +710,7 @@ function invoiceFormHtml(){
   const e=EDIT, editing=S.invoices.find(x=>x.id===e.id);
   return ''
   +'<div class="page-head"><div><div class="eyebrow">Invoice</div><h1>'+(editing?'Edit invoice':'Invoice baru')+'</h1>'
-  +(e.refQuote?'<p>Dari penawaran '+esc(e.refQuote)+'</p>':'')+'</div>'
+  +(e.refQuote?'<p class="list-meta">'+svg(I.quote,13)+' Dari penawaran '+esc(e.refQuote)+'</p>':'')+(e.refWr?'<p class="list-meta">'+svg(I.report,13)+' Dari laporan '+esc(e.refWr)+'</p>':'')+'</div>'
   +'<button class="btn btn-ghost" data-action="cancel">Batal</button></div>'
   +'<div class="card card-pad">'
     +'<div class="form-grid">'
@@ -825,7 +827,7 @@ function listWorkreport(){
         +'<td class="list-cust">'+esc(x.customerNama||'-')+'</td>'
         +'<td>'+wrTypeBadges(x.types)+'</td>'
         +'<td><div class="row-actions">'
-          +'<button class="btn btn-sm" data-action="wr-pdf" data-id="'+x.id+'">'+svg(I.pdf,13)+'PDF</button>'
+          +'<button class="btn btn-sm" data-action="wr-toinv" data-id="'+x.id+'" title="Buat Invoice">'+svg(I.invoice,13)+'Invoice</button>'+'<button class="btn btn-sm" data-action="wr-tobast" data-id="'+x.id+'" title="Buat BAST">'+svg(I.handover,13)+'BAST</button>'+'<button class="btn btn-sm" data-action="wr-pdf" data-id="'+x.id+'">'+svg(I.pdf,13)+'PDF</button>'
           +'<button class="btn btn-sm" data-action="wr-xls" data-id="'+x.id+'">'+svg(I.xls,13)+'Excel</button>'
           +'<button class="btn btn-sm" data-action="wr-edit" data-id="'+x.id+'">'+svg(I.edit,13)+'</button>'
           +'<button class="btn btn-sm btn-danger" data-action="wr-del" data-id="'+x.id+'">'+svg(I.trash,13)+'</button>'
@@ -1171,6 +1173,114 @@ function deliveryXLS(del){
   (del.items||[]).forEach((it,i)=>a.push([i+1, it.nama||'', it.qty||'', it.satuan||'', it.ket||'']));
   a.push([], ['Pengirim', del.pengirim||''], ['Penerima', del.penerima||''], ['Referensi', del.refDoc||''], ['Catatan', del.catatan||'']);
   aoaFile(a, 'SuratJalan', 'SuratJalan-'+safeName(del.nomor)+'.xlsx', [10,30,10,12,26]);
+}
+
+/* ============ CROSS-DOCUMENT (sinkron antar dokumen) ============ */
+
+/* helper: resolve customer data dari id atau fields */
+function _custFields(src){
+  const c = src.customerId ? custById(src.customerId) : null;
+  return {
+    customerId : src.customerId||'',
+    p2Nama     : c ? (c.nama||'') : (src.customerNama||''),
+    p2Jabatan  : c ? (c.jabatan||'') : '',
+    p2Perusahaan: c ? (c.perusahaan||'') : (src.customerNama||''),
+    p2Alamat   : c ? (c.alamat||'') : (src.customerAlamat||src.tujuan||''),
+    customerNama: c ? (c.perusahaan||c.nama||'') : (src.customerNama||''),
+    customerAlamat: c ? (c.alamat||'') : (src.customerAlamat||''),
+    customerPIC: c ? (c.nama||'') : (src.customerPIC||''),
+  };
+}
+
+/* helper: rincian pekerjaan dari units laporan */
+function _rincianFromUnits(units){
+  if(!units||!units.length) return '1. \n2. ';
+  return units.map((u,i)=>{
+    const j=(WORK_TYPES.find(w=>w[0]===u.jenis)||[,u.jenis||''])[1];
+    return String(i+1)+'. '+(u.noAC?u.noAC+' — ':'')+j+(u.lokasi?' ('+u.lokasi+')':'');
+  }).join('\n');
+}
+
+/* ── Penawaran → Invoice (sudah ada, tetap dipakai) ── */
+/* ── Penawaran → BAST ── */
+function bastFromQuote(q){
+  const cf=_custFields(q);
+  EDIT={
+    id:uid(), nomor:nextNumber('handover','BAST'), tanggal:today(),
+    p1Nama:S.company.penanggungJawab||'', p1Jabatan:'', p1Perusahaan:S.company.nama||'', p1Alamat:S.company.alamat||'',
+    customerId:cf.customerId, p2Nama:cf.p2Nama, p2Jabatan:cf.p2Jabatan, p2Perusahaan:cf.p2Perusahaan, p2Alamat:cf.p2Alamat,
+    lokasi:cf.customerAlamat||'', pekerjaan:q.perihal||'Pekerjaan perawatan/perbaikan AC',
+    rincian: (q.jasa||[]).filter(it=>it.desc).map((it,i)=>String(i+1)+'. '+it.desc).join('\n')||'1. \n2. ',
+    kondisi:'Pekerjaan telah selesai 100% dan diterima dalam kondisi baik.',
+    refDoc:q.nomor||'',
+  };
+  S.view='handover'; renderNav();
+  S.form={ html: handoverFormHtml(), after:null };
+  render(); window.scrollTo(0,0);
+  toast('BAST dibuat dari penawaran '+q.nomor);
+}
+
+/* ── Laporan → Invoice ── */
+async function invoiceFromWorkreport(id){
+  const wr = await dbGet('ac:wr:'+id);
+  if(!wr){ toast('Data laporan tidak ditemukan'); return; }
+  const cf=_custFields(wr);
+  const jasaItems=(wr.units||[]).map(u=>({
+    desc:(WORK_TYPES.find(w=>w[0]===u.jenis)||[,u.jenis||''])[1]+(u.noAC?' — '+u.noAC:'')+(u.lokasi?' ('+u.lokasi+')':''),
+    qty:1, satuan:'unit', harga:0
+  }));
+  EDIT={
+    id:uid(), nomor:nextNumber('invoice','INV'), tanggal:today(), jatuhTempo:'',
+    customerId:cf.customerId, customerNama:cf.customerNama, customerAlamat:cf.customerAlamat, customerPIC:cf.customerPIC,
+    perihal:'Tagihan Jasa Perawatan/Perbaikan AC',
+    jasa: jasaItems.length ? jasaItems : [blankItem()],
+    material:[], diskonTipe:'rp', diskonNilai:0,
+    ppn:true, pph23:false, pph23Base:'jasa', status:'draft',
+    catatan:'Mohon pembayaran ke rekening yang tertera.',
+    refWr: wr.nomor,
+  };
+  S.view='invoice'; renderNav();
+  S.form={ html: invoiceFormHtml(), after: wireInvoiceForm };
+  render(); window.scrollTo(0,0);
+  toast('Invoice dibuat dari laporan '+wr.nomor);
+}
+
+/* ── Laporan → BAST ── */
+async function bastFromWorkreport(id){
+  const wr = await dbGet('ac:wr:'+id);
+  if(!wr){ toast('Data laporan tidak ditemukan'); return; }
+  const cf=_custFields(wr);
+  EDIT={
+    id:uid(), nomor:nextNumber('handover','BAST'), tanggal:today(),
+    p1Nama:S.company.penanggungJawab||'', p1Jabatan:'', p1Perusahaan:S.company.nama||'', p1Alamat:S.company.alamat||'',
+    customerId:cf.customerId, p2Nama:cf.p2Nama, p2Jabatan:cf.p2Jabatan, p2Perusahaan:cf.p2Perusahaan, p2Alamat:cf.p2Alamat,
+    lokasi:wr.lokasi||cf.customerAlamat||'', pekerjaan:'Pekerjaan perawatan/perbaikan AC',
+    rincian:_rincianFromUnits(wr.units),
+    kondisi:'Pekerjaan telah selesai 100% dan diterima dalam kondisi baik.',
+    refDoc:wr.nomor||'',
+  };
+  S.view='handover'; renderNav();
+  S.form={ html: handoverFormHtml(), after:null };
+  render(); window.scrollTo(0,0);
+  toast('BAST dibuat dari laporan '+wr.nomor);
+}
+
+/* ── Invoice → BAST ── */
+function bastFromInvoice(inv){
+  const cf=_custFields(inv);
+  EDIT={
+    id:uid(), nomor:nextNumber('handover','BAST'), tanggal:today(),
+    p1Nama:S.company.penanggungJawab||'', p1Jabatan:'', p1Perusahaan:S.company.nama||'', p1Alamat:S.company.alamat||'',
+    customerId:cf.customerId, p2Nama:cf.p2Nama, p2Jabatan:cf.p2Jabatan, p2Perusahaan:cf.p2Perusahaan, p2Alamat:cf.p2Alamat,
+    lokasi:cf.customerAlamat||'', pekerjaan:inv.perihal||'Pekerjaan perawatan/perbaikan AC',
+    rincian: (inv.jasa||[]).filter(it=>it.desc).map((it,i)=>String(i+1)+'. '+it.desc).join('\n')||'1. \n2. ',
+    kondisi:'Pekerjaan telah selesai 100% dan diterima dalam kondisi baik.',
+    refDoc:inv.nomor||'',
+  };
+  S.view='handover'; renderNav();
+  S.form={ html: handoverFormHtml(), after:null };
+  render(); window.scrollTo(0,0);
+  toast('BAST dibuat dari invoice '+inv.nomor);
 }
 
 /* ============ KEUANGAN ============ */
@@ -1653,6 +1763,10 @@ async function handleAction(action,id,el){
     case 'quote-pdf': { const q=S.quotations.find(x=>x.id===id); if(q) await quotePDF(q); break; }
     case 'quote-xls': { const q=S.quotations.find(x=>x.id===id); if(q) quoteXLS(q); break; }
     case 'quote-toinv': { const q=S.quotations.find(x=>x.id===id); if(q){ S.view='invoice'; renderNav(); invoiceFromQuote(q); } break; }
+    case 'quote-tobast': { const q=S.quotations.find(x=>x.id===id); if(q) bastFromQuote(q); break; }
+    case 'wr-toinv': { toast('Menyiapkan invoice...'); await invoiceFromWorkreport(id); break; }
+    case 'wr-tobast': { toast('Menyiapkan BAST...'); await bastFromWorkreport(id); break; }
+    case 'inv-tobast': { const v=S.invoices.find(x=>x.id===id); if(v) bastFromInvoice(v); break; }
     /* Invoice */
     case 'inv-save': await saveInvoice(); break;
     case 'inv-edit': { const v=S.invoices.find(x=>x.id===id); if(v) openInvoice(v); break; }
