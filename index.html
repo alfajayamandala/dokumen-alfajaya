@@ -199,6 +199,11 @@
   .btn-logout:hover{color:var(--bad);border-color:var(--bad)}
   .preauth .menu-wrap{display:none}
   .preauth .brand-btn{pointer-events:none}
+  .badge.doc-q{background:var(--primary-tint);color:var(--primary-dark)}
+  .badge.doc-r{background:#EAF3EC;color:#15936A}
+  .badge.doc-b{background:#F3EDFA;color:#6B45A8}
+  .badge.doc-d{background:#FDF2E4;color:#A5701A}
+  .badge.doc-i{background:#FDEBEA;color:#C3372C}
   /* ===== Modal & tanda tangan ===== */
   .modal-back{position:fixed;inset:0;background:rgba(10,30,45,.5);display:grid;place-items:center;z-index:200;padding:16px}
   .modal{background:var(--surface);border-radius:16px;padding:22px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto}
@@ -2168,9 +2173,11 @@ function listCustomers(){
   +'<button class="btn btn-primary" data-nav="newcustomer">'+svg(I.plus,15)+'Pelanggan baru</button></div>'
   +'<div class="toolbar"><div class="search">'+svg(I.search,15)+'<input type="text" id="filterBox" placeholder="Cari nama / perusahaan..." value="'+esc(S.filter)+'"></div></div>'
   +(rows.length? '<div class="card"><div class="table-scroll"><table class="tbl"><thead><tr><th>Pelanggan</th><th>Kontak</th><th></th></tr></thead><tbody>'
-    + rows.map(c=>{ const rc=reportsOfCustomer(c).length;
+    + rows.map(c=>{ const st=customerStats(c);
         return '<tr><td><div class="doc-num">'+esc(c.perusahaan||c.nama||'-')+'</div>'+((c.perusahaan&&c.nama)?'<div class="list-meta">'+esc(c.nama)+(c.jabatan?(' \u00b7 '+esc(c.jabatan)):'')+'</div>':'')+'</td>'
-          +'<td class="muted" style="font-size:13px">'+esc([c.telp,c.email].filter(Boolean).join(' \u00b7 ')||'-')+'<div class="list-meta">'+rc+' laporan</div></td>'
+          +'<td class="muted" style="font-size:13px">'+esc([c.telp,c.email].filter(Boolean).join(' \u00b7 ')||'-')
+            +'<div class="list-meta">'+st.jumlahLayanan+' layanan \u00b7 '+st.jumlahUnit+' unit \u00b7 '+st.jumlahInvoice+' invoice</div>'
+            +(st.ditagih? '<div class="list-meta" style="color:var(--good);font-weight:600">'+rupiah(st.ditagih)+(st.belum? ' <span style="color:var(--bad)">('+rupiah(st.belum)+' belum)</span>':'')+'</div>':'')+'</td>'
           +'<td><div class="row-actions">'
             +'<button class="btn btn-sm" data-action="cust-history" data-id="'+c.id+'">'+svg(I.history,13)+'Riwayat</button>'
             +'<button class="btn btn-sm" data-action="cust-edit" data-id="'+c.id+'">'+svg(I.edit,13)+'</button>'
@@ -2212,29 +2219,123 @@ async function saveCustomer(){
 
 /* ============ RIWAYAT LAYANAN PER UNIT ============ */
 let _hist={unitsMap:{}}; let _histCharts=[];
+
+/* cocokkan dokumen apa pun dengan pelanggan (via customerId atau nama legacy) */
+function _matchCust(x, c){
+  if(x.customerId) return x.customerId===c.id;
+  const nm=x.customerNama||'';
+  return (c.perusahaan && nm===c.perusahaan) || (c.nama && nm===c.nama);
+}
+function quotesOfCustomer(c){ return S.quotations.filter(x=>_matchCust(x,c)); }
+function invoicesOfCustomer(c){ return S.invoices.filter(x=>_matchCust(x,c)); }
+function handoversOfCustomer(c){ return S.handovers.filter(x=>_matchCust(x,c)); }
+function deliveriesOfCustomer(c){ return S.deliveries.filter(x=>_matchCust(x,c)); }
+
+/* ringkasan angka pelanggan */
+function customerStats(c){
+  const reps=reportsOfCustomer(c);
+  const quotes=quotesOfCustomer(c);
+  const invs=invoicesOfCustomer(c);
+  const bas=handoversOfCustomer(c);
+  const dels=deliveriesOfCustomer(c);
+
+  // jumlah unit: unik per No. AC dari semua laporan
+  const unitSet=new Set();
+  let totalServis=0;
+  reps.forEach(r=>(r.units||[]).forEach(u=>{ unitSet.add(u.noAC||'(tanpa nomor)'); totalServis++; }));
+
+  // uang
+  let nilaiPenawaran=0; quotes.forEach(q=>{ nilaiPenawaran+=calcQuote(q).grand; });
+  let ditagih=0, lunas=0, belum=0;
+  invs.forEach(v=>{ const t=calcInvoice(v).dibayar; ditagih+=t; if(v.status==='lunas') lunas+=t; else belum+=t; });
+
+  const tgls=[...reps,...quotes,...invs,...bas,...dels].map(x=>x.tanggal).filter(Boolean).sort();
+  return { reps, quotes, invs, bas, dels,
+    jumlahLayanan:reps.length, jumlahUnit:unitSet.size, totalServis,
+    jumlahPenawaran:quotes.length, jumlahInvoice:invs.length, jumlahBast:bas.length, jumlahSJ:dels.length,
+    nilaiPenawaran, ditagih, lunas, belum,
+    pertama:tgls[0]||'', terakhir:tgls[tgls.length-1]||'' };
+}
+
+/* timeline gabungan semua dokumen */
+function customerTimeline(c){
+  const t=[];
+  quotesOfCustomer(c).forEach(x=>t.push({tanggal:x.tanggal,tipe:'Penawaran',nomor:x.nomor,ket:x.perihal||'',nilai:calcQuote(x).grand,cls:'q'}));
+  reportsOfCustomer(c).forEach(x=>t.push({tanggal:x.tanggal,tipe:'Laporan',nomor:x.nomor,ket:((x.units||[]).length)+' unit'+(x.lokasi?' · '+x.lokasi:''),nilai:null,cls:'r'}));
+  handoversOfCustomer(c).forEach(x=>t.push({tanggal:x.tanggal,tipe:'BAST',nomor:x.nomor,ket:x.pekerjaan||'',nilai:null,cls:'b'}));
+  deliveriesOfCustomer(c).forEach(x=>t.push({tanggal:x.tanggal,tipe:'Surat Jalan',nomor:x.nomor,ket:(x.jenis==='jasa'?'Jasa':'Material')+((x.items||[]).length?' · '+x.items.length+' item':''),nilai:null,cls:'d'}));
+  invoicesOfCustomer(c).forEach(x=>t.push({tanggal:x.tanggal,tipe:'Invoice',nomor:x.nomor,ket:(x.status==='lunas'?'Lunas':(x.status==='belum'?'Belum lunas':'Draft')),nilai:calcInvoice(x).dibayar,cls:'i'}));
+  return t.sort((a,b)=>(b.tanggal||'').localeCompare(a.tanggal||''));
+}
+
 function customerHistory(id){
   const c=custById(id); if(!c){ toast('Pelanggan tidak ditemukan'); return; }
-  const reps=reportsOfCustomer(c).slice().sort((a,b)=>(a.tanggal||'').localeCompare(b.tanggal||''));
+  const st=customerStats(c);
+  const reps=st.reps.slice().sort((a,b)=>(a.tanggal||'').localeCompare(b.tanggal||''));
   const unitsMap={};
   reps.forEach(r=>{ (r.units||[]).forEach(u=>{ const k=(u.noAC||'(tanpa nomor)'); (unitsMap[k]=unitsMap[k]||[]).push({tanggal:r.tanggal,nomor:r.nomor,jenis:u.jenis,freon:u.freon,ampere:u.ampere,lokasi:u.lokasi}); }); });
   _hist={unitsMap}; const unitKeys=Object.keys(unitsMap);
+  const tl=customerTimeline(c);
+
   let html=''
-  +'<div class="page-head"><div><div class="eyebrow">Riwayat Layanan</div><h1>'+esc(c.perusahaan||c.nama)+'</h1>'+((c.perusahaan&&c.nama)?'<p>'+esc(c.nama)+(c.telp?(' \u00b7 '+esc(c.telp)):'')+'</p>':'')+'</div>'
+  +'<div class="page-head"><div><div class="eyebrow">Riwayat Pelanggan</div><h1>'+esc(c.perusahaan||c.nama)+'</h1>'
+    +((c.perusahaan&&c.nama)?'<p>'+esc(c.nama)+(c.telp?(' \u00b7 '+esc(c.telp)):'')+'</p>':'')+'</div>'
   +'<button class="btn btn-ghost" data-nav="customers">'+svg(I.arrow,14)+'Kembali</button></div>';
-  if(!reps.length){ S.form={html: html+emptyState(I.history,'Belum ada riwayat','Laporan untuk pelanggan ini akan muncul di sini. Pilih pelanggan ini saat membuat laporan pengerjaan.',''), after:null}; render(); window.scrollTo(0,0); return; }
-  html+='<div class="card card-pad" style="margin-bottom:14px"><b>'+reps.length+'</b> laporan \u00b7 <b>'+unitKeys.length+'</b> unit AC terpantau. Grafik freon &amp; ampere membantu melihat tren sebelum unit bermasalah.</div>';
-  unitKeys.forEach((k,idx)=>{
-    const list=unitsMap[k]; const last=list[list.length-1];
-    const hasNum=list.some(x=>parseFloat(String(x.freon).replace(',','.'))||parseFloat(String(x.ampere).replace(',','.')));
-    html+='<div class="card card-pad" style="margin-bottom:14px">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
-      +'<div><b>'+esc(k)+'</b>'+(last.lokasi?(' <span class="muted">\u00b7 '+esc(last.lokasi)+'</span>'):'')+'</div>'
-      +'<span class="muted" style="font-size:12.5px">'+list.length+'\u00d7 servis</span></div>'
-      + (hasNum? '<div style="height:180px;margin-top:10px"><canvas id="hist_'+idx+'"></canvas></div>':'')
-      +'<div class="table-scroll" style="margin-top:9px"><table class="tbl"><thead><tr><th>Tanggal</th><th>Jenis</th><th>Freon</th><th>Ampere</th><th>No. Laporan</th></tr></thead><tbody>'
-      + list.slice().reverse().map(x=>'<tr><td>'+tglPendek(x.tanggal)+'</td><td>'+esc((WORK_TYPES.find(w=>w[0]===x.jenis)||[,x.jenis||'-'])[1])+'</td><td>'+esc(x.freon||'-')+'</td><td>'+esc(x.ampere||'-')+'</td><td class="muted">'+esc(x.nomor||'-')+'</td></tr>').join('')
-      +'</tbody></table></div></div>';
-  });
+
+  const anyDoc = tl.length>0;
+  if(!anyDoc){
+    S.form={html: html+emptyState(I.history,'Belum ada riwayat','Dokumen untuk pelanggan ini akan muncul di sini. Pilih pelanggan ini saat membuat penawaran, laporan, atau invoice.',''), after:null};
+    render(); window.scrollTo(0,0); return;
+  }
+
+  /* --- kartu ringkasan --- */
+  html+='<div class="stats">'
+    +'<div class="stat"><div class="lbl">'+svg(I.report,14)+'Jumlah layanan</div><div class="val">'+st.jumlahLayanan+'<span style="font-size:13px;font-weight:600;color:var(--muted)"> laporan</span></div>'
+      +'<div class="list-meta">'+st.totalServis+'\u00d7 pengerjaan unit</div></div>'
+    +'<div class="stat"><div class="lbl">'+svg(I.dash,14)+'Unit AC terdaftar</div><div class="val">'+st.jumlahUnit+'<span style="font-size:13px;font-weight:600;color:var(--muted)"> unit</span></div>'
+      +'<div class="list-meta">'+st.jumlahBast+' BAST \u00b7 '+st.jumlahSJ+' surat jalan</div></div>'
+    +'<div class="stat good"><div class="lbl">'+svg(I.money,14)+'Total ditagih</div><div class="val">'+rupiah(st.ditagih)+'</div>'
+      +'<div class="list-meta">'+st.jumlahInvoice+' invoice \u00b7 '+st.jumlahPenawaran+' penawaran</div></div>'
+    +'<div class="stat '+(st.belum>0?'bad':'')+'"><div class="lbl">'+svg(I.invoice,14)+'Belum dibayar</div>'
+      +'<div class="val" style="color:'+(st.belum>0?'var(--bad)':'var(--good)')+'">'+rupiah(st.belum)+'</div>'
+      +'<div class="list-meta">Lunas: '+rupiah(st.lunas)+'</div></div>'
+  +'</div>';
+
+  if(st.pertama){
+    html+='<div class="card card-pad" style="margin-bottom:16px"><span class="muted" style="font-size:13px">Pelanggan sejak <b>'+tglPendek(st.pertama)+'</b> \u00b7 aktivitas terakhir <b>'+tglPendek(st.terakhir)+'</b>'
+      +(st.nilaiPenawaran? ' \u00b7 total nilai penawaran <b>'+rupiah(st.nilaiPenawaran)+'</b>':'')+'</span></div>';
+  }
+
+  /* --- timeline dokumen --- */
+  html+='<div class="card" style="margin-bottom:18px"><div class="card-pad" style="padding-bottom:0"><h3 style="font-size:15px">Riwayat dokumen</h3>'
+    +'<p class="muted" style="font-size:13px;margin-top:2px">Semua penawaran, laporan, BAST, surat jalan, dan invoice pelanggan ini.</p></div>'
+    +'<div class="table-scroll"><table class="tbl"><thead><tr><th>Tanggal</th><th>Dokumen</th><th>Keterangan</th><th class="num">Nilai</th></tr></thead><tbody>'
+    + tl.map(x=>'<tr><td class="nowrap">'+tglPendek(x.tanggal)+'</td>'
+        +'<td><span class="badge doc-'+x.cls+'">'+x.tipe+'</span><div class="list-meta">'+esc(x.nomor||'-')+'</div></td>'
+        +'<td>'+esc(x.ket||'-')+'</td>'
+        +'<td class="num">'+(x.nilai!=null?rupiah(x.nilai):'<span class="muted">\u2014</span>')+'</td></tr>').join('')
+    +'</tbody></table></div></div>';
+
+  /* --- riwayat per unit AC --- */
+  if(unitKeys.length){
+    html+='<div class="card card-pad" style="margin-bottom:14px"><h3 style="font-size:15px;margin-bottom:2px">Riwayat per unit AC</h3>'
+      +'<p class="muted" style="font-size:13px"><b>'+unitKeys.length+'</b> unit terpantau. Grafik freon &amp; ampere membantu melihat tren sebelum unit bermasalah.</p></div>';
+    unitKeys.forEach((k,idx)=>{
+      const list=unitsMap[k]; const last=list[list.length-1];
+      const hasNum=list.some(x=>parseFloat(String(x.freon).replace(',','.'))||parseFloat(String(x.ampere).replace(',','.')));
+      html+='<div class="card card-pad" style="margin-bottom:14px">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
+        +'<div><b>'+esc(k)+'</b>'+(last.lokasi?(' <span class="muted">\u00b7 '+esc(last.lokasi)+'</span>'):'')+'</div>'
+        +'<span class="muted" style="font-size:12.5px">'+list.length+'\u00d7 servis</span></div>'
+        + (hasNum? '<div style="height:180px;margin-top:10px"><canvas id="hist_'+idx+'"></canvas></div>':'')
+        +'<div class="table-scroll" style="margin-top:9px"><table class="tbl"><thead><tr><th>Tanggal</th><th>Jenis</th><th>Freon</th><th>Ampere</th><th>No. Laporan</th></tr></thead><tbody>'
+        + list.slice().reverse().map(x=>'<tr><td>'+tglPendek(x.tanggal)+'</td><td>'+esc((WORK_TYPES.find(w=>w[0]===x.jenis)||[,x.jenis||'-'])[1])+'</td><td>'+esc(x.freon||'-')+'</td><td>'+esc(x.ampere||'-')+'</td><td class="muted">'+esc(x.nomor||'-')+'</td></tr>').join('')
+        +'</tbody></table></div></div>';
+    });
+  } else {
+    html+='<div class="card card-pad" style="margin-bottom:14px"><p class="muted" style="font-size:13px">Belum ada data unit AC. Data unit terisi dari Laporan Pengerjaan yang mencantumkan No. AC.</p></div>';
+  }
+
   S.form={ html, after: ()=>drawHistoryCharts(unitKeys) }; render(); window.scrollTo(0,0);
 }
 function drawHistoryCharts(unitKeys){
