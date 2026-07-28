@@ -58,8 +58,9 @@
   .eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:5px}
 
   /* Buttons */
-  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;transition:.12s;white-space:nowrap}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px;min-height:40px;border-radius:var(--radius-sm);font-weight:600;font-size:14.5px;transition:.12s;white-space:nowrap}
   .btn:hover{border-color:var(--primary);color:var(--primary-dark)}
+  .btn:active{transform:scale(.97)}
   .btn svg{width:15px;height:15px}
   .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
   .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff}
@@ -67,13 +68,13 @@
   .btn-ghost:hover{background:var(--frost);color:var(--ink)}
   .btn-danger{color:var(--bad);border-color:transparent}
   .btn-danger:hover{background:var(--bad-tint);border-color:transparent;color:var(--bad)}
-  .btn-sm{padding:6px 10px;font-size:12.5px;gap:5px}
+  .btn-sm{padding:8px 11px;min-height:34px;font-size:13px;gap:5px}
   .btn-sm svg{width:13px;height:13px}
   .btn:disabled{opacity:.5;cursor:not-allowed}
 
   /* Cards */
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
-  .card-pad{padding:18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);transition:box-shadow .15s,border-color .15s}
+  .card-pad{padding:20px}
 
   /* Stat tiles */
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;margin-bottom:22px}
@@ -92,7 +93,9 @@
   table.tbl tr:last-child td{border-bottom:none}
   table.tbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   table.tbl tr:hover td{background:#FAFCFE}
-  .row-actions{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap}
+  table.tbl th,table.tbl td{font-size:13.5px}
+  @media (max-width:640px){ table.tbl{font-size:13px} table.tbl td,table.tbl th{padding:10px 9px} }
+  .row-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 
   /* Forms */
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -100,9 +103,10 @@
   .field.full{grid-column:1/-1}
   label{font-size:12.5px;font-weight:600;color:var(--ink-soft)}
   input[type=text],input[type=number],input[type=date],input[type=email],input[type=tel],select,textarea{
-    border:1px solid var(--line);background:var(--surface);border-radius:var(--radius-sm);padding:10px 12px;color:var(--ink);width:100%;outline:none;transition:.12s}
+    border:1.5px solid var(--line);background:var(--surface);border-radius:var(--radius-sm);padding:11px 13px;min-height:44px;color:var(--ink);width:100%;outline:none;transition:.12s;font-size:15px}
   input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
   textarea{resize:vertical;min-height:74px}
+  label{display:inline-block;margin-bottom:1px}
   .section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft);margin:8px 0 4px;display:flex;align-items:center;gap:8px}
   .section-title .tag{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--primary-tint);color:var(--primary-dark);letter-spacing:.04em}
   .section-title .tag.mat{background:var(--frost);color:var(--accent)}
@@ -135,10 +139,7 @@
   .badge.draft{background:var(--frost);color:var(--ink-soft)}
   .badge.in{background:var(--good-tint);color:var(--good)}
   .badge.out{background:var(--bad-tint);color:var(--bad)}
-  .badge.t-cuci{background:var(--primary-tint);color:var(--primary-dark)}
-  .badge.t-perbaikan{background:var(--warn-tint);color:var(--warn)}
-  .badge.t-pengecekan{background:var(--frost);color:var(--accent)}
-  .badge.t-pemasangan{background:var(--good-tint);color:var(--good)}
+  .badge.wr-type{background:var(--primary-tint);color:var(--primary-dark)}
 
   /* Photo upload */
   .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -154,7 +155,10 @@
   .add-photo svg{width:22px;height:22px}
 
   /* Misc */
-  .empty{text-align:center;padding:46px 20px;color:var(--muted)}
+  .empty{text-align:center;padding:52px 20px;color:var(--muted)}
+  .empty svg{color:var(--primary);opacity:.55}
+  .empty h3{color:var(--ink);font-size:16.5px;margin:14px 0 6px}
+  .empty p{font-size:13.5px;max-width:340px;margin:0 auto;line-height:1.6}
   .empty svg{width:42px;height:42px;opacity:.4;margin-bottom:10px}
   .empty h3{font-size:16px;color:var(--ink-soft);margin-bottom:5px}
   .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
@@ -186,8 +190,9 @@
     .page-head h1{font-size:20px}
     .wrap{padding:16px 13px 90px}
   /* ===== Auth / login ===== */
-  .auth-wrap{max-width:400px;margin:6vh auto 0;padding:0 16px}
-  .auth-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px 24px;box-shadow:0 10px 40px rgba(15,60,90,.08)}
+  .auth-wrap{max-width:400px;margin:8vh auto 0;padding:0 16px}
+  .auth-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px 26px;box-shadow:0 14px 44px rgba(15,60,90,.10)}
+  .auth-forgot{display:block;text-align:right;font-size:12.5px;color:var(--primary);cursor:pointer;font-weight:600;margin:-7px 0 13px}
   .auth-card h2{font-size:20px;margin:0 0 4px}
   .auth-card .sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
   .auth-card .field{margin-bottom:13px}
@@ -240,10 +245,12 @@
   .menu-item:hover{background:var(--frost);color:var(--ink)}
   .menu-item.active{background:var(--primary-tint);color:var(--primary-dark)}
   .menu-sep{height:1px;background:var(--line);margin:5px 6px}
-  /* ===== Tabel unit & riwayat ===== */
-  .unit-tbl th{font-size:11px;white-space:nowrap;color:var(--ink-soft)}
-  .unit-tbl td{padding:4px 5px;vertical-align:middle}
-  .unit-tbl input,.unit-tbl select{width:100%;font-size:13px;padding:7px 8px;min-width:80px}
+  /* ===== Kartu editor unit & riwayat ===== */
+  .unit-card{border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px;background:var(--frost)}
+  .unit-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px;color:var(--ink-soft)}
+  .unit-sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:10px 0 6px}
+  .unit-card .form-grid{gap:10px}
+  .unit-card input{background:var(--surface)}
 </style>
 </head>
 <body>
@@ -274,9 +281,18 @@
    ============================================================ */
 const SUPABASE_URL      = 'https://bopypmrhxjnjgaybjjar.supabase.co';      // contoh: https://abcd1234.supabase.co
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvcHlwbXJoeGpuamdheWJqamFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTQwMTYsImV4cCI6MjA5NzMzMDAxNn0.CyIyEjmCJQxrsQwClyMS2yERC0hyg7FwDjMFphlZ_ZA';        // kunci publik "anon"
+
+/* ===== KONFIGURASI CLOUDINARY (opsional, untuk penyimpanan FOTO) =====
+   Isi 2 baris di bawah untuk menyimpan foto laporan di Cloudinary (gratis 25GB)
+   alih-alih di Supabase Storage (gratis 1GB). Data teks (invoice, dll) TETAP
+   di Supabase seperti biasa — ini HANYA memindahkan foto.
+   Cara dapat nilainya: lihat PANDUAN-ONLINE.md bagian Cloudinary. */
+const CLOUDINARY_CLOUD  = 'GANTI_DENGAN_CLOUD_NAME';
+const CLOUDINARY_PRESET = 'GANTI_DENGAN_UPLOAD_PRESET';
 /* ============================================================ */
 
 const CONFIGURED = SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.includes('GANTI') && !SUPABASE_ANON_KEY.includes('GANTI');
+const CLOUDINARY_CONFIGURED = CLOUDINARY_CLOUD && CLOUDINARY_PRESET && !CLOUDINARY_CLOUD.includes('GANTI') && !CLOUDINARY_PRESET.includes('GANTI');
 let sb = null;
 try{ if(CONFIGURED && window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
 catch(e){ console.error('Gagal inisialisasi Supabase:', e); }
@@ -292,17 +308,30 @@ async function dbDel(key){ delete MEM[key]; if(sb){ try{ await sb.from('kv').del
 /* ===== Upload foto ke Supabase Storage (bucket: photos) ===== */
 async function uploadDataUrl(dataURL, prefix){
   const res=await fetch(dataURL); const blob=await res.blob();
-  const path=prefix+'/'+uid()+'.jpg';
-  const {error}=await sb.storage.from('photos').upload(path, blob, {contentType:'image/jpeg', upsert:false});
-  if(error) throw error;
-  return sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+  if(CLOUDINARY_CONFIGURED){
+    const fd=new FormData();
+    fd.append('file', blob);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('folder', 'ac-photos/'+prefix);
+    const r=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD+'/image/upload', {method:'POST', body:fd});
+    const j=await r.json();
+    if(!r.ok) throw new Error((j.error&&j.error.message)||'Upload Cloudinary gagal');
+    return j.secure_url;
+  }
+  if(sb){
+    const path=prefix+'/'+uid()+'.jpg';
+    const {error}=await sb.storage.from('photos').upload(path, blob, {contentType:'image/jpeg', upsert:false});
+    if(error) throw error;
+    return sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+  }
+  throw new Error('Belum ada layanan penyimpanan foto yang aktif (Cloudinary/Supabase)');
 }
 async function uploadPhotos(arr, prefix){
   const out=[];
   for(const it of (arr||[])){
     if(typeof it!=='string') continue;
     if(it.startsWith('http')){ out.push(it); continue; }      // sudah di cloud
-    if(it.startsWith('data:')){ if(sb){ try{ out.push(await uploadDataUrl(it,prefix)); continue;}catch(e){ console.warn('upload foto gagal',e);} } out.push(it); }
+    if(it.startsWith('data:')){ if(sb||CLOUDINARY_CONFIGURED){ try{ out.push(await uploadDataUrl(it,prefix)); continue;}catch(e){ console.warn('upload foto gagal',e);} } out.push(it); }
   }
   return out;
 }
@@ -494,6 +523,9 @@ function viewSettings(){
   return ''
   +'<div class="page-head"><div><div class="eyebrow">Pengaturan</div><h1>Profil Perusahaan</h1>'
   +'<p>Informasi ini ditampilkan pada kop setiap penawaran, invoice, laporan, dan berita acara.</p></div></div>'
+  +'<div class="banner" style="margin-bottom:16px">'+svg(I.cam,15)+'<div><b>Penyimpanan foto laporan:</b> '
+    +(CLOUDINARY_CONFIGURED? 'Cloudinary aktif (kuota gratis 25GB).' : (sb? 'Supabase Storage (kuota gratis 1GB). Isi CLOUDINARY_CLOUD &amp; CLOUDINARY_PRESET di bagian atas file untuk pindah ke kuota lebih besar — lihat PANDUAN-ONLINE.md.' : 'Belum aktif — hubungkan Supabase atau Cloudinary.'))
+    +'</div></div>'
   +'<div class="card card-pad" style="max-width:760px">'
     +'<div class="form-grid">'
       +'<div class="field full"><label>Nama perusahaan</label><input type="text" id="c_nama" value="'+esc(c.nama)+'" placeholder="CV Sejuk Abadi Teknik"></div>'
@@ -846,8 +878,9 @@ async function invoiceToIncome(id){
   toast('Tercatat sebagai pemasukan'); render();
 }
 /* ============ LAPORAN PENGERJAAN ============ */
-const WORK_TYPES=[['cuci','Cuci AC'],['perbaikan','Perbaikan'],['pengecekan','Pengecekan'],['pemasangan','Pemasangan']];
-function wrTypeBadges(types){ return (types||[]).map(t=>{const lbl=(WORK_TYPES.find(w=>w[0]===t)||[,t])[1]; return '<span class="badge t-'+t+'">'+lbl+'</span>';}).join(' '); }
+const JENIS_SUGGEST=['Cuci AC','Service Bocor Freon','Pengecekan Rutin','Bongkar Pasang','Pemasangan Baru','Perbaikan','Ganti Unit'];
+function jenisDatalist(){ return '<datalist id="jenisSuggest">'+JENIS_SUGGEST.map(v=>'<option value="'+v+'">').join('')+'</datalist>'; }
+function wrTypeBadges(types){ return (types||[]).map(t=>'<span class="badge wr-type">'+esc(t)+'</span>').join(' '); }
 
 function listWorkreport(){
   const q=S.filter.toLowerCase();
@@ -882,9 +915,17 @@ function openWorkreport(rec){
   EDIT.before=EDIT.before||[]; EDIT.after=EDIT.after||[]; EDIT.customerId=EDIT.customerId||'';
   if(!EDIT.units || !EDIT.units.length){
     if(EDIT.unitMerk||EDIT.unitKapasitas||(EDIT.types&&EDIT.types.length)){
-      EDIT.units=[{noAC:'',lokasi:EDIT.lokasi||'',freon:'',ampere:'',jenis:(EDIT.types&&EDIT.types[0])||'cuci',catatan:[EDIT.unitMerk,EDIT.unitKapasitas].filter(Boolean).join(' ')}];
+      EDIT.units=[{...blankUnit(), lokasi:EDIT.lokasi||'', jenis:(EDIT.types&&EDIT.types[0])||'Cuci AC', merk:EDIT.unitMerk||'', pk:EDIT.unitKapasitas||''}];
     } else EDIT.units=[blankUnit()];
   }
+  // migrasi skema unit lama (noAC/freon-sbg-psi/ampere/catatan/jenis-kode) ke skema baru
+  EDIT.units = EDIT.units.map(u=>{
+    if(u.pk!==undefined) return u;
+    const jenisMap={cuci:'Cuci AC', perbaikan:'Perbaikan', pengecekan:'Pengecekan', pemasangan:'Pemasangan', lainnya:'Lainnya'};
+    const ket=[u.catatan, u.noAC?('No. unit: '+u.noAC):''].filter(Boolean).join(' | ');
+    return { lokasi:u.lokasi||'', jenis:jenisMap[u.jenis]||u.jenis||'Cuci AC', pk:'', merk:'', tipe:'',
+      freon:'', psiSebelum:'', psiSesudah:u.freon||'', ampSebelum:'', ampSesudah:u.ampere||'', ket, saran:'' };
+  });
   S.form={ html: workreportFormHtml(), after: wireWorkreportForm };
   render(); window.scrollTo(0,0);
 }
@@ -908,8 +949,8 @@ function workreportFormHtml(){
       +'<div class="field full"><label>Lokasi / alamat proyek</label><input type="text" id="f_lokasi" value="'+esc(e.lokasi)+'"></div>'
     +'</div>'
     +'<hr class="div"><div class="section-title">Unit AC yang dikerjakan</div>'
-    +'<p class="help" style="margin:-2px 0 9px">Tambahkan tiap unit: No. AC, lokasi, tekanan freon, ampere, dan jenis pekerjaannya. Data ini menjadi riwayat unit.</p>'
-    +unitsTableHtml()
+    +'<p class="help" style="margin:-2px 0 9px">Tambahkan tiap unit sesuai format pencatatan Anda: alamat, jenis pekerjaan, spesifikasi (PK/Merk/Type/Freon), PSI &amp; Amper sebelum-sesudah, keterangan, dan saran.</p>'
+    +unitsCardsHtml()
     +'<div class="form-grid" style="margin-top:6px">'
       +'<div class="field full"><label>Uraian pekerjaan</label><textarea id="f_uraian" placeholder="Langkah/pekerjaan yang dilakukan...">'+esc(e.uraian)+'</textarea></div>'
       +'<div class="field"><label>Temuan / kondisi</label><textarea id="f_temuan">'+esc(e.temuan)+'</textarea></div>'
@@ -961,13 +1002,16 @@ async function saveWorkreport(){
     e.after  = await uploadPhotos(e.after,  'wr/'+e.id+'/after');
   }catch(err){ console.warn('upload foto:', err); }
   await dbSet('ac:wr:'+e.id, e);
-  const summary={id:e.id,nomor:e.nomor,tanggal:e.tanggal,customerId:e.customerId,customerNama:e.customerNama,lokasi:e.lokasi,types:e.types,units:e.units.map(u=>({noAC:u.noAC,lokasi:u.lokasi,freon:u.freon,ampere:u.ampere,jenis:u.jenis}))};
+  const summary={id:e.id,nomor:e.nomor,tanggal:e.tanggal,customerId:e.customerId,customerNama:e.customerNama,lokasi:e.lokasi,types:e.types,units:e.units.map(u=>({lokasi:u.lokasi,jenis:u.jenis,pk:u.pk,merk:u.merk,tipe:u.tipe,freon:u.freon,psiSebelum:u.psiSebelum,psiSesudah:u.psiSesudah,ampSebelum:u.ampSebelum,ampSesudah:u.ampSesudah,ket:u.ket,saran:u.saran}))};
   const idx=S.wrIndex.findIndex(x=>x.id===e.id);
   if(idx>=0) S.wrIndex[idx]=summary; else S.wrIndex.unshift(summary);
   await dbSet('ac:wr_index', S.wrIndex); await dbSet('ac:counters', S.counters);
   toast('Laporan tersimpan'); S.form=null; go('workreport');
 }
 async function delWorkreport(id){
+  // Hapus foto di Supabase Storage (jika dipakai). Foto di Cloudinary tidak bisa dihapus
+  // dari sisi aplikasi (butuh API secret yang tidak aman disimpan di file ini) —
+  // bisa dihapus manual lewat dashboard Cloudinary bila perlu, atau atur auto-expiry.
   if(sb){ try{
     for(const sub of ['before','after']){
       const {data:files}=await sb.storage.from('photos').list('wr/'+id+'/'+sub);
@@ -1231,10 +1275,7 @@ function _custFields(src){
 /* helper: rincian pekerjaan dari units laporan */
 function _rincianFromUnits(units){
   if(!units||!units.length) return '1. \n2. ';
-  return units.map((u,i)=>{
-    const j=(WORK_TYPES.find(w=>w[0]===u.jenis)||[,u.jenis||''])[1];
-    return String(i+1)+'. '+(u.noAC?u.noAC+' — ':'')+j+(u.lokasi?' ('+u.lokasi+')':'');
-  }).join('\n');
+  return units.map((u,i)=>String(i+1)+'. '+(u.jenis||'-')+(u.lokasi?' ('+u.lokasi+')':'')).join('\n');
 }
 
 /* ── Penawaran → Invoice (sudah ada, tetap dipakai) ── */
@@ -1262,7 +1303,7 @@ async function invoiceFromWorkreport(id){
   if(!wr){ toast('Data laporan tidak ditemukan'); return; }
   const cf=_custFields(wr);
   const jasaItems=(wr.units||[]).map(u=>({
-    desc:(WORK_TYPES.find(w=>w[0]===u.jenis)||[,u.jenis||''])[1]+(u.noAC?' — '+u.noAC:'')+(u.lokasi?' ('+u.lokasi+')':''),
+    desc:(u.jenis||'-')+(u.lokasi?' ('+u.lokasi+')':''),
     qty:1, satuan:'unit', harga:0
   }));
   EDIT={
@@ -1637,23 +1678,22 @@ async function invoicePDF(inv){
 }
 /* ---- PDF: Laporan Pengerjaan ---- */
 async function workreportPDF(wr){
-  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'}); const M=14;
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4',orientation:'landscape'}); const M=14;
   let y=await pdfHead(doc,{title:'LAPORAN KERJA',meta:['Nomor: '+(wr.nomor||'-'),'Tanggal: '+tglPanjang(wr.tanggal)]});
-  const types=(wr.types||[]).map(t=>(WORK_TYPES.find(w=>w[0]===t)||[,t])[1]).join(', ')||'-';
   doc.autoTable({ startY:y, theme:'plain', styles:{fontSize:9,cellPadding:1.3,textColor:[40,40,40]},
     body:[ ['Pelanggan',wr.customerNama||'-','Teknisi',wr.teknisi||'-'],
            ['Lokasi proyek',wr.lokasi||'-','Jumlah unit',((wr.units&&wr.units.length)||0)+' unit'] ],
-    columnStyles:{0:{fontStyle:'bold',cellWidth:26,textColor:[90,90,90]},1:{cellWidth:64},2:{fontStyle:'bold',cellWidth:24,textColor:[90,90,90]},3:{cellWidth:'auto'}},
+    columnStyles:{0:{fontStyle:'bold',cellWidth:26,textColor:[90,90,90]},1:{cellWidth:90},2:{fontStyle:'bold',cellWidth:24,textColor:[90,90,90]},3:{cellWidth:'auto'}},
     margin:{left:M,right:M} });
   y=doc.lastAutoTable.finalY+3;
   const us=wr.units||[];
   doc.autoTable({ startY:y,
-    head:[['No','No. AC','Lokasi','Freon','Ampere','Jenis Pekerjaan']],
-    body: us.length? us.map((u,i)=>[String(i+1), u.noAC||'-', u.lokasi||'-', u.freon||'-', u.ampere||'-', (WORK_TYPES.find(w=>w[0]===u.jenis)||[,u.jenis||'-'])[1]+(u.catatan?(' \u2014 '+u.catatan):'')])
-        : [[{content:'Tidak ada data unit',colSpan:6,styles:{halign:'center',textColor:[150,150,150]}}]],
-    theme:'grid', styles:{fontSize:8.5,cellPadding:1.6,lineColor:[223,229,234],lineWidth:0.2},
-    headStyles:{fillColor:[31,111,178],textColor:[255,255,255],fontSize:8.4},
-    columnStyles:{0:{halign:'center',cellWidth:9},3:{cellWidth:24},4:{cellWidth:22}},
+    head:[['No','Alamat','Jenis Pekerjaan','PK','Merk','Type','Freon','PSI\nSebelum','PSI\nSesudah','Amp\nSebelum','Amp\nSesudah','Ket','Saran']],
+    body: us.length? us.map((u,i)=>[String(i+1), u.lokasi||'-', u.jenis||'-', u.pk||'-', u.merk||'-', u.tipe||'-', u.freon||'-', u.psiSebelum||'-', u.psiSesudah||'-', u.ampSebelum||'-', u.ampSesudah||'-', u.ket||'-', u.saran||'-'])
+        : [[{content:'Tidak ada data unit',colSpan:13,styles:{halign:'center',textColor:[150,150,150]}}]],
+    theme:'grid', styles:{fontSize:7.6,cellPadding:1.4,lineColor:[223,229,234],lineWidth:0.2,valign:'middle'},
+    headStyles:{fillColor:[31,111,178],textColor:[255,255,255],fontSize:7.4,halign:'center'},
+    columnStyles:{0:{halign:'center',cellWidth:8},1:{cellWidth:40},2:{cellWidth:30},3:{halign:'center',cellWidth:12},4:{cellWidth:22},5:{cellWidth:20},6:{halign:'center',cellWidth:14},7:{halign:'center',cellWidth:14},8:{halign:'center',cellWidth:14},9:{halign:'center',cellWidth:14},10:{halign:'center',cellWidth:14},11:{cellWidth:30},12:{cellWidth:'auto'}},
     margin:{left:M,right:M} });
   y=doc.lastAutoTable.finalY+1;
   y=pdfNote(doc,y,'Uraian Pekerjaan',wr.uraian);
@@ -1963,16 +2003,16 @@ function invoiceXLS(inv){
 }
 /* ---- Excel: Laporan Pengerjaan ---- */
 function workreportXLS(wr){
-  const types=(wr.types||[]).map(t=>(WORK_TYPES.find(w=>w[0]===t)||[,t])[1]).join(', ');
+  const types=(wr.types||[]).join(', ');
   const a=coHeaderAOA();
   a.push([], ['LAPORAN PENGERJAAN AC'], ['Nomor', wr.nomor||''], ['Tanggal', tglPanjang(wr.tanggal)]);
   a.push(['Pelanggan', wr.customerNama||''], ['Teknisi', wr.teknisi||''], ['Lokasi', wr.lokasi||''], ['Jenis pekerjaan', types]);
   a.push(['Jumlah unit', (wr.units&&wr.units.length)||0]);
-  a.push([], ['DAFTAR UNIT AC'], ['No','No. AC','Lokasi','Freon','Ampere','Jenis','Catatan']);
-  (wr.units||[]).forEach((u,i)=>a.push([i+1, u.noAC||'', u.lokasi||'', u.freon||'', u.ampere||'', (WORK_TYPES.find(w=>w[0]===u.jenis)||[,u.jenis||''])[1], u.catatan||'']));
+  a.push([], ['DAFTAR UNIT AC'], ['No','Alamat','Jenis Pekerjaan','PK','Merk','Type','Freon','PSI Sebelum','PSI Sesudah','Amp Sebelum','Amp Sesudah','Ket','Saran']);
+  (wr.units||[]).forEach((u,i)=>a.push([i+1, u.lokasi||'', u.jenis||'', u.pk||'', u.merk||'', u.tipe||'', u.freon||'', u.psiSebelum||'', u.psiSesudah||'', u.ampSebelum||'', u.ampSesudah||'', u.ket||'', u.saran||'']));
   a.push([], ['Uraian pekerjaan', wr.uraian||''], ['Temuan / kondisi', wr.temuan||''], ['Rekomendasi', wr.rekomendasi||''], ['Hasil akhir', wr.hasil||'']);
   a.push([], ['Jumlah foto sebelum', (wr.before||[]).length], ['Jumlah foto sesudah', (wr.after||[]).length], ['Catatan', 'Foto dokumentasi tersedia pada versi PDF.']);
-  aoaFile(a, 'Laporan', 'LaporanKerja-'+safeName(wr.nomor)+'.xlsx', [10,16,24,12,12,16,26]);
+  aoaFile(a, 'Laporan', 'LaporanKerja-'+safeName(wr.nomor)+'.xlsx', [10,26,22,8,14,14,10,12,12,12,12,20,24]);
 }
 /* ---- Excel: Berita Acara ---- */
 function handoverXLS(ba){
@@ -2029,6 +2069,9 @@ async function handleAction(action,id,el){
     case 'auth-signup': await doSignup(); break;
     case 'auth-to-signup': renderAuth('signup'); break;
     case 'auth-to-login': renderAuth('login'); break;
+    case 'auth-forgot': renderForgot(); break;
+    case 'auth-forgot-send': await doForgotSend(); break;
+    case 'auth-reset-save': await doResetPassword(); break;
     case 'logout': if(confirm('Keluar dari akun?')) await doLogout(); break;
     case 'add-row': { readAllItems(); const lk=el.getAttribute('data-list'); EDIT[lk]=EDIT[lk]||[]; EDIT[lk].push(blankItem()); rerenderItems(lk); (inForm?recalcInvoice:recalcQuote)(); break; }
     case 'del-row': { readAllItems(); const lk=el.getAttribute('data-list'); EDIT[lk].splice(+el.getAttribute('data-i'),1); rerenderItems(lk); (inForm?recalcInvoice:recalcQuote)(); break; }
@@ -2121,36 +2164,52 @@ document.addEventListener('change', async ev=>{
 });
 
 /* ============ UNIT AC (editor baris) ============ */
-function blankUnit(){ return {noAC:'', lokasi:'', freon:'', ampere:'', jenis:'cuci', catatan:''}; }
-function unitJenisOptions(sel){ return WORK_TYPES.map(([v,l])=>'<option value="'+v+'"'+(v===sel?' selected':'')+'>'+l+'</option>').join('')+'<option value="lainnya"'+(sel==='lainnya'?' selected':'')+'>Lainnya</option>'; }
-function unitRowHtml(u,i){
-  return '<tr class="unit-row">'
-    +'<td><input type="text" class="u-noac" value="'+esc(u.noAC)+'" placeholder="AC-01"></td>'
-    +'<td><input type="text" class="u-lokasi" value="'+esc(u.lokasi)+'" placeholder="R. Meeting Lt.2"></td>'
-    +'<td><input type="text" class="u-freon" value="'+esc(u.freon)+'" placeholder="250 psi"></td>'
-    +'<td><input type="text" class="u-ampere" value="'+esc(u.ampere)+'" placeholder="3.2 A"></td>'
-    +'<td><select class="u-jenis">'+unitJenisOptions(u.jenis||'cuci')+'</select></td>'
-    +'<td><input type="text" class="u-catatan" value="'+esc(u.catatan)+'" placeholder="opsional"></td>'
-    +'<td><button class="btn btn-sm btn-danger" data-action="wr-unit-del" data-i="'+i+'">'+svg(I.trash,13)+'</button></td>'
-    +'</tr>';
+function blankUnit(){ return {lokasi:'', jenis:'Cuci AC', pk:'', merk:'', tipe:'', freon:'', psiSebelum:'', psiSesudah:'', ampSebelum:'', ampSesudah:'', ket:'', saran:''}; }
+function unitCardHtml(u,i){
+  return '<div class="unit-card">'
+    +'<div class="unit-card-head"><b>Unit #'+(i+1)+'</b><button class="btn btn-sm btn-danger" data-action="wr-unit-del" data-i="'+i+'">'+svg(I.trash,13)+'Hapus</button></div>'
+    +'<div class="form-grid">'
+      +'<div class="field full"><label>Alamat / Lokasi</label><input type="text" class="u-lokasi" value="'+esc(u.lokasi)+'" placeholder="GD. C Lt.4 Ruang kerja"></div>'
+      +'<div class="field"><label>Jenis Pekerjaan</label><input type="text" class="u-jenis" list="jenisSuggest" value="'+esc(u.jenis)+'" placeholder="Cuci AC"></div>'
+      +'<div class="field"><label>PK</label><input type="text" class="u-pk" value="'+esc(u.pk)+'" placeholder="1pk"></div>'
+      +'<div class="field"><label>Merk</label><input type="text" class="u-merk" value="'+esc(u.merk)+'" placeholder="Daikin"></div>'
+      +'<div class="field"><label>Type</label><input type="text" class="u-tipe" list="tipeSuggest" value="'+esc(u.tipe)+'" placeholder="Split / Cassette"></div>'
+      +'<div class="field"><label>Freon</label><input type="text" class="u-freon" value="'+esc(u.freon)+'" placeholder="R32"></div>'
+      +'<div class="field"><label>Ket (kondisi)</label><input type="text" class="u-ket" value="'+esc(u.ket)+'" placeholder="Normal"></div>'
+    +'</div>'
+    +'<div class="unit-sub">Tekanan (PSI)</div>'
+    +'<div class="form-grid">'
+      +'<div class="field"><label>Sebelum</label><input type="text" class="u-psisebelum" value="'+esc(u.psiSebelum)+'" placeholder="40"></div>'
+      +'<div class="field"><label>Sesudah</label><input type="text" class="u-psisesudah" value="'+esc(u.psiSesudah)+'" placeholder="140"></div>'
+    +'</div>'
+    +'<div class="unit-sub">Amper</div>'
+    +'<div class="form-grid">'
+      +'<div class="field"><label>Sebelum</label><input type="text" class="u-ampsebelum" value="'+esc(u.ampSebelum)+'" placeholder="4"></div>'
+      +'<div class="field"><label>Sesudah</label><input type="text" class="u-ampsesudah" value="'+esc(u.ampSesudah)+'" placeholder="8.5"></div>'
+    +'</div>'
+    +'<div class="form-grid" style="margin-top:0">'
+      +'<div class="field full"><label>Saran / Rekomendasi</label><input type="text" class="u-saran" value="'+esc(u.saran)+'" placeholder="Cuci berkala / Ganti unit / -"></div>'
+    +'</div>'
+  +'</div>';
 }
-function unitsTableHtml(){
+function unitsCardsHtml(){
   const rows=(EDIT.units||[]);
-  return '<div class="table-scroll"><table class="tbl unit-tbl"><thead><tr>'
-    +'<th>No. AC</th><th>Lokasi</th><th>Freon</th><th>Ampere</th><th>Jenis</th><th>Catatan</th><th></th>'
-    +'</tr></thead><tbody id="unitBody">'
-    + rows.map((u,i)=>unitRowHtml(u,i)).join('')
-    +'</tbody></table></div>'
+  return jenisDatalist()
+    +'<datalist id="tipeSuggest"><option value="Split"><option value="Cassette"><option value="Standing Floor"><option value="Ceiling"></datalist>'
+    +'<div id="unitBody">'+ rows.map((u,i)=>unitCardHtml(u,i)).join('') +'</div>'
     +'<button class="btn btn-sm btn-ghost" data-action="wr-unit-add" style="margin-top:9px">'+svg(I.plus,14)+'Tambah unit</button>';
 }
 function readUnits(){
-  return [...document.querySelectorAll('#unitBody .unit-row')].map(r=>({
-    noAC:r.querySelector('.u-noac').value.trim(), lokasi:r.querySelector('.u-lokasi').value.trim(),
-    freon:r.querySelector('.u-freon').value.trim(), ampere:r.querySelector('.u-ampere').value.trim(),
-    jenis:r.querySelector('.u-jenis').value, catatan:r.querySelector('.u-catatan').value.trim(),
-  })).filter(u=>u.noAC||u.lokasi||u.freon||u.ampere||u.catatan);
+  return [...document.querySelectorAll('#unitBody .unit-card')].map(r=>({
+    lokasi:r.querySelector('.u-lokasi').value.trim(), jenis:r.querySelector('.u-jenis').value.trim(),
+    pk:r.querySelector('.u-pk').value.trim(), merk:r.querySelector('.u-merk').value.trim(), tipe:r.querySelector('.u-tipe').value.trim(),
+    freon:r.querySelector('.u-freon').value.trim(),
+    psiSebelum:r.querySelector('.u-psisebelum').value.trim(), psiSesudah:r.querySelector('.u-psisesudah').value.trim(),
+    ampSebelum:r.querySelector('.u-ampsebelum').value.trim(), ampSesudah:r.querySelector('.u-ampsesudah').value.trim(),
+    ket:r.querySelector('.u-ket').value.trim(), saran:r.querySelector('.u-saran').value.trim(),
+  })).filter(u=>u.lokasi||u.jenis||u.pk||u.merk||u.tipe||u.freon||u.psiSebelum||u.psiSesudah||u.ampSebelum||u.ampSesudah||u.ket||u.saran);
 }
-function renderUnits(){ const b=document.getElementById('unitBody'); if(b) b.innerHTML=(EDIT.units||[]).map((u,i)=>unitRowHtml(u,i)).join(''); }
+function renderUnits(){ const b=document.getElementById('unitBody'); if(b) b.innerHTML=(EDIT.units||[]).map((u,i)=>unitCardHtml(u,i)).join(''); }
 
 /* ============ PELANGGAN (CUSTOMERS) ============ */
 function custById(id){ return S.customers.find(c=>c.id===id); }
@@ -2239,10 +2298,10 @@ function customerStats(c){
   const bas=handoversOfCustomer(c);
   const dels=deliveriesOfCustomer(c);
 
-  // jumlah unit: unik per No. AC dari semua laporan
+  // jumlah unit: unik per alamat/lokasi dari semua laporan
   const unitSet=new Set();
   let totalServis=0;
-  reps.forEach(r=>(r.units||[]).forEach(u=>{ unitSet.add(u.noAC||'(tanpa nomor)'); totalServis++; }));
+  reps.forEach(r=>(r.units||[]).forEach(u=>{ unitSet.add(u.lokasi||'(tanpa lokasi)'); totalServis++; }));
 
   // uang
   let nilaiPenawaran=0; quotes.forEach(q=>{ nilaiPenawaran+=calcQuote(q).grand; });
@@ -2273,7 +2332,7 @@ function customerHistory(id){
   const st=customerStats(c);
   const reps=st.reps.slice().sort((a,b)=>(a.tanggal||'').localeCompare(b.tanggal||''));
   const unitsMap={};
-  reps.forEach(r=>{ (r.units||[]).forEach(u=>{ const k=(u.noAC||'(tanpa nomor)'); (unitsMap[k]=unitsMap[k]||[]).push({tanggal:r.tanggal,nomor:r.nomor,jenis:u.jenis,freon:u.freon,ampere:u.ampere,lokasi:u.lokasi}); }); });
+  reps.forEach(r=>{ (r.units||[]).forEach(u=>{ const k=(u.lokasi||'(tanpa lokasi)'); (unitsMap[k]=unitsMap[k]||[]).push({tanggal:r.tanggal,nomor:r.nomor,jenis:u.jenis,psiSebelum:u.psiSebelum,psiSesudah:u.psiSesudah,ampSebelum:u.ampSebelum,ampSesudah:u.ampSesudah,ket:u.ket,saran:u.saran}); }); });
   _hist={unitsMap}; const unitKeys=Object.keys(unitsMap);
   const tl=customerTimeline(c);
 
@@ -2292,7 +2351,7 @@ function customerHistory(id){
   html+='<div class="stats">'
     +'<div class="stat"><div class="lbl">'+svg(I.report,14)+'Jumlah layanan</div><div class="val">'+st.jumlahLayanan+'<span style="font-size:13px;font-weight:600;color:var(--muted)"> laporan</span></div>'
       +'<div class="list-meta">'+st.totalServis+'\u00d7 pengerjaan unit</div></div>'
-    +'<div class="stat"><div class="lbl">'+svg(I.dash,14)+'Unit AC terdaftar</div><div class="val">'+st.jumlahUnit+'<span style="font-size:13px;font-weight:600;color:var(--muted)"> unit</span></div>'
+    +'<div class="stat"><div class="lbl">'+svg(I.dash,14)+'Unit / lokasi AC</div><div class="val">'+st.jumlahUnit+'<span style="font-size:13px;font-weight:600;color:var(--muted)"> unit</span></div>'
       +'<div class="list-meta">'+st.jumlahBast+' BAST \u00b7 '+st.jumlahSJ+' surat jalan</div></div>'
     +'<div class="stat good"><div class="lbl">'+svg(I.money,14)+'Total ditagih</div><div class="val">'+rupiah(st.ditagih)+'</div>'
       +'<div class="list-meta">'+st.jumlahInvoice+' invoice \u00b7 '+st.jumlahPenawaran+' penawaran</div></div>'
@@ -2318,22 +2377,25 @@ function customerHistory(id){
 
   /* --- riwayat per unit AC --- */
   if(unitKeys.length){
-    html+='<div class="card card-pad" style="margin-bottom:14px"><h3 style="font-size:15px;margin-bottom:2px">Riwayat per unit AC</h3>'
-      +'<p class="muted" style="font-size:13px"><b>'+unitKeys.length+'</b> unit terpantau. Grafik freon &amp; ampere membantu melihat tren sebelum unit bermasalah.</p></div>';
+    html+='<div class="card card-pad" style="margin-bottom:14px"><h3 style="font-size:15px;margin-bottom:2px">Riwayat per unit / lokasi AC</h3>'
+      +'<p class="muted" style="font-size:13px"><b>'+unitKeys.length+'</b> unit terpantau. Grafik PSI &amp; ampere (sesudah servis) membantu melihat tren sebelum unit bermasalah.</p></div>';
     unitKeys.forEach((k,idx)=>{
-      const list=unitsMap[k]; const last=list[list.length-1];
-      const hasNum=list.some(x=>parseFloat(String(x.freon).replace(',','.'))||parseFloat(String(x.ampere).replace(',','.')));
+      const list=unitsMap[k];
+      const hasNum=list.some(x=>parseFloat(String(x.psiSesudah).replace(',','.'))||parseFloat(String(x.ampSesudah).replace(',','.')));
       html+='<div class="card card-pad" style="margin-bottom:14px">'
         +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">'
-        +'<div><b>'+esc(k)+'</b>'+(last.lokasi?(' <span class="muted">\u00b7 '+esc(last.lokasi)+'</span>'):'')+'</div>'
+        +'<div><b>'+esc(k)+'</b></div>'
         +'<span class="muted" style="font-size:12.5px">'+list.length+'\u00d7 servis</span></div>'
         + (hasNum? '<div style="height:180px;margin-top:10px"><canvas id="hist_'+idx+'"></canvas></div>':'')
-        +'<div class="table-scroll" style="margin-top:9px"><table class="tbl"><thead><tr><th>Tanggal</th><th>Jenis</th><th>Freon</th><th>Ampere</th><th>No. Laporan</th></tr></thead><tbody>'
-        + list.slice().reverse().map(x=>'<tr><td>'+tglPendek(x.tanggal)+'</td><td>'+esc((WORK_TYPES.find(w=>w[0]===x.jenis)||[,x.jenis||'-'])[1])+'</td><td>'+esc(x.freon||'-')+'</td><td>'+esc(x.ampere||'-')+'</td><td class="muted">'+esc(x.nomor||'-')+'</td></tr>').join('')
+        +'<div class="table-scroll" style="margin-top:9px"><table class="tbl"><thead><tr><th>Tanggal</th><th>Jenis</th><th>PSI (Seb\u2192Ses)</th><th>Amp (Seb\u2192Ses)</th><th>Ket</th><th>No. Laporan</th></tr></thead><tbody>'
+        + list.slice().reverse().map(x=>'<tr><td>'+tglPendek(x.tanggal)+'</td><td>'+esc(x.jenis||'-')+'</td>'
+            +'<td>'+esc(x.psiSebelum||'-')+' \u2192 '+esc(x.psiSesudah||'-')+'</td>'
+            +'<td>'+esc(x.ampSebelum||'-')+' \u2192 '+esc(x.ampSesudah||'-')+'</td>'
+            +'<td>'+esc(x.ket||'-')+'</td><td class="muted">'+esc(x.nomor||'-')+'</td></tr>').join('')
         +'</tbody></table></div></div>';
     });
   } else {
-    html+='<div class="card card-pad" style="margin-bottom:14px"><p class="muted" style="font-size:13px">Belum ada data unit AC. Data unit terisi dari Laporan Pengerjaan yang mencantumkan No. AC.</p></div>';
+    html+='<div class="card card-pad" style="margin-bottom:14px"><p class="muted" style="font-size:13px">Belum ada data unit AC. Data unit terisi dari Laporan Pengerjaan yang mencantumkan alamat/lokasi unit.</p></div>';
   }
 
   S.form={ html, after: ()=>drawHistoryCharts(unitKeys) }; render(); window.scrollTo(0,0);
@@ -2344,14 +2406,14 @@ function drawHistoryCharts(unitKeys){
   unitKeys.forEach((k,idx)=>{
     const cv=document.getElementById('hist_'+idx); if(!cv) return;
     const list=um[k]; const labels=list.map(x=>tglPendek(x.tanggal));
-    const freon=list.map(x=>{const n=parseFloat(String(x.freon).replace(',','.')); return isNaN(n)?null:n;});
-    const amp=list.map(x=>{const n=parseFloat(String(x.ampere).replace(',','.')); return isNaN(n)?null:n;});
+    const psi=list.map(x=>{const n=parseFloat(String(x.psiSesudah).replace(',','.')); return isNaN(n)?null:n;});
+    const amp=list.map(x=>{const n=parseFloat(String(x.ampSesudah).replace(',','.')); return isNaN(n)?null:n;});
     _histCharts.push(new Chart(cv.getContext('2d'),{ type:'line',
       data:{labels, datasets:[
-        {label:'Freon', data:freon, borderColor:'#0CA4B8', backgroundColor:'rgba(12,164,184,.12)', tension:.3, spanGaps:true, yAxisID:'y'},
-        {label:'Ampere', data:amp, borderColor:'#C9851F', backgroundColor:'rgba(201,133,31,.12)', tension:.3, spanGaps:true, yAxisID:'y1'} ]},
+        {label:'PSI (sesudah)', data:psi, borderColor:'#0CA4B8', backgroundColor:'rgba(12,164,184,.12)', tension:.3, spanGaps:true, yAxisID:'y'},
+        {label:'Ampere (sesudah)', data:amp, borderColor:'#C9851F', backgroundColor:'rgba(201,133,31,.12)', tension:.3, spanGaps:true, yAxisID:'y1'} ]},
       options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-        scales:{ y:{position:'left',title:{display:true,text:'Freon'}}, y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Ampere'}} },
+        scales:{ y:{position:'left',title:{display:true,text:'PSI'}}, y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Ampere'}} },
         plugins:{legend:{labels:{boxWidth:12,font:{size:11}}}} }} ));
   });
 }
@@ -2377,6 +2439,7 @@ function renderAuth(mode){
     +'<p class="sub">'+(login?'Masuk untuk mengelola dokumen bisnis Anda.':'Buat akun untuk Anda atau teknisi.')+'</p>'
     +'<div class="field"><label>Email</label><input type="email" id="au_email" autocomplete="username" placeholder="nama@email.com"></div>'
     +'<div class="field"><label>Password</label><input type="password" id="au_pass" autocomplete="'+(login?'current-password':'new-password')+'" placeholder="Minimal 6 karakter"></div>'
+    +(login?'<a class="auth-forgot" data-action="auth-forgot">Lupa password?</a>':'')
     +'<button class="btn btn-primary" data-action="'+(login?'auth-login':'auth-signup')+'">'+(login?'Masuk':'Daftar')+'</button>'
     +'<div class="auth-switch">'+(login?'Belum punya akun? <a data-action="auth-to-signup">Daftar di sini</a>':'Sudah punya akun? <a data-action="auth-to-login">Masuk</a>')+'</div>'
     +'</div></div>';
@@ -2400,6 +2463,49 @@ async function doSignup(){
   if(data && data.session){ await startApp(); }
   else { toast('Akun dibuat. Bila diminta, konfirmasi via email lalu masuk.'); renderAuth('login'); }
 }
+function renderForgot(){
+  document.body.classList.add('preauth');
+  document.getElementById('app').innerHTML =
+    '<div class="auth-wrap"><div class="auth-card">'
+    +'<h2>Lupa password</h2>'
+    +'<p class="sub">Masukkan email akun Anda. Kami akan mengirim tautan untuk membuat password baru.</p>'
+    +'<div class="field"><label>Email</label><input type="email" id="fg_email" autocomplete="username" placeholder="nama@email.com"></div>'
+    +'<button class="btn btn-primary" data-action="auth-forgot-send">Kirim tautan reset</button>'
+    +'<div class="auth-switch"><a data-action="auth-to-login">Kembali ke halaman masuk</a></div>'
+    +'</div></div>';
+  const em=document.getElementById('fg_email');
+  if(em) em.onkeydown=e=>{ if(e.key==='Enter') doForgotSend(); };
+}
+async function doForgotSend(){
+  const email=(document.getElementById('fg_email').value||'').trim();
+  if(!email){ toast('Isi email dulu'); return; }
+  toast('Mengirim email...');
+  const {error}=await sb.auth.resetPasswordForEmail(email, {redirectTo:window.location.href});
+  if(error){ toast('Gagal mengirim: '+error.message); return; }
+  toast('Email terkirim. Cek kotak masuk (dan folder spam) untuk tautan reset.');
+  renderAuth('login');
+}
+function renderResetPassword(){
+  document.body.classList.add('preauth');
+  document.getElementById('app').innerHTML =
+    '<div class="auth-wrap"><div class="auth-card">'
+    +'<h2>Buat password baru</h2>'
+    +'<p class="sub">Masukkan password baru untuk akun Anda.</p>'
+    +'<div class="field"><label>Password baru</label><input type="password" id="rp_pass" autocomplete="new-password" placeholder="Minimal 6 karakter"></div>'
+    +'<div class="field"><label>Ulangi password baru</label><input type="password" id="rp_pass2" autocomplete="new-password" placeholder="Ulangi password"></div>'
+    +'<button class="btn btn-primary" data-action="auth-reset-save">Simpan password baru</button>'
+    +'</div></div>';
+}
+async function doResetPassword(){
+  const p1=document.getElementById('rp_pass').value||'', p2=document.getElementById('rp_pass2').value||'';
+  if(p1.length<6){ toast('Password minimal 6 karakter'); return; }
+  if(p1!==p2){ toast('Password tidak sama'); return; }
+  toast('Menyimpan password...');
+  const {error}=await sb.auth.updateUser({password:p1});
+  if(error){ toast('Gagal menyimpan: '+error.message); return; }
+  toast('Password berhasil diganti. Silakan lanjut.');
+  await startApp();
+}
 async function doLogout(){ try{ await sb.auth.signOut(); }catch(e){} location.reload(); }
 function injectLogout(){
   const bar=document.querySelector('.topbar-inner');
@@ -2417,10 +2523,13 @@ async function startApp(){
 /* ============ INISIALISASI ============ */
 (async function init(){
   if(!sb){ renderConfigNeeded(); return; }
+  let _recovering=false;
+  sb.auth.onAuthStateChange((event)=>{ if(event==='PASSWORD_RECOVERY'){ _recovering=true; renderResetPassword(); } });
   try{
     const { data:{ session } } = await sb.auth.getSession();
+    if(_recovering) return;
     if(session) await startApp(); else renderAuth('login');
-  }catch(e){ console.error('init',e); renderAuth('login'); }
+  }catch(e){ console.error('init',e); if(!_recovering) renderAuth('login'); }
 })();
 </script>
 </body>
